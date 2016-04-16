@@ -42,8 +42,11 @@ config.cfg
 /mp/src/vgui2/vgui_controls/Debug/vc120.pdb
 /mp/game/lambda/custom/lambda_content/serverconfig.vdf
 /mp/game/lambda/custom/lambda_content/cfg/settings.scr
-download
+/mp/game/lambda/download
 /mp/game/lambda/sound/sound.cache
 /mp/game/lambda/custom/lambda_content/sound/sound.cache
 Debug_mod_hl2mp
 Release_mod_hl2mp
+*.vpc_crc
+*.sentinel
+*.filters
