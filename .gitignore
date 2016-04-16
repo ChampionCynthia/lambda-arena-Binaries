@@ -54,3 +54,11 @@ config.cfg
 # shader files
 *.tmp
 
+/mp/src/game/client/Debug_mod_hl2mp/vc120.pdb
+/mp/src/game/client/Release_mod_hl2mp/vc120.pdb
+/mp/src/game/server/Debug_mod_hl2mp/vc120.pdb
+/mp/src/game/server/Release_mod_hl2mp/vc120.pdb
+/mp/src/mathlib/Debug/vc120.pdb
+/mp/src/raytrace/Debug/vc120.pdb
+/mp/src/tier1/Debug/vc120.pdb
+/mp/src/vgui2/vgui_controls/Debug/vc120.pdb
