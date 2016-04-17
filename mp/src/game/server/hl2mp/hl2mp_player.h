@@ -136,7 +136,6 @@ public:
 	CNetworkHandle( CBaseEntity, m_hRagdoll );	// networked entity handle 
 
 	virtual bool	CanHearAndReadChatFrom( CBasePlayer *pPlayer );
-
 		
 private:
 

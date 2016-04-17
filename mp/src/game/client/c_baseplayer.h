@@ -618,16 +618,7 @@ protected:
 	CUtlVector<CHandle<C_EconWearable > >	m_hMyWearables;
 #endif
 
-private:
-
-	struct StepSoundCache_t
-	{
-		StepSoundCache_t() : m_usSoundNameIndex( 0 ) {}
-		CSoundParameters	m_SoundParameters;
-		unsigned short		m_usSoundNameIndex;
-	};
-	// One for left and one for right side of step
-	StepSoundCache_t		m_StepSoundCache[ 2 ];
+//private:
 
 public:
 
@@ -637,6 +628,15 @@ public:
 	bool  ShouldGoSouth( Vector vNPCForward, Vector vNPCRight ); //Such a bad name.
 
 	void SetOldPlayerZ( float flOld ) { m_flOldPlayerZ = flOld;	}
+
+	struct StepSoundCache_t
+	{
+		StepSoundCache_t() : m_usSoundNameIndex(0) {}
+		CSoundParameters	m_SoundParameters;
+		unsigned short		m_usSoundNameIndex;
+	};
+	// One for left and one for right side of step
+	StepSoundCache_t		m_StepSoundCache[2];
 };
 
 EXTERN_RECV_TABLE(DT_BasePlayer);

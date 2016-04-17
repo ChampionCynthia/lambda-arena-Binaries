@@ -74,6 +74,8 @@ CWeaponAR2::CWeaponAR2( )
 
 	m_nShotsFired	= 0;
 	m_nVentPose		= -1;
+
+	m_iTracerFreqWeapon = 1;
 }
 
 void CWeaponAR2::Precache( void )

@@ -75,6 +75,9 @@ public:
 
 	#endif
 
+		virtual void	AddViewmodelBob( CBaseViewModel *viewmodel, Vector &origin, QAngle &angles );
+		virtual	float	CalcViewmodelBob( void );
+
 	float		m_flPrevAnimTime;
 	float  m_flNextResetCheckTime;
 

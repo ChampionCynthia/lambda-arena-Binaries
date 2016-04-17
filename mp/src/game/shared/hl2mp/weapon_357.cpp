@@ -141,7 +141,7 @@ void CWeapon357::PrimaryAttack( void )
 	angles.z = 0;
 
 #ifndef CLIENT_DLL
-	pPlayer->SnapEyeAngles( angles );
+	//pPlayer->SnapEyeAngles( angles ); [TODO] Need to fix the prediction for this, somehow.
 #endif
 
 	pPlayer->ViewPunch( QAngle( -8, random->RandomFloat( -2, 2 ), 0 ) );

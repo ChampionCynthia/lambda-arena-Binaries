@@ -79,25 +79,62 @@ void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, f
 		return;
 #endif
 
+	if (!psurface)
+		return;
+
 	if ( GetFlags() & FL_DUCKING )
 		return;
 
-	m_Local.m_nStepside = !m_Local.m_nStepside;
+	int nSide = m_Local.m_nStepside;
+	unsigned short stepSoundName = nSide ? psurface->sounds.stepleft : psurface->sounds.stepright;
+	if (!stepSoundName)
+		return;
 
-	char szStepSound[128];
-
-	if ( m_Local.m_nStepside )
-	{
-		Q_snprintf( szStepSound, sizeof( szStepSound ), "%s.RunFootstepLeft", g_ppszPlayerSoundPrefixNames[m_iPlayerSoundType] );
-	}
-	else
-	{
-		Q_snprintf( szStepSound, sizeof( szStepSound ), "%s.RunFootstepRight", g_ppszPlayerSoundPrefixNames[m_iPlayerSoundType] );
-	}
+	m_Local.m_nStepside = !nSide;
 
 	CSoundParameters params;
-	if ( GetParametersForSound( szStepSound, params, NULL ) == false )
-		return;
+
+	if (sv_footsteps.GetInt() >= 2) // [Striker] Added the ability to choose between stock HL2DM and dynamic footsteps
+	{
+		char szStepSound[128];
+
+		if (m_Local.m_nStepside)
+		{
+			Q_snprintf(szStepSound, sizeof(szStepSound), "%s.RunFootstepLeft", g_ppszPlayerSoundPrefixNames[m_iPlayerSoundType]);
+		}
+		else
+		{
+			Q_snprintf(szStepSound, sizeof(szStepSound), "%s.RunFootstepRight", g_ppszPlayerSoundPrefixNames[m_iPlayerSoundType]);
+		}
+
+		if (GetParametersForSound(szStepSound, params, NULL) == false)
+			return;
+	}
+	else if (sv_footsteps.GetInt() == 1)
+	{
+		if (m_StepSoundCache[nSide].m_usSoundNameIndex == stepSoundName)
+		{
+			params = m_StepSoundCache[nSide].m_SoundParameters;
+		}
+		else
+		{
+			IPhysicsSurfaceProps *physprops = MoveHelper()->GetSurfaceProps();
+			const char *pSoundName = physprops->GetString(stepSoundName);
+
+			// Give child classes an opportunity to override.
+			pSoundName = GetOverrideStepSound(pSoundName);
+			
+			if (!CBaseEntity::GetParametersForSound(pSoundName, params, NULL))
+				return;
+
+			// Only cache if there's one option.  Otherwise we'd never here any other sounds
+			if (params.count == 1)
+			{
+				m_StepSoundCache[nSide].m_usSoundNameIndex = stepSoundName;
+				m_StepSoundCache[nSide].m_SoundParameters = params;
+			}
+		}
+	}
 
 	CRecipientFilter filter;
 	filter.AddRecipientsByPAS( vecOrigin );

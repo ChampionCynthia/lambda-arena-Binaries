@@ -50,3 +50,5 @@ Release_mod_hl2mp
 *.vpc_crc
 *.sentinel
 *.filters
+/mp/game/lambda/iiopnSPAS.vpk
+*.cache

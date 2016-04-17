@@ -1201,15 +1201,6 @@ private:
 
 	bool m_autoKickDisabled;
 
-	struct StepSoundCache_t
-	{
-		StepSoundCache_t() : m_usSoundNameIndex( 0 ) {}
-		CSoundParameters	m_SoundParameters;
-		unsigned short		m_usSoundNameIndex;
-	};
-	// One for left and one for right side of step
-	StepSoundCache_t		m_StepSoundCache[ 2 ];
-
 	CUtlLinkedList< CPlayerSimInfo >  m_vecPlayerSimInfo;
 	CUtlLinkedList< CPlayerCmdInfo >  m_vecPlayerCmdInfo;
 
@@ -1224,6 +1215,14 @@ private:
 public:
 	virtual unsigned int PlayerSolidMask( bool brushOnly = false ) const;	// returns the solid mask for the given player, so bots can have a more-restrictive set
 
+	struct StepSoundCache_t
+	{
+		StepSoundCache_t() : m_usSoundNameIndex(0) {}
+		CSoundParameters	m_SoundParameters;
+		unsigned short		m_usSoundNameIndex;
+	};
+	// One for left and one for right side of step
+	StepSoundCache_t		m_StepSoundCache[2];
 };
 
 typedef CHandle<CBasePlayer> CBasePlayerHandle;
