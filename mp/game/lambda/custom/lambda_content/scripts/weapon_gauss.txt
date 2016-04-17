@@ -1,0 +1,61 @@
+WeaponData
+{
+	// Weapon data is loaded by both the Game and Client DLLs.
+	"printname"				"#LAMBDA_TauCannon"
+	"viewmodel"				"models/weapons/v_gauss_suit.mdl"
+	"playermodel"			"models/weapons/w_gauss_suit.mdl"
+	"anim_prefix"			"gauss"
+	"bucket"				"5"
+	"bucket_position"		"0"	
+
+	"primary_ammo"			"GaussEnergy"
+	"secondary_ammo"		"None"
+	"clip_size"				"-1"
+	"default_clip"			"100"
+	"clip2_size"			"-1"
+	"default_clip2"			"-1"
+	
+	"autoswitchto"			"0"
+	"autoswitchfrom"		"0"
+
+	// In order to get custom weapon sounds working, copy game_sounds_weapons.txt (can be found in /hl2/scripts)
+	// to /hl2mp/custom/Custom_Weapons/scripts and add a new sound entry, f.e. Weapon_Minigun.Single and then just link it here.
+	SoundData
+	{
+		"single_shot"                   "Weapon_Gauss.Single"
+		"double_shot"					"Weapon_Gauss.Double"
+		"special1"                      "Weapon_Gauss.Special1"
+	}
+	
+	TextureData
+	{
+		"weapon"
+		{
+				"font"		"WeaponIcons"
+				"character"	"h"
+		}
+		"weapon_s"
+		{	
+				"font"		"WeaponIconsSelected"
+				"character"	"h"
+		}
+		"ammo"
+		{
+				"font"		"WeaponIcons"
+				"character"	"y"
+		}
+		"crosshair"
+		{
+				"font"		"Crosshairs"
+				"character"	"Q"
+		}
+		"autoaim"
+		{
+				"file"		"sprites/crosshairs"
+				"x"		"0"
+				"y"		"48"
+				"width"		"24"
+				"height"	"24"
+		}
+	}
+}

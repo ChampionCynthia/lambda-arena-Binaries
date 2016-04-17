@@ -1,0 +1,20 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models\weapons\v_models\stoke_spas12\grip"
+	$bumpmap 		"models\weapons\v_models\stoke_spas12\grip-n"
+	"$halflambert" 				"1"
+	
+	"$phong" 					"1"
+	"$phongboost" 				"1.77"
+	"$phongalbedoboost" 		"1"
+	"$normalmapalphaphongmask"	"1"
+	"$phongexponent"			"35"
+	"$phongfresnelranges" 		"[1 1 1]"
+	"$phongalbedotint"			"1"
+	
+	"$normalmapalphaenvmapmask" 		"1"
+	"$envmap" 				"env_cubemap"
+	"$envmaptint" 				"[ 0.06 0.06 0.06 ]"
+	"$envmapfresnel"				"1"
+	"$envmapFresnelMinMaxExp"			"[0 5 .4]"
+}

@@ -5,7 +5,7 @@
 	title2		"ARENA"
 	type 		multiplayer_only
 	
-	nomodels 0
+	nomodels 1
 	nohimodel 1
 	nocrosshair 1
 	

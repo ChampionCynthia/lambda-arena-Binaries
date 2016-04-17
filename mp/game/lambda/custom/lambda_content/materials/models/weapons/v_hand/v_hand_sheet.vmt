@@ -1,0 +1,14 @@
+// envmaptint_fix
+"VertexLitGeneric"
+{
+	// Original shader: VertexLitTexture
+	"$basetexture" "models/Weapons/V_hand/v_hand_sheet"
+	"$bumpmap" "models/Weapons/V_hand/v_hand_sheet_normal"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[ .64 .64 .64 ]"
+	"$normalmapalphaenvmapmask" 1
+                "$phong" "1"
+	"$phongexponent" "45"
+	"$phongboost"	"1"
+	"$phongfresnelranges"	"[1 8 6]"
+}
