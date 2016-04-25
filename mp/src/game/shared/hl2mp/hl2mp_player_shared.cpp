@@ -112,12 +112,6 @@ void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, f
 	}
 	else if (sv_footsteps.GetInt() == 1)
 	{
-		if (m_StepSoundCache[nSide].m_usSoundNameIndex == stepSoundName)
-		{
-			params = m_StepSoundCache[nSide].m_SoundParameters;
-		}
-		else
-		{
 			IPhysicsSurfaceProps *physprops = MoveHelper()->GetSurfaceProps();
 			const char *pSoundName = physprops->GetString(stepSoundName);
 
@@ -126,14 +120,6 @@ void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, f
 			
 			if (!CBaseEntity::GetParametersForSound(pSoundName, params, NULL))
 				return;
-
-			// Only cache if there's one option.  Otherwise we'd never here any other sounds
-			if (params.count == 1)
-			{
-				m_StepSoundCache[nSide].m_usSoundNameIndex = stepSoundName;
-				m_StepSoundCache[nSide].m_SoundParameters = params;
-			}
-		}
 	}
 
 	CRecipientFilter filter;
