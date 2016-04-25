@@ -50,6 +50,9 @@ ConVar xc_uncrouch_on_jump( "xc_uncrouch_on_jump", "1", FCVAR_ARCHIVE, "Uncrouch
 ConVar player_limit_jump_speed( "player_limit_jump_speed", "1", FCVAR_REPLICATED );
 #endif
 
+ConVar la_autojump("la_autojump", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Automatically pogo-jump when holding jump key");
+ConVar la_doublejump("la_doublejump", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable double-jumping. (1: TF2 Style | 2: UT2004 Style)");
+
 // option_duck_method is a carrier convar. Its sole purpose is to serve an easy-to-flip
 // convar which is ONLY set by the X360 controller menu to tell us which way to bind the
 // duck controls. Its value is meaningless anytime we don't have the options window open.
@@ -2391,12 +2394,8 @@ bool CGameMovement::CheckJumpButton( void )
 		return false;
 	}
 
-	// No more effect
- 	if (player->GetGroundEntity() == NULL)
-	{
-		mv->m_nOldButtons |= IN_JUMP;
-		return false;		// in air, so no effect
-	}
+	bool bAirDash = false;
+	bool bOnGround = (player->GetGroundEntity() != NULL);
 
 	// Don't allow jumping when the player is in a stasis field.
 #ifndef HL2_EPISODIC
@@ -2404,7 +2403,7 @@ bool CGameMovement::CheckJumpButton( void )
 		return false;
 #endif
 
-	if ( mv->m_nOldButtons & IN_JUMP )
+	if ( (mv->m_nOldButtons & IN_JUMP) && !la_autojump.GetBool())
 		return false;		// don't pogo stick
 
 	// Cannot jump will in the unduck transition.
@@ -2415,6 +2414,26 @@ bool CGameMovement::CheckJumpButton( void )
 	if ( player->m_Local.m_flDuckJumpTime > 0.0f )
 		return false;
 
+	if (!bOnGround) // Not on ground
+	{
+		if (!player->m_bAirDash && !(mv->m_nOldButtons & IN_JUMP) && (!player->m_bDismountLadder) && (la_doublejump.GetInt() >= 1)) // Not doublejumping?
+		{
+			bAirDash = true;
+		}
+		else
+		{
+			player->m_bDismountLadder = false; // [Striker] Signify we're not dismounting a ladder (Doublejump fix).
+			mv->m_nOldButtons |= IN_JUMP;
+			return false;		// in air, so no effect
+		}
+	}
+
+	// Check for an air dash.
+	if (bAirDash)
+	{
+		AirDash();
+		return true;
+	}
 
 	// In the air now.
     SetGroundEntity( NULL );
@@ -2527,6 +2546,48 @@ bool CGameMovement::CheckJumpButton( void )
 	// Flag that we jumped.
 	mv->m_nOldButtons |= IN_JUMP;	// don't jump again until released
 	return true;
+}
+
+void CGameMovement::AirDash(void)
+{
+	// Apply approx. the jump velocity added to an air dash.
+	//Assert(sv_gravity.GetFloat() == 800.0f);
+	float flDashZ = 160.0f;
+
+	// Get the wish direction.
+	Vector vecForward, vecRight;
+	AngleVectors(mv->m_vecViewAngles, &vecForward, &vecRight, NULL);
+	vecForward.z = 0.0f;
+	vecRight.z = 0.0f;
+	VectorNormalize(vecForward);
+	VectorNormalize(vecRight);
+
+	// Copy movement amounts
+	float flForwardMove = mv->m_flForwardMove;
+	float flSideMove = mv->m_flSideMove;
+
+	// Find the direction,velocity in the x,y plane.
+	Vector vecWishDirection(((vecForward.x * flForwardMove) + (vecRight.x * flSideMove)),
+		((vecForward.y * flForwardMove) + (vecRight.y * flSideMove)),
+		0.0f);
+
+	// Update the velocity on the player.
+	if (la_doublejump.GetInt() == 1)
+	{
+		mv->m_vecVelocity = vecWishDirection;
+		mv->m_vecVelocity.z += flDashZ;
+	}
+	else
+	{
+		mv->m_vecVelocity.z = flDashZ;
+	}
+
+#ifdef CLIENT_DLL
+	MoveHelper()->StartSound( mv->GetAbsOrigin(), "Player.DoubleJump" ); // Not sure if this should be client only or not
+#endif
+
+	player->m_bAirDash = true;
+	MoveHelper()->PlayerSetAnimation(PLAYER_JUMP);
 }
 
 
@@ -3627,6 +3688,8 @@ void CGameMovement::SetGroundEntity( trace_t *pm )
 		}
 
 		mv->m_vecVelocity.z = 0.0f;
+
+		player->m_bAirDash = false;
 	}
 }
 

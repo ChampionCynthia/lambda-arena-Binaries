@@ -36,7 +36,6 @@ public:
 	virtual void	ItemPostFrame( void );
 	virtual void	FireBullets( const FireBulletsInfo_t &info );
 	virtual bool	Deploy( void );
-	bool Holster(CBaseCombatWeapon *pSwitchingTo = NULL);
 
 	virtual const Vector &GetBulletSpread( void );
 
@@ -53,7 +52,7 @@ protected:
 
 	int	m_iTracerFreqWeapon = 2;
 
-	bool m_bMuzzleSmoke;
+	int m_nMuzzleSmokeShots;
 
 	int	m_nShotsFired;	// Number of consecutive shots fired
 

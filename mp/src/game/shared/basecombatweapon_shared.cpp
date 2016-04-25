@@ -1479,6 +1479,12 @@ bool CBaseCombatWeapon::Holster( CBaseCombatWeapon *pSwitchingTo )
 	// kill any think functions
 	SetThink(NULL);
 
+#ifdef CLIENT_DLL
+	// kill particles
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+	StopParticleEffects(pPlayer->GetViewModel());
+#endif
+
 	// Send holster animation
 	SendWeaponAnim( ACT_VM_HOLSTER );
 

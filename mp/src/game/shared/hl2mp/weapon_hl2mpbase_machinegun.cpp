@@ -34,7 +34,7 @@ BEGIN_DATADESC( CHL2MPMachineGun )
 	DEFINE_FIELD( m_nShotsFired,	FIELD_INTEGER ),
 	DEFINE_FIELD( m_flNextSoundTime, FIELD_TIME ),
 	DEFINE_FIELD( m_iTracerFreqWeapon, FIELD_INTEGER),
-	DEFINE_FIELD( m_bMuzzleSmoke, FIELD_BOOLEAN),
+	DEFINE_FIELD( m_nMuzzleSmokeShots, FIELD_INTEGER),
 
 END_DATADESC()
 
@@ -110,9 +110,8 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 	AddViewKick();
 
 #ifdef CLIENT_DLL
-	if ((m_nShotsFired >= 15) && m_bMuzzleSmoke)
+	if ((m_nShotsFired >= m_nMuzzleSmokeShots) && (m_nMuzzleSmokeShots > 0))
 	{
-		//We shot >=15, clean up and start the muzzle smoking effect (like l4d)
 		DispatchParticleEffect("smoke_trail", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
 	}
 #endif
@@ -247,17 +246,4 @@ void CHL2MPMachineGun::ItemPostFrame( void )
 	}
 
 	BaseClass::ItemPostFrame();
-}
-
-// ************* REMOVE SMOKE WHEN HOLSTERING
-bool CHL2MPMachineGun::Holster(CBaseCombatWeapon *pSwitchingTo /* = NULL */)
-{
-#ifdef CLIENT_DLL
-	if (m_bMuzzleSmoke) // [Striker] Kill all particle effects to prevent smoke transferring between guns.
-	{
-		CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
-		StopParticleEffects(pPlayer->GetViewModel());
-	}
-#endif
-	return BaseClass::Holster(pSwitchingTo);
 }

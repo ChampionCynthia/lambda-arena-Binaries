@@ -1,0 +1,8 @@
+VertexLitGeneric
+{
+	"$baseTexture" "models\weapons\shells\12g"
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models\weapons\shells\12g_ref"
+	"$envmaptint" "[ .35 .35 .35]"
+	"$model" 1
+}

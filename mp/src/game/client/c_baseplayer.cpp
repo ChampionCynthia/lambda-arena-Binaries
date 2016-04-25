@@ -248,6 +248,8 @@ END_RECV_TABLE()
 		RecvPropInt			( RECVINFO( m_nWaterLevel ) ),
 		RecvPropFloat		( RECVINFO( m_flLaggedMovementValue )),
 
+		RecvPropInt(RECVINFO(m_bAirDash)), // [Striker] Air Dash
+		RecvPropInt(RECVINFO(m_bDismountLadder)),
 	END_RECV_TABLE()
 
 	
@@ -397,6 +399,8 @@ BEGIN_PREDICTION_DATA( C_BasePlayer )
 
 	DEFINE_FIELD( m_surfaceFriction, FIELD_FLOAT ),
 
+	DEFINE_PRED_FIELD(m_bAirDash, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE), // [Striker] Air Dash
+	DEFINE_PRED_FIELD(m_bDismountLadder, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 END_PREDICTION_DATA()
 
 LINK_ENTITY_TO_CLASS( player, C_BasePlayer );

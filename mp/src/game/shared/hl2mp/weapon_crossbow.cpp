@@ -69,7 +69,7 @@ protected:
 	bool	CreateSprites( void );
 
 	CHandle<CSprite>		m_pGlowSprite;
-	//CHandle<CSpriteTrail>	m_pGlowTrail;
+	CHandle<CSpriteTrail>	m_pGlowTrail;
 	
 	int		m_iDamage;
 
@@ -85,7 +85,7 @@ BEGIN_DATADESC( CCrossbowBolt )
 
 	// These are recreated on reload, they don't need storage
 	DEFINE_FIELD( m_pGlowSprite, FIELD_EHANDLE ),
-	//DEFINE_FIELD( m_pGlowTrail, FIELD_EHANDLE ),
+	DEFINE_FIELD( m_pGlowTrail, FIELD_EHANDLE ),
 
 END_DATADESC()
 
@@ -114,6 +114,11 @@ CCrossbowBolt::~CCrossbowBolt( void )
 	if ( m_pGlowSprite )
 	{
 		UTIL_Remove( m_pGlowSprite );
+	}
+
+	if (m_pGlowTrail)
+	{
+		UTIL_Remove(m_pGlowTrail);
 	}
 }
 
@@ -151,6 +156,18 @@ bool CCrossbowBolt::CreateSprites( void )
 		m_pGlowSprite->SetTransparency( kRenderGlow, 255, 255, 255, 128, kRenderFxNoDissipation );
 		m_pGlowSprite->SetScale( 0.2f );
 		m_pGlowSprite->TurnOff();
+	}
+
+	m_pGlowTrail = CSpriteTrail::SpriteTrailCreate("sprites/laser.vmt", GetLocalOrigin(), true);
+
+	if (m_pGlowTrail != NULL)
+	{
+		m_pGlowTrail->FollowEntity(this, false);
+		m_pGlowTrail->SetTransparency(kRenderTransAdd, 255, 96, 0, 255, kRenderFxNoDissipation);
+		m_pGlowTrail->SetStartWidth(3.0);
+		m_pGlowTrail->SetEndWidth(1.0);
+		m_pGlowTrail->SetLifeTime(0.5);
+		m_pGlowTrail->SetMinFadeLength(0.5);
 	}
 
 	return true;
@@ -265,7 +282,7 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 		
 		SetTouch( NULL );
 		SetThink( NULL );
-
+		
 		UTIL_Remove( this );
 	}
 	else
@@ -484,7 +501,7 @@ acttable_t	CWeaponCrossbow::m_acttable[] =
 	{ ACT_HL2MP_IDLE_CROUCH,			ACT_HL2MP_IDLE_CROUCH_CROSSBOW,				false },
 	{ ACT_HL2MP_WALK_CROUCH,			ACT_HL2MP_WALK_CROUCH_CROSSBOW,				false },
 	{ ACT_HL2MP_GESTURE_RANGE_ATTACK,	ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW,	false },
-	{ ACT_HL2MP_GESTURE_RELOAD,			ACT_HL2MP_GESTURE_RELOAD_CROSSBOW,			false },
+	{ ACT_HL2MP_GESTURE_RELOAD,			ACT_HL2MP_GESTURE_RELOAD_SMG1,				false },
 	{ ACT_HL2MP_JUMP,					ACT_HL2MP_JUMP_CROSSBOW,					false },
 };
 

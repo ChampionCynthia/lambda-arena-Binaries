@@ -1077,6 +1077,9 @@ private:
 
 // Replicated to all clients
 	CNetworkVar( float, m_flMaxspeed );
+
+	CNetworkVar(bool, m_bAirDash); // [Striker] Air Dash
+	CNetworkVar(bool, m_bDismountLadder);
 	
 // Not transmitted
 	float					m_flWaterJumpTime;  // used to be called teleport_time

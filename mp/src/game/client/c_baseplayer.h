@@ -500,6 +500,9 @@ private:
 	
 	float			m_flMaxspeed;
 
+	bool			m_bAirDash; // [Striker] Air Dash
+	bool			m_bDismountLadder;
+
 	int				m_iBonusProgress;
 	int				m_iBonusChallenge;
 

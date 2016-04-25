@@ -95,6 +95,8 @@ ConVar	spec_freeze_traveltime( "spec_freeze_traveltime", "0.4", FCVAR_CHEAT | FC
 
 ConVar sv_bonus_challenge( "sv_bonus_challenge", "0", FCVAR_REPLICATED, "Set to values other than 0 to select a bonus map challenge type." );
 
+ConVar la_disable_explosion_ring("la_disable_explosion_ring", "1", FCVAR_REPLICATED, "Disables the ear-ringing effect when being hit by explosions");
+
 static ConVar sv_maxusrcmdprocessticks( "sv_maxusrcmdprocessticks", "24", FCVAR_NOTIFY, "Maximum number of client-issued usrcmd ticks that can be replayed in packet loss conditions, 0 to allow no restrictions" );
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -452,7 +454,8 @@ BEGIN_DATADESC( CBasePlayer )
 
 	DEFINE_FIELD( m_nNumCrateHudHints, FIELD_INTEGER ),
 
-
+	DEFINE_FIELD( m_bAirDash, FIELD_BOOLEAN), // [Striker] Air Dash
+	DEFINE_FIELD( m_bDismountLadder, FIELD_BOOLEAN),
 
 	// DEFINE_FIELD( m_nBodyPitchPoseParam, FIELD_INTEGER ),
 	// DEFINE_ARRAY( m_StepSoundCache, StepSoundCache_t,  2  ),
@@ -639,6 +642,9 @@ CBasePlayer::CBasePlayer( )
 	m_flMovementTimeForUserCmdProcessingRemaining = 0.0f;
 
 	m_flLastObjectiveTime = -1.f;
+
+	m_bAirDash = false; // [Striker] Air Dash
+	m_bDismountLadder = false;
 }
 
 CBasePlayer::~CBasePlayer( )
@@ -1435,7 +1441,7 @@ void CBasePlayer::OnDamagedByExplosion( const CTakeDamageInfo &info )
 	bool ear_ringing = distanceFromPlayer < MIN_EAR_RINGING_DISTANCE ? true : false;
 	bool shock = lastDamage >= MIN_SHOCK_AND_CONFUSION_DAMAGE;
 
-	if ( !shock && !ear_ringing )
+	if ( (!shock && !ear_ringing) || la_disable_explosion_ring.GetBool() )
 		return;
 
 	int effect = shock ? 
@@ -7978,6 +7984,9 @@ void SendProxy_CropFlagsToPlayerFlagBitsLength( const SendProp *pProp, const voi
 		SendPropInt			( SENDINFO( m_nWaterLevel ), 2, SPROP_UNSIGNED ),
 		SendPropFloat		( SENDINFO( m_flLaggedMovementValue ), 0, SPROP_NOSCALE ),
 
+		// [Striker] Air Dash
+		SendPropInt(SENDINFO(m_bAirDash), 1, SPROP_UNSIGNED | SPROP_CHANGES_OFTEN),
+		SendPropInt(SENDINFO(m_bDismountLadder), 1, SPROP_UNSIGNED | SPROP_CHANGES_OFTEN),
 	END_SEND_TABLE()
 
 

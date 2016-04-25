@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/Weapons/V_IRifle/V_IRifle_core"
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models/Weapons/V_IRifle/V_IRifle_core_mask"
+}

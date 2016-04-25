@@ -1011,6 +1011,7 @@ bool CHL2GameMovement::LadderMove( void )
 	
 	if ( mv->m_nButtons & IN_JUMP )
 	{
+		player->m_bDismountLadder = true; // [Striker] Signify we're dismounting from the ladder (Doublejump fix).
 		player->SetMoveType( MOVETYPE_WALK );
 		// Remove from ladder
 		SetLadder( NULL );

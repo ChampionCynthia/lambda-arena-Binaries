@@ -265,6 +265,11 @@ void CWeaponShotgun::Pump( void )
 	
 	WeaponSound( SPECIAL1 );
 
+#ifdef CLIENT_DLL
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+	DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+#endif
+
 	// Finish reload animation
 	SendWeaponAnim( ACT_SHOTGUN_PUMP );
 

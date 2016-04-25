@@ -106,7 +106,7 @@ CWeaponSMG1::CWeaponSMG1( )
 {
 	m_fMinRange1		= 0;// No minimum range. 
 	m_fMaxRange1		= 1400;
-	m_bMuzzleSmoke		= true;
+	m_nMuzzleSmokeShots	= 12;
 }
 
 //-----------------------------------------------------------------------------

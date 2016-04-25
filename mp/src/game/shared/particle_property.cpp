@@ -617,7 +617,16 @@ void CParticleProperty::UpdateControlPoint( ParticleEffectList_t *pEffect, int i
 						// try C_BaseAnimating if attach point is not on the weapon
 						if ( !pAnimating->C_BaseAnimating::GetAttachment( pPoint->iAttachmentPoint, attachmentToWorld ) )
 						{
-							Warning( "Cannot update control point %d for effect '%s'.\n", pPoint->iAttachmentPoint, pEffect->pParticleEffect->GetEffectName() );
+							if (developer.GetBool()) // [Striker] Set this to developer mode only, this warning is useless and annoying to a normal player.
+							{
+								Warning("Cannot update control point %d for effect '%s'.\n", pPoint->iAttachmentPoint, pEffect->pParticleEffect->GetEffectName());
+							}
+							
+							// [Striker] Detach from entity, set type to world origin.
+							// Prevents this function from bitching too much (console spam), and looks better. (IMHO)
+							pEffect->pParticleEffect->SetControlPointEntity(pPoint->iAttachmentPoint, NULL);
+							pPoint->iAttachType = PATTACH_WORLDORIGIN;
+
 							// Remove the effect cause this warning means something is orphaned
 							StopParticlesNamed( pEffect->pParticleEffect->GetEffectName() );
 							return;
