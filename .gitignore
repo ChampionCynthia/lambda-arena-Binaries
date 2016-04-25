@@ -55,3 +55,5 @@ Release_mod_hl2mp
 /mp/game/lambda/iiopnSPAS.vpk
 *.cache
 /vide
+/mp/game/lambda/cfg/pet.txt
+*.sdf
