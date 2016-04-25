@@ -621,16 +621,7 @@ protected:
 	CUtlVector<CHandle<C_EconWearable > >	m_hMyWearables;
 #endif
 
-//private:
-
-public:
-
-	const char *GetLastKnownPlaceName( void ) const	{ return m_szLastPlaceName; }	// return the last nav place name the player occupied
-
-	float GetLaggedMovementValue( void ){ return m_flLaggedMovementValue;	}
-	bool  ShouldGoSouth( Vector vNPCForward, Vector vNPCRight ); //Such a bad name.
-
-	void SetOldPlayerZ( float flOld ) { m_flOldPlayerZ = flOld;	}
+private:
 
 	struct StepSoundCache_t
 	{
@@ -640,6 +631,15 @@ public:
 	};
 	// One for left and one for right side of step
 	StepSoundCache_t		m_StepSoundCache[2];
+
+public:
+
+	const char *GetLastKnownPlaceName( void ) const	{ return m_szLastPlaceName; }	// return the last nav place name the player occupied
+
+	float GetLaggedMovementValue( void ){ return m_flLaggedMovementValue;	}
+	bool  ShouldGoSouth( Vector vNPCForward, Vector vNPCRight ); //Such a bad name.
+
+	void SetOldPlayerZ( float flOld ) { m_flOldPlayerZ = flOld;	}
 };
 
 EXTERN_RECV_TABLE(DT_BasePlayer);
