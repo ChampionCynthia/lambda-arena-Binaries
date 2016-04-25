@@ -15,6 +15,10 @@
 #include "coordsize.h"
 #include "rumble_shared.h"
 
+#ifdef CLIENT_DLL
+#define CRecipientFilter C_RecipientFilter
+#endif
+
 #if defined(HL2_DLL) || defined(HL2_CLIENT_DLL)
 	#include "hl_movedata.h"
 #endif
@@ -2394,7 +2398,6 @@ bool CGameMovement::CheckJumpButton( void )
 		return false;
 	}
 
-	bool bAirDash = false;
 	bool bOnGround = (player->GetGroundEntity() != NULL);
 
 	// Don't allow jumping when the player is in a stasis field.
@@ -2418,7 +2421,8 @@ bool CGameMovement::CheckJumpButton( void )
 	{
 		if (!player->m_bAirDash && !(mv->m_nOldButtons & IN_JUMP) && (!player->m_bDismountLadder) && (la_doublejump.GetInt() >= 1)) // Not doublejumping?
 		{
-			bAirDash = true;
+			AirDash();
+			return true;
 		}
 		else
 		{
@@ -2426,13 +2430,6 @@ bool CGameMovement::CheckJumpButton( void )
 			mv->m_nOldButtons |= IN_JUMP;
 			return false;		// in air, so no effect
 		}
-	}
-
-	// Check for an air dash.
-	if (bAirDash)
-	{
-		AirDash();
-		return true;
 	}
 
 	// In the air now.
@@ -2582,14 +2579,40 @@ void CGameMovement::AirDash(void)
 		mv->m_vecVelocity.z = flDashZ;
 	}
 
-#ifdef CLIENT_DLL
-	MoveHelper()->StartSound( mv->GetAbsOrigin(), "Player.DoubleJump" ); // Not sure if this should be client only or not
-#endif
+	PlayDoubleJumpSound();
 
 	player->m_bAirDash = true;
-	MoveHelper()->PlayerSetAnimation(PLAYER_JUMP);
+	//MoveHelper()->PlayerSetAnimation(PLAYER_JUMP);
 }
 
+void CGameMovement::PlayDoubleJumpSound()
+{
+	Vector vecOrigin = mv->GetAbsOrigin();
+
+#ifndef CLIENT_DLL
+	CSoundParameters params;
+	CBaseEntity::GetParametersForSound("Player.DoubleJump", params, NULL);
+
+	CRecipientFilter filter;
+	filter.AddAllPlayers();
+
+	if (gpGlobals->maxClients > 1)
+		filter.RemoveRecipient(player);
+
+	EmitSound_t ep;
+	ep.m_nChannel = params.channel;
+	ep.m_pSoundName = params.soundname;
+	ep.m_flVolume = params.volume;
+	ep.m_SoundLevel = params.soundlevel;
+	ep.m_nFlags = 0;
+	ep.m_nPitch = params.pitch;
+	ep.m_pOrigin = &vecOrigin;
+
+	CBaseEntity::EmitSound(filter, player->entindex(), ep);
+#else
+	MoveHelper()->StartSound( vecOrigin, "Player.DoubleJump" ); // [Striker] Kind of a kludge to keep the sound from playing 4 fucking times every jump.
+#endif
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 

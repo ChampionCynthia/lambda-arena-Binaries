@@ -280,6 +280,7 @@ protected:
 
 private:
 	void		AirDash(void); // [Striker] Doublejump from TF2 Classic. Hope you guys don't mind me using this!
+	void		PlayDoubleJumpSound();
 
 	// special function for teleport-with-duck for episodic
 #ifdef HL2_EPISODIC
