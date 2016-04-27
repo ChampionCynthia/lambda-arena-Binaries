@@ -1415,17 +1415,21 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 
 	if (pAttacker && pAttacker->IsPlayer())
 	{
-		CBasePlayer *playerAttacker = pAttacker->GetSimulatingPlayer();
 
-		if (playerAttacker->GetClientIndex() != this->GetClientIndex())
+		if (pAttacker->entindex()-1 != this->GetClientIndex())
 		{
 			Vector vecOrigin = pAttacker->GetAbsOrigin();
 
+			if (pAttacker->m_hPlayerSimulationOwner == NULL)
+			{
+				Warning("Simulating Player is NULL!");
+			}
+			/*
 			CSoundParameters params;
 			CBaseEntity::GetParametersForSound("Player.HitSoundBody", params, NULL);
 
 			CRecipientFilter filter;
-			filter.AddRecipient(playerAttacker);
+			filter.AddRecipient(pAttacker->)
 
 			EmitSound_t ep;
 			ep.m_nChannel = params.channel;
@@ -1437,6 +1441,7 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 			ep.m_pOrigin = &vecOrigin;
 
 			CBaseEntity::EmitSound(filter, pAttacker->entindex(), ep);
+			*/
 		}
 	}
 
