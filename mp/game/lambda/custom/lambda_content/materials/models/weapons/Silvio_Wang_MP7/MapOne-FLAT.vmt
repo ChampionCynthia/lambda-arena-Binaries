@@ -4,7 +4,6 @@
 	"$Bumpmap" "models\weapons\Silvio_Wang_MP7\MapOne-FLAT-Normal"
 	"$phong" "1"
 	"$phongexponent" 20
-	"$phongexponenttexture" "noTexture"
 	"$phongboost" "1"
-	"$phongfresnelranges" "[0.05 0.5 1] 
+	"$phongfresnelranges" "[0.05 0.5 1]"
 }

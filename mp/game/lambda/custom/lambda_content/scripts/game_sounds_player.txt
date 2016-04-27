@@ -342,3 +342,21 @@
 
 	"wave"	")player/doublejump.wav"
 }
+
+"Player.HitSoundBody"
+{
+	"channel"	"CHAN_AUTO"
+	"volume"	"1.0"
+	"soundlevel"  "SNDLVL_NORM"
+
+	"wave"	"common/HitBody.wav"
+}
+
+"Player.HitSoundHead"
+{
+	"channel"	"CHAN_AUTO"
+	"volume"	"1.0"
+	"soundlevel"  "SNDLVL_NORM"
+
+	"wave"	"common/HitHead.wav"
+}

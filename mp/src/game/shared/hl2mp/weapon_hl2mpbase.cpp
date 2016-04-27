@@ -125,6 +125,16 @@ void CWeaponHL2MPBase::WeaponSound( WeaponSound_t sound_type, float soundtime /*
 #endif
 }
 
+// [Striker] Quick fix for weapon sounds called from the server not playing.
+void CWeaponHL2MPBase::WeaponSound_Server(WeaponSound_t sound_type, float soundtime /* = 0.0f */)
+{
+	const char *shootsound = GetWpnData().aShootSounds[sound_type];
+	if (!shootsound || !shootsound[0])
+		return;
+
+	CBroadcastRecipientFilter filter;
+	CBaseEntity::EmitSound(filter, GetPlayerOwner()->entindex(), shootsound, &GetPlayerOwner()->GetAbsOrigin());
+}
 
 CBasePlayer* CWeaponHL2MPBase::GetPlayerOwner() const
 {

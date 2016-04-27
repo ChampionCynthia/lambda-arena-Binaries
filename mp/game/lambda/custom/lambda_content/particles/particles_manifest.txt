@@ -12,6 +12,6 @@ particles_manifest
 	"file"		"particles/impact_fx.pcf"
 	"file"		"particles/charli_particle_01.pcf"
 	"file"		"!particles/lee_particle.pcf"
-	//"file"		"!particles/muzzle_smoke.pcf"
+	"file"		"!particles/muzzle_smoke.pcf"
 	"file"		"!particles/devtest.pcf"
 }

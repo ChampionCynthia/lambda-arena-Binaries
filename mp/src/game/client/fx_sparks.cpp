@@ -34,6 +34,7 @@ CLIENTEFFECT_MATERIAL( "effects/yellowflare" )
 CLIENTEFFECT_MATERIAL( "effects/combinemuzzle1_nocull" )
 CLIENTEFFECT_MATERIAL( "effects/combinemuzzle2_nocull" )
 CLIENTEFFECT_MATERIAL( "effects/yellowflare_noz" )
+CLIENTEFFECT_MATERIAL( "effects/bulletspark" )
 CLIENTEFFECT_REGISTER_END()
 
 PMaterialHandle g_Material_Spark = NULL;
@@ -697,7 +698,7 @@ void FX_MetalSpark( const Vector &position, const Vector &direction, const Vecto
 
 	FXQuadData_t data;
 
-	data.SetMaterial( "effects/yellowflare" );
+	data.SetMaterial( "effects/bulletspark" );
 	data.SetColor( 1.0f, 1.0f, 1.0f );
 	data.SetOrigin( offset );
 	data.SetNormal( surfaceNormal );

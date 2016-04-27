@@ -1,6 +1,16 @@
 Here's a list of credits for the assets I've used thus far. If I missed something, by all means contact me at mossj32@gmail.com, or shadowmavrks@gmail.com.
+If you're the owner of an asset used here, and I fucked up on the usage terms(ie. lack of permission) email me, we can negotiate whether you want me to remove it,
+or make satisfactory changes to allow it's use to continue. 
 
+Model credits:
 Stoke, fxdarkloki, IIOPN - Shotgun Model ( http://hl2dm.gamebanana.com/skins/129562 )
 Silvio Dante, Wang Chung, Fallshirmjager, Belnoroth, Cliffton_Vlodhammer, EVILWEVIL - SMG Model ( http://hl2.gamebanana.com/skins/107587 )
 Thanez, Racer445, fxDarkloki, Dr. Zoidburg - Pistol Model ( http://hl2.gamebanana.com/skins/100959 )
-Onemanshow - Crossbow Edit ( http://bsnooch.com/forums/index.php?topic=67.0 )
+
+Code credits:
+StrikerMan780 - Crossbow sprite/sound prediction fix, doublejump code modifications, HL2DM bug fixes, slight tweaks to Tau Cannon.
+Sub-Zero1324 - Gauss Gun/Tau Cannon code.
+TF2 Classic Team - Doublejump code.
+
+Sound credits:
+StrikerMan780 - Pistol (firing), Shotgun, 

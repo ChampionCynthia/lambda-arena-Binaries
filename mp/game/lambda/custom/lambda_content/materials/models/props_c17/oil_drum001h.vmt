@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "Models/props_c17/Oil_Drum001h"
+	"$bumpmap" "Models/props_c17/Oil_Drum001h_normal"
+	"$envmaptint" "[ .10 .10 .10 ]"
+	"$surfaceprop" "metal"
+	"$envmap" "engine/lightsprite"
+	"$normalmapalphaenvmapmask" 1
+	"$envmapcontrast" 1
+	"$envmapsaturation" .15
+
+	"$phong" "1"
+	"$phongexponent" "45"
+	"$phongboost"	"1"
+	"$phongfresnelranges"	"[1 8 6]"
+}

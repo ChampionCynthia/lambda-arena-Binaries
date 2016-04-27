@@ -9,6 +9,7 @@
 #include "basegrenade_shared.h"
 #include "shake.h"
 #include "engine/IEngineSound.h"
+#include "particle_parse.h"
 
 #if !defined( CLIENT_DLL )
 
@@ -135,34 +136,51 @@ void CBaseGrenade::Explode( trace_t *pTrace, int bitsDamageType )
 	CDisablePredictionFiltering disabler;
 #endif
 
-	if ( pTrace->fraction != 1.0 )
+	if (contents & MASK_WATER)
 	{
-		Vector vecNormal = pTrace->plane.normal;
-		surfacedata_t *pdata = physprops->GetSurfaceData( pTrace->surface.surfaceProps );	
-		CPASFilter filter( vecAbsOrigin );
+		if (pTrace->fraction != 1.0)
+		{
+			Vector vecNormal = pTrace->plane.normal;
+			surfacedata_t *pdata = physprops->GetSurfaceData(pTrace->surface.surfaceProps);
+			CPASFilter filter(vecAbsOrigin);
 
-		te->Explosion( filter, -1.0, // don't apply cl_interp delay
-			&vecAbsOrigin,
-			!( contents & MASK_WATER ) ? g_sModelIndexFireball : g_sModelIndexWExplosion,
-			m_DmgRadius * .03, 
-			25,
-			TE_EXPLFLAG_NONE,
-			m_DmgRadius,
-			m_flDamage,
-			&vecNormal,
-			(char) pdata->game.material );
+			te->Explosion(filter, -1.0, // don't apply cl_interp delay
+				&vecAbsOrigin,
+				!(contents & MASK_WATER) ? g_sModelIndexFireball : g_sModelIndexWExplosion,
+				m_DmgRadius * .03,
+				25,
+				TE_EXPLFLAG_NONE,
+				m_DmgRadius,
+				m_flDamage,
+				&vecNormal,
+				(char)pdata->game.material);
+		}
+		else
+		{
+			CPASFilter filter(vecAbsOrigin);
+			te->Explosion(filter, -1.0, // don't apply cl_interp delay
+				&vecAbsOrigin,
+				!(contents & MASK_WATER) ? g_sModelIndexFireball : g_sModelIndexWExplosion,
+				m_DmgRadius * .03,
+				25,
+				TE_EXPLFLAG_NONE,
+				m_DmgRadius,
+				m_flDamage);
+		}
 	}
 	else
 	{
-		CPASFilter filter( vecAbsOrigin );
-		te->Explosion( filter, -1.0, // don't apply cl_interp delay
-			&vecAbsOrigin, 
-			!( contents & MASK_WATER ) ? g_sModelIndexFireball : g_sModelIndexWExplosion,
-			m_DmgRadius * .03, 
+		CPASFilter filter(vecAbsOrigin);
+		te->Explosion(filter, -1.0, // don't apply cl_interp delay
+			&vecAbsOrigin,
+			!(contents & MASK_WATER) ? g_sModelIndexFireball : g_sModelIndexWExplosion,
+			m_DmgRadius * .03,
 			25,
-			TE_EXPLFLAG_NONE,
+			TE_EXPLFLAG_NOFIREBALL | TE_EXPLFLAG_NOFIREBALLSMOKE | TE_EXPLFLAG_NOPARTICLES,
 			m_DmgRadius,
-			m_flDamage );
+			m_flDamage);
+
+		DispatchParticleEffect("grenade_explode", GetAbsOrigin(), GetAbsAngles(), GetOwnerEntity());
 	}
 
 #if !defined( CLIENT_DLL )

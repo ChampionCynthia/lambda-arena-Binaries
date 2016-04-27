@@ -16,6 +16,7 @@
 #include "rumble_shared.h"
 
 #ifdef CLIENT_DLL
+#include "prediction.h"
 #define CRecipientFilter C_RecipientFilter
 #endif
 
@@ -2587,17 +2588,23 @@ void CGameMovement::AirDash(void)
 
 void CGameMovement::PlayDoubleJumpSound()
 {
+#ifdef CLIENT_DLL
+	if (!prediction->IsFirstTimePredicted())
+		return;
+#endif
+
 	Vector vecOrigin = mv->GetAbsOrigin();
 
-#ifndef CLIENT_DLL
 	CSoundParameters params;
 	CBaseEntity::GetParametersForSound("Player.DoubleJump", params, NULL);
 
 	CRecipientFilter filter;
 	filter.AddAllPlayers();
 
+#ifndef CLIENT_DLL
 	if (gpGlobals->maxClients > 1)
 		filter.RemoveRecipient(player);
+#endif
 
 	EmitSound_t ep;
 	ep.m_nChannel = params.channel;
@@ -2609,9 +2616,6 @@ void CGameMovement::PlayDoubleJumpSound()
 	ep.m_pOrigin = &vecOrigin;
 
 	CBaseEntity::EmitSound(filter, player->entindex(), ep);
-#else
-	MoveHelper()->StartSound( vecOrigin, "Player.DoubleJump" ); // [Striker] Kind of a kludge to keep the sound from playing 4 fucking times every jump.
-#endif
 }
 
 //-----------------------------------------------------------------------------

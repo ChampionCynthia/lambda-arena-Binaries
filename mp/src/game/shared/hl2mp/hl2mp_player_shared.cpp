@@ -123,13 +123,12 @@ void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, f
 	}
 
 	CRecipientFilter filter;
-	filter.AddRecipientsByPAS( vecOrigin );
+	filter.AddAllPlayers();
 
 #ifndef CLIENT_DLL
-	// im MP, server removed all players in origins PVS, these players 
-	// generate the footsteps clientside
-	if ( gpGlobals->maxClients > 1 )
-		filter.RemoveRecipientsByPVS( vecOrigin );
+	// Remove the origin player from the list.
+	if (gpGlobals->maxClients > 1)
+		filter.RemoveRecipient(this);
 #endif
 
 	EmitSound_t ep;

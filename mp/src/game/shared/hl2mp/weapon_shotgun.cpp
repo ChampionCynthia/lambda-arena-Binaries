@@ -356,7 +356,7 @@ void CWeaponShotgun::SecondaryAttack( void )
 		return;
 	}
 
-	pPlayer->m_nButtons &= ~IN_ATTACK2;
+	//pPlayer->m_nButtons &= ~IN_ATTACK2; // [Striker] Why the fuck is this even here? It's breaking prediction.
 	// MUST call sound before removing a round from the clip of a CMachineGun
 	WeaponSound(WPN_DOUBLE);
 

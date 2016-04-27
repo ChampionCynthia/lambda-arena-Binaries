@@ -1,0 +1,21 @@
+"VertexLitGeneric"
+{
+"$basetexture"			 "Models/props_c17/Oil_Drum001d"
+"$surfaceprop"			 "metal"
+"$bumpmap"    			 "Models/props_c17/Oil_Drum001d_NRM"
+
+	"$detail" "detail\noise_detail_01"
+	"$detailscale" "5.48"
+	"$detailblendfactor" .8
+	"$detailblendmode" 0
+
+"$normalmapalphaenvmapmask"	 "1"
+"$phong" 			 "1"
+"$phongexponent" 			"40"
+"$phongboost"			 "0.02"
+"$phongfresnelranges"		 "[6 5 19]"
+"$phongalbedotint"			 "1"
+"$rimlight"			 "1"
+"$rimlightexponent" 			"12" 
+"$rimlightboost" 			".2"
+}

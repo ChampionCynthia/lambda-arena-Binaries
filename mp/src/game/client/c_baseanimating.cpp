@@ -3537,8 +3537,8 @@ void C_BaseAnimating::DoAnimationEvents( CStudioHdr *pStudioHdr )
 			{
 				if ( !( pevent[i].type & AE_TYPE_CLIENT ) )
 					 continue;
-			}
-			else if ( pevent[i].event < 5000 ) //Adrian - Support the old event system
+			} // [Striker] Let weapon animation events through (3001 - 3999)
+			else if ((pevent[i].event < 5000) && !((pevent[i].event < 4000) && (pevent[i].event > 3000))) //Adrian - Support the old event system
 				continue;
 		
 			if ( pevent[i].cycle <= m_flPrevEventCycle )
@@ -3569,8 +3569,8 @@ void C_BaseAnimating::DoAnimationEvents( CStudioHdr *pStudioHdr )
 		{
 			if ( !( pevent[i].type & AE_TYPE_CLIENT ) )
 				 continue;
-		}
-		else if ( pevent[i].event < 5000 ) //Adrian - Support the old event system
+		} // [Striker] Let weapon animation events through (3001 - 3999)
+		else if ( (pevent[i].event < 5000) && !( (pevent[i].event < 4000) && (pevent[i].event > 3000) ) ) //Adrian - Support the old event system
 			continue;
 
 		if ( (pevent[i].cycle > m_flPrevEventCycle && pevent[i].cycle <= flEventCycle) )

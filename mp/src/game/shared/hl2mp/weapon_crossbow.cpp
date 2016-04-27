@@ -26,8 +26,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-//#define BOLT_MODEL			"models/crossbow_bolt.mdl"
-#define BOLT_MODEL	"models/weapons/w_missile_closed.mdl"
+#define BOLT_MODEL			"models/crossbow_bolt.mdl"
 
 #define BOLT_AIR_VELOCITY	3500
 #define BOLT_WATER_VELOCITY	1500
@@ -180,7 +179,7 @@ void CCrossbowBolt::Spawn( void )
 {
 	Precache( );
 
-	SetModel( "models/crossbow_bolt.mdl" );
+	SetModel( BOLT_MODEL );
 	SetMoveType( MOVETYPE_FLYGRAVITY, MOVECOLLIDE_FLY_CUSTOM );
 	UTIL_SetSize( this, -Vector(1,1,1), Vector(1,1,1) );
 	SetSolid( SOLID_BBOX );
@@ -204,9 +203,6 @@ void CCrossbowBolt::Spawn( void )
 void CCrossbowBolt::Precache( void )
 {
 	PrecacheModel( BOLT_MODEL );
-
-	// This is used by C_TEStickyBolt, despte being different from above!!!
-	PrecacheModel( "models/crossbow_bolt.mdl" );
 
 	PrecacheModel( "sprites/light_glow02_noz.vmt" );
 }
@@ -449,6 +445,10 @@ private:
 	void	CreateChargerEffects( void );
 	void	SetChargerState( ChargerState_t state );
 	void	DoLoadEffect( void );
+
+#ifdef CLIENT_DLL
+	virtual bool	OnFireEvent(C_BaseViewModel *pViewModel, const Vector& origin, const QAngle& angles, int event, const char *options);
+#endif
 
 #ifndef CLIENT_DLL
 	DECLARE_ACTTABLE();
@@ -971,3 +971,28 @@ bool CWeaponCrossbow::SendWeaponAnim( int iActivity )
 	//For now, just set the ideal activity and be done with it
 	return BaseClass::SendWeaponAnim( newActivity );
 }
+
+#ifdef CLIENT_DLL
+bool CWeaponCrossbow::OnFireEvent(C_BaseViewModel *pViewModel, const Vector& origin, const QAngle& angles, int event, const char *options)
+{
+	switch (event)
+	{
+	case EVENT_WEAPON_THROW:
+		SetChargerState(CHARGER_STATE_START_LOAD);
+		break;
+
+	case EVENT_WEAPON_THROW2:
+		SetChargerState(CHARGER_STATE_START_CHARGE);
+		break;
+
+	case EVENT_WEAPON_THROW3:
+		SetChargerState(CHARGER_STATE_READY);
+		break;
+
+	default:
+		break;
+	}
+
+	return BaseClass::OnFireEvent(pViewModel, origin, angles, event, options);
+}
+#endif

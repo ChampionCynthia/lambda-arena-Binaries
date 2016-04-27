@@ -1225,6 +1225,15 @@
 	"wave"			"weapons/357/357_spin1.wav"
 }
 
+"Weapon_357.Deploy"
+{
+	"channel"		"CHAN_ITEM"
+	"volume"		"0.7"
+	"soundlevel"		"SNDLVL_NORM"
+
+	"wave"			"weapons/357/357_deploy.wav"
+}
+
 // weapon_crossbow
 "Weapon_Crossbow.Single"
 {

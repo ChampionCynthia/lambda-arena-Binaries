@@ -1410,6 +1410,36 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		OnDamagedByExplosion( info );
 	}
 
+	// [Striker] Hit sounds
+	CBaseEntity *pAttacker = info.GetAttacker();
+
+	if (pAttacker && pAttacker->IsPlayer())
+	{
+		CBasePlayer *playerAttacker = pAttacker->GetSimulatingPlayer();
+
+		if (playerAttacker->GetClientIndex() != this->GetClientIndex())
+		{
+			Vector vecOrigin = pAttacker->GetAbsOrigin();
+
+			CSoundParameters params;
+			CBaseEntity::GetParametersForSound("Player.HitSoundBody", params, NULL);
+
+			CRecipientFilter filter;
+			filter.AddRecipient(playerAttacker);
+
+			EmitSound_t ep;
+			ep.m_nChannel = params.channel;
+			ep.m_pSoundName = params.soundname;
+			ep.m_flVolume = params.volume;
+			ep.m_SoundLevel = params.soundlevel;
+			ep.m_nFlags = 0;
+			ep.m_nPitch = params.pitch;
+			ep.m_pOrigin = &vecOrigin;
+
+			CBaseEntity::EmitSound(filter, pAttacker->entindex(), ep);
+		}
+	}
+
 	return fTookDamage;
 }
 

@@ -54,6 +54,7 @@ public:
 	CHL2MP_Player* GetHL2MPPlayerOwner() const;
 
 	void WeaponSound( WeaponSound_t sound_type, float soundtime = 0.0f );
+	void WeaponSound_Server(WeaponSound_t sound_type, float soundtime = 0.0f);
 	
 	CHL2MPSWeaponInfo const	&GetHL2MPWpnData() const;
 

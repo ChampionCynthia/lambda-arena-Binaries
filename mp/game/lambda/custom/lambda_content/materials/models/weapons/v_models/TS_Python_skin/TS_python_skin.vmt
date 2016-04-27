@@ -1,0 +1,24 @@
+"vertexlitgeneric"
+{
+	"$baseTexture" "models\weapons\v_models\TS_Python_skin\TS_python_skin"
+	"$bumpmap" "models\weapons\v_models\TS_Python_skin\TS_python_nurmalz"
+
+	"$nocull" "1"
+	
+	"$normalmapalphaenvmapmask" "1"
+	"$envmaptint" "[ 0.3 0.3 0.3 ]"
+	"$envmapconstrast" "1"
+
+	"$basealphaenvmapmask" "1"
+ 	"$phong" "1"
+	"$phongexponent" "20"
+	"$phongboost" "0.5"
+	"$phongfresnelranges" "[0.2 0.2 0.2]"
+	"$phongalbedotint" "1"
+	
+	"$rimlight" "1"
+	"$rimlightexponent" "15"
+	"$rimlightboost" "0.3"
+
+}
+
