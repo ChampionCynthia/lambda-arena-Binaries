@@ -47,6 +47,7 @@ config.cfg
 /mp/game/lambda/custom/lambda_content/sound/sound.cache
 Debug_mod_hl2mp
 Release_mod_hl2mp
+textwindow_temp.html
 *.vpc_crc
 *.sentinel
 *.filters
