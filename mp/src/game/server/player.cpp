@@ -1419,29 +1419,27 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		if (pAttacker->entindex()-1 != this->GetClientIndex())
 		{
 			Vector vecOrigin = pAttacker->GetAbsOrigin();
+			CBasePlayer *predPlayer = pAttacker->GetPredictionPlayer();
 
-			if (pAttacker->GetPredictionPlayer() == NULL)
+			if (predPlayer != NULL)
 			{
-				Warning("Prediction Player is NULL!\n");
+				CSoundParameters params;
+				CBaseEntity::GetParametersForSound("Player.HitSoundBody", params, NULL);
+
+				CRecipientFilter filter;
+				filter.AddRecipient(predPlayer);
+
+				EmitSound_t ep;
+				ep.m_nChannel = params.channel;
+				ep.m_pSoundName = params.soundname;
+				ep.m_flVolume = params.volume;
+				ep.m_SoundLevel = params.soundlevel;
+				ep.m_nFlags = 0;
+				ep.m_nPitch = params.pitch;
+				ep.m_pOrigin = &vecOrigin;
+
+				CBaseEntity::EmitSound(filter, pAttacker->entindex(), ep);
 			}
-			/*
-			CSoundParameters params;
-			CBaseEntity::GetParametersForSound("Player.HitSoundBody", params, NULL);
-
-			CRecipientFilter filter;
-			filter.AddRecipient(pAttacker->)
-
-			EmitSound_t ep;
-			ep.m_nChannel = params.channel;
-			ep.m_pSoundName = params.soundname;
-			ep.m_flVolume = params.volume;
-			ep.m_SoundLevel = params.soundlevel;
-			ep.m_nFlags = 0;
-			ep.m_nPitch = params.pitch;
-			ep.m_pOrigin = &vecOrigin;
-
-			CBaseEntity::EmitSound(filter, pAttacker->entindex(), ep);
-			*/
 		}
 	}
 
