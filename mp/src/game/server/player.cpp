@@ -1420,9 +1420,9 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		{
 			Vector vecOrigin = pAttacker->GetAbsOrigin();
 
-			if (pAttacker->m_hPlayerSimulationOwner == NULL)
+			if (pAttacker->GetPredictionPlayer() == NULL)
 			{
-				Warning("Simulating Player is NULL!");
+				Warning("Prediction Player is NULL!\n");
 			}
 			/*
 			CSoundParameters params;
