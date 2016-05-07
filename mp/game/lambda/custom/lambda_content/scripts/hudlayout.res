@@ -129,7 +129,7 @@
 		"fieldName" "HudAmmoSecondary"
 		"xpos"	"r76"
 		"ypos"	"432"
-		"wide"	"60"
+		"wide"	"42"
 		"tall"  "36"
 		"visible" "1"
 		"enabled" "1"

@@ -81,7 +81,6 @@ void CSatchelCharge::Spawn( void )
 	SetGravity( UTIL_ScaleForGravity( 560 ) );	// slightly lower gravity
 	SetFriction( 1.0 );
 	SetSequence( 1 );
-	SetDamage( 150 );
 
 	m_bIsAttached			= false;
 	m_bInAir				= true;
@@ -118,10 +117,11 @@ void CSatchelCharge::CreateEffects( void )
 //-----------------------------------------------------------------------------
 void CSatchelCharge::InputExplode( inputdata_t &inputdata )
 {
-	ExplosionCreate( GetAbsOrigin() + Vector( 0, 0, 16 ), GetAbsAngles(), GetThrower(), GetDamage(), 200, 
-		SF_ENVEXPLOSION_NOSPARKS | SF_ENVEXPLOSION_NODLIGHTS | SF_ENVEXPLOSION_NOSMOKE, 0.0f, this);
+	//ExplosionCreate( GetAbsOrigin() + Vector( 0, 0, 16 ), GetAbsAngles(), GetThrower(), GetDamage(), 200, 
+	//	SF_ENVEXPLOSION_NOSPARKS | SF_ENVEXPLOSION_NODLIGHTS | SF_ENVEXPLOSION_NOSMOKE, 0.0f, this);
 
-	UTIL_Remove( this );
+	//UTIL_Remove( this );
+	CBaseGrenade::Detonate();
 }
 
 

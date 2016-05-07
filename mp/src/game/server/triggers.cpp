@@ -2190,6 +2190,14 @@ END_DATADESC()
 
 LINK_ENTITY_TO_CLASS( trigger_push, CTriggerPush );
 
+class CTriggerPushInstant : public CTriggerPush
+{
+public:
+	DECLARE_CLASS(CTriggerPushInstant, CTriggerPush);
+
+	void Touch(CBaseEntity *pOther);
+};
+LINK_ENTITY_TO_CLASS(trigger_pushinstant, CTriggerPushInstant);
 
 //-----------------------------------------------------------------------------
 // Purpose: Called when spawning, after keyvalues have been handled.
@@ -2330,6 +2338,59 @@ void CTriggerPush::Touch( CBaseEntity *pOther )
 		}
 		break;
 	}
+}
+
+void CTriggerPushInstant::Touch(CBaseEntity *pOther)
+{
+	if (!pOther->IsSolid() || (pOther->GetMoveType() == MOVETYPE_PUSH || pOther->GetMoveType() == MOVETYPE_NONE))
+		return;
+
+	if (!PassesTriggerFilters(pOther))
+		return;
+
+	// FIXME: If something is hierarchically attached, should we try to push the parent?
+	if (pOther->GetMoveParent())
+		return;
+
+	// Transform the push dir into global space
+	Vector vecAbsDir;
+	VectorRotate(m_vecPushDir, EntityToWorldTransform(), vecAbsDir);
+
+	bool bRelative = false;
+	float fNewPushSpeed = m_flPushSpeed;
+	if (m_flPushSpeed >= 7100.0)
+	{
+		fNewPushSpeed = (m_flPushSpeed + 7100.0) / 63.0;
+		bRelative = true;
+	}
+
+	if (!bRelative)
+	{
+		pOther->SetAbsVelocity(fNewPushSpeed * vecAbsDir);
+	}
+	else
+	{
+		Vector vecCurrentVel = pOther->GetAbsVelocity();
+		vecCurrentVel.z = 0.0f;
+		pOther->SetAbsVelocity(vecCurrentVel);
+		pOther->ApplyAbsVelocityImpulse(fNewPushSpeed * vecAbsDir);
+	}
+
+	if (pOther->IsPlayer())
+	{
+		CBasePlayer *player = ToBasePlayer(pOther);
+		if (player)
+		{
+			player->m_bAirDash = false;
+		}
+	}
+
+	if (vecAbsDir.z > 0)
+	{
+		pOther->SetGroundEntity(NULL);
+	}
+
+	return;
 }
 
 

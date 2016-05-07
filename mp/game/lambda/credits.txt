@@ -3,9 +3,14 @@ If you're the owner of an asset used here, and I fucked up on the usage terms(ie
 or make satisfactory changes to allow it's use to continue. 
 
 Model credits:
-Stoke, fxdarkloki, IIOPN - Shotgun Model ( http://hl2dm.gamebanana.com/skins/129562 )
+Stoke, fxdarkloki, IIopn - Shotgun Model ( http://hl2dm.gamebanana.com/skins/129562 )
 Silvio Dante, Wang Chung, Fallshirmjager, Belnoroth, Cliffton_Vlodhammer, EVILWEVIL - SMG Model ( http://hl2.gamebanana.com/skins/107587 )
 Thanez, Racer445, fxDarkloki, Dr. Zoidburg - Pistol Model ( http://hl2.gamebanana.com/skins/100959 )
+Strelok, IIopn - AR2 Re-Animation ( http://hl2.gamebanana.com/skins/105813 )
+
+Skin Credits:
+Tweevle - Grenade Skin ( http://hl2.gamebanana.com/skins/67997 )
+StrikerMan780 - AR2 Skin Modifications (Based on 90sk's black AR2 skin)
 
 Code credits:
 StrikerMan780 - Crossbow sprite/sound prediction fix, doublejump code modifications, HL2DM bug fixes, slight tweaks to Tau Cannon.
@@ -13,4 +18,4 @@ Sub-Zero1324 - Gauss Gun/Tau Cannon code.
 TF2 Classic Team - Doublejump code.
 
 Sound credits:
-StrikerMan780 - Pistol (firing), Shotgun, 
+StrikerMan780 - Pistol (firing), Shotgun

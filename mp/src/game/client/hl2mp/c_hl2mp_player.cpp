@@ -34,6 +34,7 @@ END_RECV_TABLE()
 
 BEGIN_PREDICTION_DATA( C_HL2MP_Player )
 	DEFINE_PRED_FIELD( m_fIsWalking, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE ),
+	DEFINE_PRED_FIELD( m_fIsSprinting, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE ),
 END_PREDICTION_DATA()
 
 #define	HL2_WALK_SPEED 150
@@ -570,15 +571,23 @@ void C_HL2MP_Player::StartSprinting( void )
 	{
 		// Don't sprint unless there's a reasonable
 		// amount of suit power.
-		CPASAttenuationFilter filter( this );
-		filter.UsePredictionRules();
-		EmitSound( filter, entindex(), "HL2Player.SprintNoPower" );
+
+		// debounce the button for sound playing
+		if ((m_afButtonPressed & IN_SPEED)) // [Striker] This was missing clientside.
+		{
+			CPASAttenuationFilter filter(this);
+			filter.UsePredictionRules();
+			EmitSound(filter, entindex(), "HL2Player.SprintNoPower");
+		}
 		return;
 	}
 
-	CPASAttenuationFilter filter( this );
-	filter.UsePredictionRules();
-	EmitSound( filter, entindex(), "HL2Player.SprintStart" );
+	if ((m_afButtonPressed & IN_SPEED))
+	{
+		CPASAttenuationFilter filter(this);
+		filter.UsePredictionRules();
+		EmitSound(filter, entindex(), "HL2Player.SprintStart");
+	}
 
 	SetMaxSpeed( HL2_SPRINT_SPEED );
 	m_fIsSprinting = true;
@@ -595,49 +604,48 @@ void C_HL2MP_Player::StopSprinting( void )
 
 void C_HL2MP_Player::HandleSpeedChanges( void )
 {
-	int buttonsChanged = m_afButtonPressed | m_afButtonReleased;
-
-	if( buttonsChanged & IN_SPEED )
+	bool bCanSprint = CanSprint();
+	bool bIsSprinting = IsSprinting();
+	bool bWantSprint = (bCanSprint && IsSuitEquipped() && (m_nButtons & IN_SPEED));
+	if (bIsSprinting != bWantSprint)
 	{
-		// The state of the sprint/run button has changed.
-		if ( IsSuitEquipped() )
+		// If someone wants to sprint, make sure they've pressed the button to do so. We want to prevent the
+		// case where a player can hold down the sprint key and burn tiny bursts of sprint as the suit recharges
+		// We want a full debounce of the key to resume sprinting after the suit is completely drained
+		if (bWantSprint)
 		{
-			if ( !(m_afButtonPressed & IN_SPEED)  && IsSprinting() )
-			{
-				StopSprinting();
-			}
-			else if ( (m_afButtonPressed & IN_SPEED) && !IsSprinting() )
-			{
-				if ( CanSprint() )
-				{
-					StartSprinting();
-				}
-				else
-				{
-					// Reset key, so it will be activated post whatever is suppressing it.
-					m_nButtons &= ~IN_SPEED;
-				}
-			}
+			StartSprinting();
 		}
-	}
-	else if( buttonsChanged & IN_WALK )
-	{
-		if ( IsSuitEquipped() )
+		else
 		{
-			// The state of the WALK button has changed. 
-			if( IsWalking() && !(m_afButtonPressed & IN_WALK) )
-			{
-				StopWalking();
-			}
-			else if( !IsWalking() && !IsSprinting() && (m_afButtonPressed & IN_WALK) && !(m_nButtons & IN_DUCK) )
-			{
-				StartWalking();
-			}
+			StopSprinting();
 		}
 	}
 
-	if ( IsSuitEquipped() && m_fIsWalking && !(m_nButtons & IN_WALK)  ) 
-		StopWalking();
+	bool bIsWalking = IsWalking();
+	// have suit, pressing button, not sprinting or ducking
+	bool bWantWalking;
+
+	if (IsSuitEquipped())
+	{
+		bWantWalking = (m_nButtons & IN_WALK) && !IsSprinting() && !(m_nButtons & IN_DUCK);
+	}
+	else
+	{
+		bWantWalking = true;
+	}
+
+	if (bIsWalking != bWantWalking)
+	{
+		if (bWantWalking)
+		{
+			StartWalking();
+		}
+		else
+		{
+			StopWalking();
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------

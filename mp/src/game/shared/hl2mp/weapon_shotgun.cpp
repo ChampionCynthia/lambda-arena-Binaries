@@ -356,7 +356,9 @@ void CWeaponShotgun::SecondaryAttack( void )
 		return;
 	}
 
-	//pPlayer->m_nButtons &= ~IN_ATTACK2; // [Striker] Why the fuck is this even here? It's breaking prediction.
+	pPlayer->m_nButtons &= ~IN_ATTACK2; // [Striker] Why the fuck is this even here?
+	//pPlayer->m_nButtons &= ~IN_ATTACK; // [Striker] !HACK! Workaroud for shotgun altfire until I learn how to fix it.
+
 	// MUST call sound before removing a round from the clip of a CMachineGun
 	WeaponSound(WPN_DOUBLE);
 
@@ -457,7 +459,7 @@ void CWeaponShotgun::ItemPostFrame( void )
 	}
 	
 	// Shotgun uses same timing and ammo for secondary attack
-	if ((m_bDelayedFire2 || pOwner->m_nButtons & IN_ATTACK2)&&(m_flNextPrimaryAttack <= gpGlobals->curtime))
+	if ((m_bDelayedFire2 || pOwner->m_nButtons & IN_ATTACK2) && (m_flNextPrimaryAttack <= gpGlobals->curtime))
 	{
 		m_bDelayedFire2 = false;
 		

@@ -480,35 +480,21 @@ void CHL2_Player::RemoveSuit( void )
 
 void CHL2_Player::HandleSpeedChanges( void )
 {
-	int buttonsChanged = m_afButtonPressed | m_afButtonReleased;
-
 	bool bCanSprint = CanSprint();
 	bool bIsSprinting = IsSprinting();
 	bool bWantSprint = ( bCanSprint && IsSuitEquipped() && (m_nButtons & IN_SPEED) );
-	if ( bIsSprinting != bWantSprint && (buttonsChanged & IN_SPEED) )
+	if ( bIsSprinting != bWantSprint )
 	{
 		// If someone wants to sprint, make sure they've pressed the button to do so. We want to prevent the
 		// case where a player can hold down the sprint key and burn tiny bursts of sprint as the suit recharges
 		// We want a full debounce of the key to resume sprinting after the suit is completely drained
 		if ( bWantSprint )
 		{
-			if ( sv_stickysprint.GetBool() )
-			{
-				StartAutoSprint();
-			}
-			else
-			{
-				StartSprinting();
-			}
+			StartSprinting();
 		}
 		else
 		{
-			if ( !sv_stickysprint.GetBool() )
-			{
-				StopSprinting();
-			}
-			// Reset key, so it will be activated post whatever is suppressing it.
-			m_nButtons &= ~IN_SPEED;
+			StopSprinting();
 		}
 	}
 
@@ -1208,12 +1194,18 @@ void CHL2_Player::StartSprinting( void )
 		return;
 	}
 
+	if (SuitPower_IsDeviceActive(SuitDeviceSprint))
+		return;
+
 	if( !SuitPower_AddDevice( SuitDeviceSprint ) )
 		return;
 
-	CPASAttenuationFilter filter( this );
-	filter.UsePredictionRules();
-	EmitSound( filter, entindex(), "HL2Player.SprintStart" );
+	if ((m_afButtonPressed & IN_SPEED))
+	{
+		CPASAttenuationFilter filter(this);
+		filter.UsePredictionRules();
+		EmitSound(filter, entindex(), "HL2Player.SprintStart");
+	}
 
 	SetMaxSpeed( HL2_SPRINT_SPEED );
 	m_fIsSprinting = true;

@@ -112,7 +112,7 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 #ifdef CLIENT_DLL
 	if ((m_nShotsFired >= m_nMuzzleSmokeShots) && (m_nMuzzleSmokeShots > 0))
 	{
-		DispatchParticleEffect("smoke_trail", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+		DispatchParticleEffect("weapon_muzzle_smoke_b", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
 	}
 #endif
 	

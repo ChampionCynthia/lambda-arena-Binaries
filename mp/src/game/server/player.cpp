@@ -1411,23 +1411,28 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	}
 
 	// [Striker] Hit sounds
-	CBaseEntity *pAttacker = info.GetAttacker();
+	HitMarker(info.GetAttacker());
 
+	return fTookDamage;
+}
+
+// [Striker] Play hit sound and send marker.
+void CBasePlayer::HitMarker(CBaseEntity *pAttacker)
+{
 	if (pAttacker && pAttacker->IsPlayer())
 	{
 
-		if (pAttacker->entindex()-1 != this->GetClientIndex())
+		if (pAttacker->entindex() - 1 != this->GetClientIndex())
 		{
 			Vector vecOrigin = pAttacker->GetAbsOrigin();
-			CBasePlayer *predPlayer = pAttacker->GetPredictionPlayer();
+			CBasePlayer *atkPlayer = ToBasePlayer(pAttacker);
 
-			if (predPlayer != NULL)
+			if (atkPlayer != NULL)
 			{
 				CSoundParameters params;
 				CBaseEntity::GetParametersForSound("Player.HitSoundBody", params, NULL);
 
-				CRecipientFilter filter;
-				filter.AddRecipient(predPlayer);
+				CSingleUserRecipientFilter filter(atkPlayer);
 
 				EmitSound_t ep;
 				ep.m_nChannel = params.channel;
@@ -1439,11 +1444,13 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 				ep.m_pOrigin = &vecOrigin;
 
 				CBaseEntity::EmitSound(filter, pAttacker->entindex(), ep);
+
+				UserMessageBegin(filter, "ShowHitmarker");
+				WRITE_BYTE(1);
+				MessageEnd();
 			}
 		}
 	}
-
-	return fTookDamage;
 }
 
 //-----------------------------------------------------------------------------

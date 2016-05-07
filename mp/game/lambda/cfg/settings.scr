@@ -32,7 +32,7 @@
 
 
 // Half-Life Server Configuration Layout Script (stores last settings chosen, too)
-// File generated:  Fri Apr 15 07:53:05 PM
+// File generated:  Sat May 07 12:12:14 AM
 //
 //
 // Cvar	-	Setting
@@ -76,6 +76,30 @@ DESCRIPTION SERVER_OPTIONS
 		{ "0" }
 	}
 
+	"sv_footsteps"
+	{
+		"#LAMBDA_Footsteps"
+		{
+			LIST
+			"#LAMBDA_Footsteps_Disabled" "0"
+			"#LAMBDA_Footsteps_Dynamic" "1"
+			"#LAMBDA_Footsteps_HL2DM" "2"
+		}
+		{ "1" }
+	}
+
+	"la_doublejump"
+	{
+		"#LAMBDA_Double_Jump_Style"
+		{
+			LIST
+			"#LAMBDA_DoubleJump_Disabled" "0"
+			"#LAMBDA_DoubleJump_TF2" "1"
+			"#LAMBDA_DoubleJump_UT2004" "2"
+		}
+		{ "1" }
+	}
+
 	"mp_teamplay"
 	{
 		"#Valve_Teamplay"
@@ -90,25 +114,39 @@ DESCRIPTION SERVER_OPTIONS
 		{ "0" }
 	}
 
-	"mp_footsteps"
-	{
-		"#Valve_Footsteps"
-		{ BOOL }
-		{ "1" }
-	}
-
 	"mp_flashlight"
 	{
 		"#Valve_Flashlight"
 		{ BOOL }
-		{ "0" }
+		{ "1" }
 	}
 
 	"mp_forcerespawn"
 	{
 		"#Valve_Force_Respawn"
 		{ BOOL }
-		{ "0" }
+		{ "1" }
+	}
+
+	"la_autojump"
+	{
+		"#LAMBDA_Auto_Jump"
+		{ BOOL }
+		{ "1" }
+	}
+
+	"sv_infinite_aux_power"
+	{
+		"#LAMBDA_Aux_Power"
+		{ BOOL }
+		{ "1" }
+	}
+
+	"la_disable_explosion_ring"
+	{
+		"#LAMBDA_Disable_Explosion_Ring"
+		{ BOOL }
+		{ "1" }
 	}
 
 }

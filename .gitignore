@@ -32,6 +32,13 @@ config.cfg
 # shader files
 *.tmp
 
+*.vpc_crc
+*.sentinel
+*.filters
+*.cache
+*.sdf
+*.prt
+*.vmx
 /mp/src/game/client/Debug_mod_hl2mp/vc120.pdb
 /mp/src/game/client/Release_mod_hl2mp/vc120.pdb
 /mp/src/game/server/Debug_mod_hl2mp/vc120.pdb
@@ -48,14 +55,10 @@ config.cfg
 Debug_mod_hl2mp
 Release_mod_hl2mp
 textwindow_temp.html
-*.vpc_crc
-*.sentinel
-*.filters
 *decompiled*/
 *compiled*/
 /mp/game/lambda/iiopnSPAS.vpk
-*.cache
 /vide
+/ag2_reverse_engineering
 /mp/game/lambda/cfg/pet.txt
-*.sdf
 /mp/game/lambda/cfg/commedit.txt

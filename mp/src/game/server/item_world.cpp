@@ -176,31 +176,7 @@ void CItem::Spawn( void )
 
 	m_takedamage = DAMAGE_EVENTS_ONLY;
 
-#if !defined( CLIENT_DLL )
-	// Constrained start?
-	if ( HasSpawnFlags( SF_ITEM_START_CONSTRAINED ) )
-	{
-		//Constrain the weapon in place
-		IPhysicsObject *pReferenceObject, *pAttachedObject;
-
-		pReferenceObject = g_PhysWorldObject;
-		pAttachedObject = VPhysicsGetObject();
-
-		if ( pReferenceObject && pAttachedObject )
-		{
-			constraint_fixedparams_t fixed;
-			fixed.Defaults();
-			fixed.InitWithCurrentObjectState( pReferenceObject, pAttachedObject );
-
-			fixed.constraint.forceLimit	= lbs2kg( 10000 );
-			fixed.constraint.torqueLimit = lbs2kg( 10000 );
-
-			m_pConstraint = physenv->CreateFixedConstraint( pReferenceObject, pAttachedObject, NULL, fixed );
-
-			m_pConstraint->SetGameData( (void *) this );
-		}
-	}
-#endif //CLIENT_DLL
+	SetConstraints();
 
 #if defined( HL2MP ) || defined( TF_DLL )
 	SetThink( &CItem::FallThink );
@@ -270,6 +246,42 @@ void CItem::ComeToRest( void )
 		AddSolidFlags( FSOLID_TRIGGER );
 		SetThink( NULL );
 	}
+}
+
+//-----------------------------------------------------------------------------
+// [Striker] Set physics restraints
+//-----------------------------------------------------------------------------
+bool CItem::SetConstraints()
+{
+	// Constrained start?
+	if (HasSpawnFlags(SF_ITEM_START_CONSTRAINED))
+	{
+		//Constrain the weapon in place
+		IPhysicsObject *pReferenceObject, *pAttachedObject;
+
+		pReferenceObject = g_PhysWorldObject;
+		pAttachedObject = VPhysicsGetObject();
+
+		if (pReferenceObject && pAttachedObject)
+		{
+			constraint_fixedparams_t fixed;
+			fixed.Defaults();
+			fixed.InitWithCurrentObjectState(pReferenceObject, pAttachedObject);
+
+			fixed.constraint.forceLimit = lbs2kg(10000);
+			fixed.constraint.torqueLimit = lbs2kg(10000);
+
+			m_pConstraint = physenv->CreateFixedConstraint(pReferenceObject, pAttachedObject, NULL, fixed);
+
+			m_pConstraint->SetGameData((void *) this);
+
+			PhysSetGameFlags(pAttachedObject, FVPHYSICS_NO_PLAYER_PICKUP);
+
+			return true;
+		}
+	}
+
+	return false;
 }
 
 #if defined( HL2MP ) || defined( TF_DLL )
@@ -472,9 +484,10 @@ CBaseEntity* CItem::Respawn( void )
 	UTIL_SetOrigin( this, g_pGameRules->VecItemRespawnSpot( this ) );// blip to whereever you should respawn.
 	SetAbsAngles( g_pGameRules->VecItemRespawnAngles( this ) );// set the angles.
 
-#if !defined( TF_DLL )
-	UTIL_DropToFloor( this, MASK_SOLID );
-#endif
+	if (!HasSpawnFlags(SF_ITEM_START_CONSTRAINED))
+	{
+		UTIL_DropToFloor(this, MASK_SOLID);
+	}
 
 	RemoveAllDecals(); //remove any decals
 
@@ -498,6 +511,8 @@ void CItem::Materialize( void )
 #endif
 		RemoveEffects( EF_NODRAW );
 		DoMuzzleFlash();
+
+		SetConstraints();
 	}
 
 	SetTouch( &CItem::ItemTouch );

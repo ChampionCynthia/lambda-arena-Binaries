@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "Models/Weapons/V_grenade/grenade body"
+	"$Selfillum" "1"
+}

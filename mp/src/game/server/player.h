@@ -323,6 +323,7 @@ public:
 	virtual void			TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator );
 	bool					ShouldTakeDamageInCommentaryMode( const CTakeDamageInfo &inputInfo );
 	virtual int				OnTakeDamage( const CTakeDamageInfo &info );
+	virtual void			HitMarker(CBaseEntity *pAttacker);
 	virtual void			DamageEffect(float flDamage, int fDamageType);
 
 	virtual void			OnDamagedByExplosion( const CTakeDamageInfo &info );
@@ -872,6 +873,9 @@ public:
 	int						m_afButtonDisabled;	// A mask of input flags that are cleared automatically
 	int						m_afButtonForced;	// These are forced onto the player's inputs
 
+	CNetworkVar(bool, m_bAirDash); // [Striker] Air Dash
+	CNetworkVar(bool, m_bDismountLadder);
+
 	CNetworkVar( bool, m_fOnTarget );		//Is the crosshair on a target?
 
 	char					m_szAnimExtension[32];
@@ -1077,9 +1081,6 @@ private:
 
 // Replicated to all clients
 	CNetworkVar( float, m_flMaxspeed );
-
-	CNetworkVar(bool, m_bAirDash); // [Striker] Air Dash
-	CNetworkVar(bool, m_bDismountLadder);
 	
 // Not transmitted
 	float					m_flWaterJumpTime;  // used to be called teleport_time

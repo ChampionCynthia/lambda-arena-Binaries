@@ -1688,9 +1688,9 @@ void CBaseCombatWeapon::ItemPostFrame( void )
 	UpdateAutoFire();
 
 	//Track the duration of the fire
-	//FIXME: Check for IN_ATTACK2 as well?
+	//FIXME: Check for IN_ATTACK2 as well? // [Striker] Added check for IN_ATTACK2
 	//FIXME: What if we're calling ItemBusyFrame?
-	m_fFireDuration = ( pOwner->m_nButtons & IN_ATTACK ) ? ( m_fFireDuration + gpGlobals->frametime ) : 0.0f;
+	m_fFireDuration = ( pOwner->m_nButtons & ( IN_ATTACK | IN_ATTACK2 ) ) ? ( m_fFireDuration + gpGlobals->frametime ) : 0.0f;
 
 	if ( UsesClipsForAmmo1() )
 	{

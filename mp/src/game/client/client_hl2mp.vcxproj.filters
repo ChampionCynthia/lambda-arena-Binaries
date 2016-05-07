@@ -1943,6 +1943,9 @@
     <ClInclude Include="toolframework_client.h">
       <Filter>Tool Framework</Filter>
     </ClInclude>
+    <ClInclude Include="hud_hitmarker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mp3player.cpp">
@@ -3507,6 +3510,9 @@
     </ClCompile>
     <ClCompile Include="..\shared\hl2mp\weapon_gauss.cpp">
       <Filter>Source Files\HL2MP\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="hud_hitmarker.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

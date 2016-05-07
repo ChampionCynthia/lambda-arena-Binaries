@@ -34,7 +34,7 @@ ConVar	teamplay( "mp_teamplay","0", FCVAR_NOTIFY );
 ConVar	falldamage( "mp_falldamage","0", FCVAR_NOTIFY );
 ConVar	weaponstay( "mp_weaponstay","0", FCVAR_NOTIFY );
 ConVar	forcerespawn( "mp_forcerespawn","1", FCVAR_NOTIFY );
-ConVar	footsteps( "mp_footsteps","1", FCVAR_NOTIFY | FCVAR_HIDDEN); // [Striker] Hidden, since it's basically useless and superceded by sv_footsteps
+//ConVar	footsteps( "mp_footsteps","1", FCVAR_NOTIFY | FCVAR_HIDDEN); // [Striker] Hidden, since it's basically useless and superceded by sv_footsteps
 ConVar	flashlight( "mp_flashlight","1", FCVAR_NOTIFY );
 ConVar	aimcrosshair( "mp_autocrosshair","1", FCVAR_NOTIFY );
 ConVar	decalfrequency( "decalfrequency","10", FCVAR_NOTIFY );

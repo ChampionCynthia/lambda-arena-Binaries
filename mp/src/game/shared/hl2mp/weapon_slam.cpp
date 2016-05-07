@@ -26,6 +26,8 @@
 #include "tier0/memdbgon.h"
 
 #define	SLAM_PRIMARY_VOLUME		450
+#define SLAM_DAMAGE_SATCHEL		150.0f
+#define SLAM_RADIUS_SATCHEL		200.0f
 
 IMPLEMENT_NETWORKCLASS_ALIASED( Weapon_SLAM, DT_Weapon_SLAM )
 
@@ -484,6 +486,8 @@ void CWeapon_SLAM::SatchelThrow( void )
 
 	if ( pSatchel )
 	{
+		pSatchel->SetDamage(SLAM_DAMAGE_SATCHEL);
+		pSatchel->SetDamageRadius(SLAM_RADIUS_SATCHEL);
 		pSatchel->SetThrower( GetOwner() );
 		pSatchel->ApplyAbsVelocityImpulse( vecThrow );
 		pSatchel->SetLocalAngularVelocity( QAngle( 0, 400, 0 ) );
@@ -566,6 +570,8 @@ void CWeapon_SLAM::SatchelAttach( void )
 			tr.endpos.z -= 6.0f;
 					
 			CSatchelCharge *pSatchel	= (CSatchelCharge*)CBaseEntity::Create( "npc_satchel", tr.endpos + tr.plane.normal * 3, angles, NULL );
+			pSatchel->SetDamage(SLAM_DAMAGE_SATCHEL);
+			pSatchel->SetDamageRadius(SLAM_RADIUS_SATCHEL);
 			pSatchel->SetMoveType( MOVETYPE_FLY ); // no gravity
 			pSatchel->m_bIsAttached		= true;
 			pSatchel->m_bIsLive			= true;

@@ -56,6 +56,8 @@ public:
 	virtual void Materialize( void );
 	virtual bool MyTouch( CBasePlayer *pPlayer ) { return false; };
 
+	virtual bool SetConstraints();
+
 	// Become touchable when we are at rest
 	virtual void OnEntityEvent( EntityEvent_t event, void *pEventData );
 

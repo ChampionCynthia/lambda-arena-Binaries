@@ -434,6 +434,9 @@ public:
 
 	int				m_nButtons;
 
+	bool			m_bAirDash; // [Striker] Air Dash
+	bool			m_bDismountLadder;
+
 	CUserCmd		*m_pCurrentCommand;
 
 	// Movement constraints
@@ -499,9 +502,6 @@ private:
 	EHANDLE			m_hUseEntity;
 	
 	float			m_flMaxspeed;
-
-	bool			m_bAirDash; // [Striker] Air Dash
-	bool			m_bDismountLadder;
 
 	int				m_iBonusProgress;
 	int				m_iBonusChallenge;

@@ -57,6 +57,7 @@ ConVar player_limit_jump_speed( "player_limit_jump_speed", "1", FCVAR_REPLICATED
 
 ConVar la_autojump("la_autojump", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Automatically pogo-jump when holding jump key");
 ConVar la_doublejump("la_doublejump", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable double-jumping. (1: TF2 Style | 2: UT2004 Style)");
+ConVar la_jumpheight("la_jumpheight", "160.0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Jumping height (160.0 is HL2DM default!)");
 
 // option_duck_method is a carrier convar. Its sole purpose is to serve an easy-to-flip
 // convar which is ONLY set by the X360 controller menu to tell us which way to bind the
@@ -2420,9 +2421,8 @@ bool CGameMovement::CheckJumpButton( void )
 
 	if (!bOnGround) // Not on ground
 	{
-		if (!player->m_bAirDash && !(mv->m_nOldButtons & IN_JUMP) && (!player->m_bDismountLadder) && (la_doublejump.GetInt() >= 1)) // Not doublejumping?
+		if (AirDash()) // Not doublejumping?
 		{
-			AirDash();
 			return true;
 		}
 		else
@@ -2451,7 +2451,7 @@ bool CGameMovement::CheckJumpButton( void )
 	{
 #if defined(HL2_DLL) || defined(HL2_CLIENT_DLL)
 		Assert( GetCurrentGravity() == 600.0f );
-		flMul = 160.0f;	// approx. 21 units.
+		flMul = la_jumpheight.GetFloat();	// approx. 21 units.
 #else
 		Assert( GetCurrentGravity() == 800.0f );
 		flMul = 268.3281572999747f;
@@ -2546,11 +2546,28 @@ bool CGameMovement::CheckJumpButton( void )
 	return true;
 }
 
-void CGameMovement::AirDash(void)
+bool CGameMovement::AirDash(void)
 {
+	if (la_doublejump.GetInt() <= 0) // Is doublejumping enabled?
+		return false;
+
+	if (player->m_bAirDash) // Do not jump if player already doublejumped.
+		return false;
+
+	if (mv->m_nOldButtons & IN_JUMP) // Must double-tap jump, not hold.
+		return false;
+
+	if (player->m_bDismountLadder) // Do not jump if dismounting a ladder.
+		return false;
+
+	// [Striker] Cannot doublejump unless you're at the peak of your jump
+	// like UT2004, or descending. This is much more intuitive IMHO.
+	if (mv->m_vecVelocity.z > 48.0)
+		return false;
+
 	// Apply approx. the jump velocity added to an air dash.
 	//Assert(sv_gravity.GetFloat() == 800.0f);
-	float flDashZ = 160.0f;
+	float flDashZ = la_jumpheight.GetFloat();
 
 	// Get the wish direction.
 	Vector vecForward, vecRight;
@@ -2572,18 +2589,17 @@ void CGameMovement::AirDash(void)
 	// Update the velocity on the player.
 	if (la_doublejump.GetInt() == 1)
 	{
-		mv->m_vecVelocity = vecWishDirection;
-		mv->m_vecVelocity.z += flDashZ;
+		mv->m_vecVelocity.x = vecWishDirection.x;
+		mv->m_vecVelocity.y = vecWishDirection.y;
 	}
-	else
-	{
-		mv->m_vecVelocity.z = flDashZ;
-	}
+
+	mv->m_vecVelocity.z = flDashZ; // Cancel out downward movement
 
 	PlayDoubleJumpSound();
 
 	player->m_bAirDash = true;
 	//MoveHelper()->PlayerSetAnimation(PLAYER_JUMP);
+	return true;
 }
 
 void CGameMovement::PlayDoubleJumpSound()
@@ -4577,7 +4593,10 @@ void CGameMovement::Duck( void )
 					{
 						float flDuckMilliseconds = MAX( 0.0f, GAMEMOVEMENT_DUCK_TIME - (float)player->m_Local.m_flDucktime );
 						float flDuckSeconds = flDuckMilliseconds * 0.001f;
-						
+
+						player->m_Local.m_bDucking = false; // [Striker] Crouch sprint fix
+						player->m_Local.m_bDucked = false;
+
 						// Finish ducking immediately if duck time is over or not on ground
 						if ( flDuckSeconds > TIME_TO_UNDUCK || ( bInAir && !bDuckJump ) )
 						{

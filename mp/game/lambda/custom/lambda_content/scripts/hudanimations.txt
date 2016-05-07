@@ -511,7 +511,7 @@ event WeaponUsesClips
 event WeaponDoesNotUseClips
 {
 	Animate HudAmmo		Position	"r128 432"	Deaccel	0.0		0.4
-	Animate HudAmmo		Size		"100 36"	Deaccel	0.0		0.4
+	Animate HudAmmo		Size		"114 36"	Deaccel	0.0		0.4
 }
 
 event WeaponUsesSecondaryAmmo
@@ -637,4 +637,18 @@ event PoisonPulse
 event PoisonLoop
 {
 	RunEvent PoisonPulse 0.0
+}
+
+// Hit Markers
+
+event HitMarkerShow
+{
+	Animate HudHitmarker Alpha 255 Linear 0.2 0.4
+	
+	RunEvent HitMarkerHide 0.4
+}
+
+event HitMarkerHide
+{
+	Animate HudHitmarker Alpha 0 Linear 0.2 0.4
 }

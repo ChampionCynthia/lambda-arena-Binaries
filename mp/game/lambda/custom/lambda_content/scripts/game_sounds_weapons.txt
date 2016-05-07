@@ -138,7 +138,9 @@
 
 	"rndwave"
 	{
-		"wave"	"weapons/ar2/fire1.wav"
+		"wave"	")weapons/ar2/fire1.wav"
+		"wave"	")weapons/ar2/fire2.wav"
+		"wave"	")weapons/ar2/fire3.wav"
 	}
 }
 
