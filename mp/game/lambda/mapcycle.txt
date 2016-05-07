@@ -1,2 +1,11 @@
 la_resistance
 la_agora
+pg_fragging_yard
+pg_the_longest_day
+dm_overwatch
+dm_steamlab
+dm_runoff
+dm_underpass
+dm_powerhouse
+dm_lockdown
+halls3

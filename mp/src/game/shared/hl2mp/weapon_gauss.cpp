@@ -66,8 +66,6 @@ public:
 	void	DoWallBreak(Vector startPos, Vector endPos, Vector aimDir, trace_t *ptr, CBasePlayer *pOwner, bool m_bBreakAll);
 	bool	DidPunchThrough(trace_t	*tr);
 
-
-
 	DECLARE_ACTTABLE();
 protected:
 	void	Fire(void);
@@ -138,7 +136,6 @@ acttable_t	CWeaponGauss::m_acttable[] =
 };
 
 IMPLEMENT_ACTTABLE(CWeaponGauss);
-
 
 ConVar sk_dmg_gauss("sk_dmg_gauss", "10");
 //-----------------------------------------------------------------------------
@@ -305,7 +302,6 @@ void CWeaponGauss::Fire(void)
 	m_flNextSecondaryAttack = gpGlobals->curtime + 1.0f;
 
 	AddViewKick();
-
 
 	return;
 }
@@ -474,8 +470,7 @@ void CWeaponGauss::ChargedFire(void)
 #ifndef CLIENT_DLL
 	// float flDamage = sk_plr_max_dmg_gauss.GetFloat() + ( ( sk_plr_max_dmg_gauss.GetFloat() - sk_plr_max_dmg_gauss.GetFloat() ) * flChargeAmount );
 
-
-	float flDamage = 3 + ((37 - 15) * flChargeAmount);
+	float flDamage = 25 * flChargeAmount;
 #endif
 	trace_t tr;
 	UTIL_TraceLine(startPos, endPos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &tr); //Trace from gun to wall
@@ -487,10 +482,7 @@ void CWeaponGauss::ChargedFire(void)
 #ifndef CLIENT_DLL
 	//RadiusDamage( CTakeDamageInfo( this, pOwner, sk_plr_max_dmg_gauss.GetFloat(), DMG_SHOCK ),tr.endpos, 90.0f, CLASS_PLAYER_ALLY, pOwner );
 	RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
-#endif
 
-
-#ifndef CLIENT_DLL
 	ClearMultiDamage();
 #endif
 
@@ -505,8 +497,8 @@ void CWeaponGauss::ChargedFire(void)
 
 	CBaseEntity *pHit = tr.m_pEnt;
 
-	if (tr.DidHitWorld()){
-
+	if (tr.DidHitWorld())
+	{
 		UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
 		UTIL_DecalTrace(&tr, "RedGlowFade");
 
@@ -526,7 +518,8 @@ void CWeaponGauss::ChargedFire(void)
 #endif
 
 
-		if (tr.allsolid == false){
+		if (tr.allsolid == false)
+		{
 			UTIL_DecalTrace(&tr, "RedGlowFade");
 			UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
 
@@ -560,7 +553,6 @@ void CWeaponGauss::ChargedFire(void)
 #ifndef CLIENT_DLL
 	ApplyMultiDamage();
 #endif
-
 
 #ifndef CLIENT_DLL
 	//RadiusDamage( CTakeDamageInfo( this, pOwner, sk_plr_max_dmg_gauss.GetFloat(), DMG_SHOCK ),tr.endpos, 90.0f, CLASS_PLAYER_ALLY, pOwner );
@@ -716,6 +708,7 @@ void CWeaponGauss::DrawBeam(const Vector &startPos, const Vector &endPos, float 
 	m_pBeam->SetColor(255, 145 + random->RandomInt(-16, 16), 0);
 	m_pBeam->LiveForTime(0.1f);
 	m_pBeam->RelinkBeam();
+
 	//Draw electric bolts along shaft
 	for (int i = 0; i < 3; i++)
 	{

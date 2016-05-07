@@ -840,8 +840,8 @@
 	"rndwave"
 	{
 	//	"wave"			"weapons/shotgun/shotgun_fire2.wav"
-	//	"wave"			"weapons/shotgun/shotgun_fire6.wav"
-		"wave"			"weapons/shotgun/shotgun_fire7.wav"
+		"wave"			")weapons/shotgun/shotgun_fire6.wav"
+		"wave"			")weapons/shotgun/shotgun_fire7.wav"
 	}
 }
 
@@ -852,7 +852,7 @@
 	"soundlevel"	"SNDLVL_GUNFIRE"
 	"pitch"			"90,95"
 
-	"wave"			"weapons/shotgun/shotgun_dbl_fire7.wav"
+	"wave"			")weapons/shotgun/shotgun_dbl_fire7.wav"
 }
 
 "Weapon_Shotgun.NPC_Reload"
@@ -876,7 +876,7 @@
 	"soundlevel"	"SNDLVL_GUNFIRE"
 	"pitch"			"98,101"
 
-	"wave"			"weapons/shotgun/shotgun_fire6.wav"
+	"wave"			")weapons/shotgun/shotgun_fire6.wav"
 }
 
 // weapon_smg1.txt
