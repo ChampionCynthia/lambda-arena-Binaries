@@ -1,0 +1,4 @@
+"lightmappedgeneric" {
+    "$basetexture" "tld\concrete01_d"
+    "$surfaceprop" "concrete"
+}

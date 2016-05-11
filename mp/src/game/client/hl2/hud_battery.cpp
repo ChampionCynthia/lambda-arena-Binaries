@@ -40,6 +40,9 @@ public:
 	void OnThink( void );
 	void MsgFunc_Battery(bf_read &msg );
 	bool ShouldDraw();
+
+protected:
+	virtual void ApplySchemeSettings(vgui::IScheme *pScheme);
 	
 private:
 	int		m_iBat;	
@@ -55,6 +58,13 @@ DECLARE_HUD_MESSAGE( CHudBattery, Battery );
 CHudBattery::CHudBattery( const char *pElementName ) : BaseClass(NULL, "HudSuit"), CHudElement( pElementName )
 {
 	SetHiddenBits( HIDEHUD_HEALTH | HIDEHUD_NEEDSUIT );
+}
+
+void CHudBattery::ApplySchemeSettings(vgui::IScheme *pScheme)
+{
+	BaseClass::ApplySchemeSettings(pScheme);
+
+	m_hTextFont = pScheme->GetFont("WeaponIcons", true);
 }
 
 //-----------------------------------------------------------------------------
@@ -73,7 +83,7 @@ void CHudBattery::Init( void )
 //-----------------------------------------------------------------------------
 void CHudBattery::Reset( void )
 {
-	SetLabelText(g_pVGuiLocalize->Find("#Valve_Hud_SUIT"));
+	SetLabelText(L"*");
 	SetDisplayValue(m_iBat);
 }
 

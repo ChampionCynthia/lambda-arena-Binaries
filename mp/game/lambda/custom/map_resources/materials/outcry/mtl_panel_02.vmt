@@ -1,0 +1,4 @@
+"lightmappedgeneric" {
+    "$basetexture" "outcry\mtl_panel_02"
+    "$surfaceprop" "metal"
+}

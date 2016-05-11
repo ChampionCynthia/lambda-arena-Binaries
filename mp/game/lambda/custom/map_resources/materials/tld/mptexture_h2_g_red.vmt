@@ -1,0 +1,5 @@
+"unlitgeneric" {
+    "$basetexture" "tld\mptexture_h2_g_red"
+    "$selfillum" 1
+    "$surfaceprop" "metal"
+}

@@ -1,0 +1,5 @@
+"lightmappedgeneric" {
+    "$basetexture" "tld\sh_basepanel1_d"
+    "$bumpmap" "tld\sh_basepanel1_local"
+    "$surfaceprop" "metal"
+}

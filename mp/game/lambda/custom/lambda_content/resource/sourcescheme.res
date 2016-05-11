@@ -68,7 +68,7 @@ Scheme
 		ComboBoxButton.DisabledBgColor		"Blank"
 
 		Frame.TitleTextInsetX			16
-		Frame.ClientInsetX			8
+		Frame.ClientInsetX			3
 		Frame.ClientInsetY			6
 		Frame.BgColor				"248 96 48 128"	[$WIN32]
 		Frame.BgColor				"80 80 80 192"	[$X360]

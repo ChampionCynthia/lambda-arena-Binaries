@@ -1,0 +1,4 @@
+"lightmappedgeneric" {
+    "$basetexture" "outcry\cretebase_01"
+    "$surfaceprop" "concrete"
+}

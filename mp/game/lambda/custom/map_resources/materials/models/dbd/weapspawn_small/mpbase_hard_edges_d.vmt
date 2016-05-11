@@ -1,0 +1,17 @@
+"vertexlitgeneric"
+{
+   	"$basetexture" "models\dbd\weapspawn_small\mpbase_hard_edges_d"
+    	"$selfillum" 1
+	"$surfaceprop" "metal"
+	"$frame" "10"
+	"Proxies" 
+	{
+		"AnimatedTexture" 
+		{ 
+			"animatedTextureVar" "$basetexture" 
+			"animatedTextureFrameNumVar" "$frame" 
+			"animatedTextureFrameRate" "20" 
+		}
+	}
+}
+

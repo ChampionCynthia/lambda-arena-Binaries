@@ -51,6 +51,9 @@ public:
 	virtual void OnThink();
 			void MsgFunc_Damage( bf_read &msg );
 
+protected:
+	virtual void ApplySchemeSettings(vgui::IScheme *pScheme);
+
 private:
 	// old variables
 	int		m_iHealth;
@@ -67,6 +70,13 @@ DECLARE_HUD_MESSAGE( CHudHealth, Damage );
 CHudHealth::CHudHealth( const char *pElementName ) : CHudElement( pElementName ), CHudNumericDisplay(NULL, "HudHealth")
 {
 	SetHiddenBits( HIDEHUD_HEALTH | HIDEHUD_PLAYERDEAD | HIDEHUD_NEEDSUIT );
+}
+
+void CHudHealth::ApplySchemeSettings(vgui::IScheme *pScheme)
+{
+	BaseClass::ApplySchemeSettings(pScheme);
+
+	m_hTextFont = pScheme->GetFont("WeaponIcons", true);
 }
 
 //-----------------------------------------------------------------------------
@@ -86,16 +96,8 @@ void CHudHealth::Reset()
 	m_iHealth		= INIT_HEALTH;
 	m_bitsDamage	= 0;
 
-	wchar_t *tempString = g_pVGuiLocalize->Find("#Valve_Hud_HEALTH");
+	SetLabelText(L"+");
 
-	if (tempString)
-	{
-		SetLabelText(tempString);
-	}
-	else
-	{
-		SetLabelText(L"HEALTH");
-	}
 	SetDisplayValue(m_iHealth);
 }
 

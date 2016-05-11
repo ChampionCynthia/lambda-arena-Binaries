@@ -1,0 +1,5 @@
+"lightmappedgeneric" {
+    "$basetexture" "tld\mp_k_d"
+    "$bumpmap" "tld\mp_k_local"
+    "$surfaceprop" "concrete"
+}

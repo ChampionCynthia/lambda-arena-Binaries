@@ -1,0 +1,4 @@
+"vertexlitgeneric" {
+    "$basetexture" "models\dbd\tldlights\m_large_b_d"
+    "$surfaceprop" "metal"
+}

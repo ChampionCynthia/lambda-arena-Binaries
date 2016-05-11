@@ -14,6 +14,7 @@ WeaponData
 	"default_clip"			"20"
 	"clip2_size"			"-1"
 	"default_clip2"			"-1"
+	"rumble"				"1"
 	
 	"autoswitchto"			"0"
 	"autoswitchfrom"		"0"

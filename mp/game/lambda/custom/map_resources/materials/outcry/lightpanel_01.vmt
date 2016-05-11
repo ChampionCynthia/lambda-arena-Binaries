@@ -1,0 +1,5 @@
+UnlitGeneric
+{
+	"$basetexture"	"outcry\lightpanel_01"
+	"$surfaceprop" "glass"
+}

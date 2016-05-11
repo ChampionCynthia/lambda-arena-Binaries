@@ -552,11 +552,24 @@ Scheme
 			"1"
 			{
 				"name"		"BN Elements" [!$OSX]
-				"name"		"Helvetica Bold" [$OSX]
+				"name"		"BN Elements" [$OSX]
 				"tall"		"17"
 				"weight"	"1000"
 				"additive"	"1"
 				"antialias" 	"1"
+				"custom"	"1"
+			}
+		}
+		HudHistoryNumbers
+		{
+			"1"
+			{
+				"name"		"BN Elements" [!$OSX]
+				"name"		"BN Elements" [$OSX]
+				"tall"		"14"
+				"weight"	"0"
+				"additive"	"1"
+				"antialias" "1"
 				"custom"	"1"
 			}
 		}
@@ -571,15 +584,56 @@ Scheme
 				"additive"	"1"
 			}
 		}
+		HudTimerNumbers
+		{
+			"1"
+			{
+				"name"		"Digital-7 Mono" [!$OSX]
+				"name"		"Digital-7 Mono" [$OSX]
+				"tall"		"32"
+				"weight"	"0"
+				"antialias" "1"
+				"additive"	"1"
+				"custom"	"1"
+			}
+		}
+		HudTimerNumbersGlow
+		{
+			"1"
+			{
+				"name"		"Digital-7 Mono" [!$OSX]
+				"name"		"Digital-7 Mono" [$OSX]
+				"tall"		"32"
+				"weight"	"0"
+				"antialias" "1"
+				"additive"	"1"
+				"custom"	"1"
+				"blur"		"2"
+				"scanlines" "2"
+			}
+		}
+		HudTimerNumbersSmall
+		{
+			"1"
+			{
+				"name"		"Digital-7 Mono" [!$OSX]
+				"name"		"Digital-7 Mono" [$OSX]
+				"tall"		"16"
+				"weight"	"0"
+				"antialias" "1"
+				"additive"	"1"
+				"custom"	"1"
+			}
+		}
 		HudHintText
 		{
 			"1"
 			{
 				"name"		"BN Elements" [!$OSX]
-				"name"		"Helvetica Bold" [$OSX]
+				"name"		"BN Elements" [$OSX]
 				"tall"		"16"
 				"weight"	"32"
-				"antialias" 	"1"
+				"antialias" "1"
 				"additive"	"1"
 			}
 		}
@@ -1592,7 +1646,7 @@ Scheme
 		"1"		"resource/HL2MP.ttf"
 		"1"		"resource/Elements.ttf"
 		"1"		"resource/impact.ttf"
-		"1"		"resource/GeneticDefect.ttf"
+		"1"		"resource/D7MONOI.ttf"
 		"2"		"resource/HL2crosshairs.ttf"
 	}
 

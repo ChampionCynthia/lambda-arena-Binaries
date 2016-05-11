@@ -1,0 +1,5 @@
+"lightmappedgeneric" {
+    "$basetexture" "tld\stroy_steel_02_d"
+    "$bumpmap" "tld\stroy_steel_02_local"
+    "$surfaceprop" "metal"
+}

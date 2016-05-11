@@ -8,7 +8,7 @@ Silvio Dante, Wang Chung, Fallshirmjager, Belnoroth, Cliffton_Vlodhammer, EVILWE
 Thanez, Racer445, fxDarkloki, Dr. Zoidburg - Pistol Model ( http://hl2.gamebanana.com/skins/100959 )
 Strelok, IIopn - AR2 Re-Animation ( http://hl2.gamebanana.com/skins/105813 )
 
-Skin Credits:
+Skin credits:
 Tweevle - Grenade Skin ( http://hl2.gamebanana.com/skins/67997 )
 StrikerMan780 - AR2 Skin Modifications (Based on 90sk's black AR2 skin)
 
@@ -19,3 +19,10 @@ TF2 Classic Team - Doublejump code.
 
 Sound credits:
 StrikerMan780 - Pistol (firing), Shotgun
+
+Map credits:
+DvS - la_agora (originally dm_agora)
+Singe - la_ccelerator (originally dm_ccelerator_v4)
+
+Texture credits:
+gtamike_TSGK - GooInGlass texture fix.

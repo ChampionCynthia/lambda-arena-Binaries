@@ -6,14 +6,32 @@
 		"xpos"	"16"
 		"ypos"	"432"
 		"wide"	"128"
-		"tall"  "36"
+		"tall"  "34"
 		"visible" "1"
 		"enabled" "1"
 
 		"PaintBackgroundType"	"2"
 		
 		"text_xpos" "8"
-		"text_ypos" "20"
+		"text_ypos" "-20"
+		"digit_xpos" "50"
+		"digit_ypos" "2"
+	}
+	
+	HudSuit
+	{
+		"fieldName"		"HudSuit"
+		"xpos"	"148"
+		"ypos"	"432"
+		"wide"	"128"
+		"tall"  "34"
+		"visible" "1"
+		"enabled" "1"
+
+		"PaintBackgroundType"	"2"
+
+		"text_xpos" "8"
+		"text_ypos" "-20"
 		"digit_xpos" "50"
 		"digit_ypos" "2"
 	}
@@ -84,25 +102,6 @@
 		
 		"text_xpos"			"56"
 	}
-	
-	HudSuit
-	{
-		"fieldName"		"HudSuit"
-		"xpos"	"148"
-		"ypos"	"432"
-		"wide"	"128"
-		"tall"  "36"
-		"visible" "1"
-		"enabled" "1"
-
-		"PaintBackgroundType"	"2"
-
-		
-		"text_xpos" "8"
-		"text_ypos" "20"
-		"digit_xpos" "50"
-		"digit_ypos" "2"
-	}
 
 	HudAmmo
 	{
@@ -110,7 +109,7 @@
 		"xpos"	"r150"
 		"ypos"	"432"
 		"wide"	"136"
-		"tall"  "36"
+		"tall"  "34"
 		"visible" "1"
 		"enabled" "1"
 
@@ -130,7 +129,7 @@
 		"xpos"	"r76"
 		"ypos"	"432"
 		"wide"	"42"
-		"tall"  "36"
+		"tall"  "34"
 		"visible" "1"
 		"enabled" "1"
 
@@ -340,15 +339,15 @@
 		"fieldName" "HudHistoryResource"
 		"visible" "1"
 		"enabled" "1"
-		"xpos"	"r252"
+		"xpos"	"r254"
 		"ypos"	"40"
-		"wide"	 "248"
+		"wide"	 "250"
 		"tall"	 "320"
 
 		"history_gap"	"56"
-		"icon_inset"	"28"
-		"text_inset"	"26"
-		"NumberFont"	"HudNumbersSmall"
+		"icon_inset"	"30"
+		"text_inset"	"28"
+		"NumberFont"	"HudHistoryNumbers"
 	}
 
 	HudGeiger
@@ -514,5 +513,19 @@
 		"fieldName"		"CHudVote"
 		"visible"		"0"
 		"enabled"		"0"
+	}
+	
+	HudMapTimer
+	{
+		"fieldName"   "HudMapTimer"
+		"xpos"  "c-40"
+		"ypos"  "10"
+		"wide"  "80"
+		"tall"  "28"
+		"visible" "0"
+		"enabled" "0"
+		"PaintBackgroundType" "2"
+		"digit_xpos" "3"
+		"digit_ypos" "-2"
 	}
 }

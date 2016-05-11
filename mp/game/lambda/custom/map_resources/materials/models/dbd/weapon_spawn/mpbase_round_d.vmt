@@ -1,0 +1,17 @@
+"vertexlitgeneric"
+{
+    	"$basetexture" "models\dbd\weapon_spawn\mpbase_round_d"
+    	"$selfillum" 1
+	"$surfaceprop" "metal"
+	"$frame" "36"
+	"Proxies" 
+	{
+		"AnimatedTexture" 
+		{ 
+			"animatedTextureVar" "$basetexture" 
+			"animatedTextureFrameNumVar" "$frame" 
+			"animatedTextureFrameRate" "10" 
+		}
+	}
+}
+

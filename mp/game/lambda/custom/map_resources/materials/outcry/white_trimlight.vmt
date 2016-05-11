@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+	"$basetexture" "outcry/white_trimlight"
+	"$selfillum" 1
+	"$surfaceprop" "glass"
+	"$reflectivity" "[0 0 0]"
+	"$nodecal" "1"
+}

@@ -1,0 +1,19 @@
+"vertexlitgeneric"
+{
+    	"$basetexture" "models\pads\launchpad"
+    	"$envmap" "env_cubemap"
+    	"$envmapmask" "models\pads\launchpadspec"
+    	"$selfillum" 1
+    	"$surfaceprop" "metal"
+	"$frame" "6"
+	"Proxies" 
+	{
+		"AnimatedTexture" 
+		{ 
+			"animatedTextureVar" "$basetexture" 
+			"animatedTextureFrameNumVar" "$frame" 
+			"animatedTextureFrameRate" "10" 
+		}
+	}
+}
+

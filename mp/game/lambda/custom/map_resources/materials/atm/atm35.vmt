@@ -1,0 +1,4 @@
+"unlitgeneric" {
+    "$basetexture" "atm\atm35"
+    "$surfaceprop" "glass"
+}

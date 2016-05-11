@@ -1,0 +1,19 @@
+"lightmappedgeneric" {
+    	"$basetexture" "tld\sh2_floorrun5_d"
+    	"$translucent" 1
+    	"$envmapcontrast" 0.100000
+    	"$envmapsaturation" 0.100000
+    	"$envmap" "env_cubemap"
+    	"$envmaptint" "[ 0.5020 0.5020 0.5020 ]"
+    	"$surfaceprop" "glass"
+	"$frame" "12"
+	"Proxies" 
+	{
+		"AnimatedTexture" 
+		{ 
+			"animatedTextureVar" "$basetexture" 
+			"animatedTextureFrameNumVar" "$frame" 
+			"animatedTextureFrameRate" "10" 
+		}
+	}
+}

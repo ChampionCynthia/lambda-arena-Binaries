@@ -652,3 +652,18 @@ event HitMarkerHide
 {
 	Animate HudHitmarker Alpha 0 Linear 0.2 0.4
 }
+
+// Map Timer
+
+event MapTimerInit
+{
+	Animate HudMapTimer FgColor		"255 0 0 255"	Linear  0.0  0.0
+	Animate HudMapTimer BgColor		"56 0 0 76"		Linear	0.0  0.0
+	Animate HudMapTimer Blur		"0"				Linear  0.0  0.0
+}
+
+event MapTimerPulse
+{
+	Animate HudMapTimer Blur        "5"            Linear  0.0  0.1
+	Animate HudMapTimer Blur        "0"            Deaccel 0.1  0.5
+}

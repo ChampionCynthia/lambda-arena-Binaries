@@ -3514,6 +3514,9 @@
     <ClCompile Include="hud_hitmarker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="hl2mp\hud_maptimer.cpp">
+      <Filter>Source Files\HL2MP\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

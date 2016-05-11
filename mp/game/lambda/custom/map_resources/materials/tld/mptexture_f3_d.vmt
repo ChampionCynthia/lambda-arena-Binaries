@@ -1,0 +1,8 @@
+"lightmappedgeneric" {
+    "$basetexture" "tld\mptexture_f3_d"
+    "$bumpmap" "tld\mptexture_f3_local"
+    "$surfaceprop" "metal"
+	"$envmap" "env_cubemap"
+	"$envmaptint"	"[0.5 0.5 0.5]"
+	"$normalmapalphaenvmapmask" "1"
+}

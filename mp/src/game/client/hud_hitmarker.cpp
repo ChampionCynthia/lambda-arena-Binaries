@@ -10,6 +10,7 @@
 #include "hud_hitmarker.h"
 #include "iclientmode.h"
 #include "c_baseplayer.h"
+#include "engine/ienginesound.h"
 
 // VGUI panel includes
 #include <vgui_controls/AnimationController.h>
@@ -50,6 +51,9 @@ void CHudHitmarker::Init()
 
 	SetAlpha( 0 );
 	m_bHitmarkerShow = false;
+
+	enginesound->PrecacheSound("ui/hitsounds/ag2_hitbody.wav");
+	enginesound->PrecacheSound("ui/hitsounds/ag2_hithead.wav");
 }
 
 //-----------------------------------------------------------------------------
@@ -85,11 +89,11 @@ bool CHudHitmarker::ShouldDraw( void )
 //-----------------------------------------------------------------------------
 void CHudHitmarker::Paint( void )
 {
-        C_BasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
-        if (!pPlayer)
-        {
-                return;
-        }
+	C_BasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
+	if (!pPlayer)
+	{
+		return;
+	}
  
 	if (m_bHitmarkerShow)
 	{
@@ -115,4 +119,7 @@ void CHudHitmarker::MsgFunc_ShowHitmarker(bf_read &msg)
 	m_bHitmarkerShow = msg.ReadByte();
 
 	g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HitMarkerShow");
+
+	CLocalPlayerFilter filter;
+	enginesound->EmitSound(filter, -1, CHAN_AUTO, "ui/hitsounds/ag2_hitbody.wav", 1.0, SNDLVL_NORM, 0);
 }

@@ -1424,26 +1424,11 @@ void CBasePlayer::HitMarker(CBaseEntity *pAttacker)
 
 		if (pAttacker->entindex() - 1 != this->GetClientIndex())
 		{
-			Vector vecOrigin = pAttacker->GetAbsOrigin();
 			CBasePlayer *atkPlayer = ToBasePlayer(pAttacker);
 
 			if (atkPlayer != NULL)
 			{
-				CSoundParameters params;
-				CBaseEntity::GetParametersForSound("Player.HitSoundBody", params, NULL);
-
 				CSingleUserRecipientFilter filter(atkPlayer);
-
-				EmitSound_t ep;
-				ep.m_nChannel = params.channel;
-				ep.m_pSoundName = params.soundname;
-				ep.m_flVolume = params.volume;
-				ep.m_SoundLevel = params.soundlevel;
-				ep.m_nFlags = 0;
-				ep.m_nPitch = params.pitch;
-				ep.m_pOrigin = &vecOrigin;
-
-				CBaseEntity::EmitSound(filter, pAttacker->entindex(), ep);
 
 				UserMessageBegin(filter, "ShowHitmarker");
 				WRITE_BYTE(1);

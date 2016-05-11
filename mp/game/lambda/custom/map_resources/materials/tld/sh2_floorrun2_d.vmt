@@ -1,0 +1,5 @@
+"lightmappedgeneric" {
+    "$basetexture" "tld\sh2_floorrun2_d"
+    "$bumpmap" "tld\sh2_floorrun2_local"
+    "$surfaceprop" "metal"
+}

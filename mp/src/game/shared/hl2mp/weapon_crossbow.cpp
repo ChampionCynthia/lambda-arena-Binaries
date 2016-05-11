@@ -22,6 +22,7 @@
 
 #include "weapon_hl2mpbasehlmpcombatweapon.h"
 #include "effect_dispatch_data.h"
+#include "rumble_shared.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -667,6 +668,10 @@ void CWeaponCrossbow::FireBolt( void )
 		pBolt->SetAbsVelocity( vecAiming * BOLT_AIR_VELOCITY );
 	}
 
+#endif
+
+#ifdef GAME_DLL
+	pOwner->RumbleEffect(this->GetRumbleEffect(), 0, RUMBLE_FLAG_RESTART); // [Striker] Rumble for gamepads.
 #endif
 
 	m_iClip1--;

@@ -33,8 +33,10 @@ protected:
 	void SetToPrimaryColor();
 	void SetToSecondaryColor();
 
+	virtual void ApplySchemeSettings(vgui::IScheme *pScheme);
+
 private:
-	void PaintTime(vgui::HFont font, int xpos, int ypos, int mins, int secs);
+	void PaintTime(vgui::HFont font, int xpos, int ypos, int mins, int secs, bool underlay);
 
 	int m_iMinutes;
 	int m_iSeconds;
@@ -44,10 +46,11 @@ private:
 	CPanelAnimationVar( float, m_flAlphaOverride, "Alpha", "255" );
 	CPanelAnimationVar( Color, m_TextColor, "TextColor", "FgColor" );
 	CPanelAnimationVar( Color, m_FlashColor, "SecondaryColor", "FgColor" );
+	CPanelAnimationVar( Color, m_BgColor, "BgColor", "BgColor");
 
-	CPanelAnimationVar( vgui::HFont, m_hNumberFont, "NumberFont", "HudNumbers" );
-	CPanelAnimationVar( vgui::HFont, m_hNumberGlowFont, "NumberGlowFont", "HudNumbersGlow" );
-	CPanelAnimationVar( vgui::HFont, m_hSmallNumberFont, "SmallNumberFont", "HudNumbersSmall" );
+	CPanelAnimationVar( vgui::HFont, m_hNumberFont, "NumberFont", "HudTimerNumbers" );
+	CPanelAnimationVar( vgui::HFont, m_hNumberGlowFont, "NumberGlowFont", "HudTimerNumbersGlow" );
+	CPanelAnimationVar( vgui::HFont, m_hSmallNumberFont, "SmallNumberFont", "HudTimerNumbersSmall" );
 	CPanelAnimationVar( vgui::HFont, m_hTextFont, "TextFont", "Default" );
 
 	CPanelAnimationVarAliasType( float, text_xpos, "text_xpos", "8", "proportional_float" );
