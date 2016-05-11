@@ -6,7 +6,7 @@
 	"$surfaceprop"	"glass"
 	"$refractamount" .2
         "$refracttint" "[1 1 1]"
-        "$surfaceprop" "metal"
+		
         "%keywords" "gooinglass; shadertest; fire_glass; glass; gta; refract; gooinglass_fix" 
 	
 
