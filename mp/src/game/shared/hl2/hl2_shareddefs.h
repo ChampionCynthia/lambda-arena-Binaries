@@ -45,5 +45,4 @@ enum
 #define DMG_MISSILEDEFENSE	(DMG_LASTGENERICFLAG<<2)	// The only kind of damage missiles take. (special missile defense)
 
 
-
 #endif // HL2_SHAREDDEFS_H

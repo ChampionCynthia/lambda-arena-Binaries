@@ -643,8 +643,15 @@ event PoisonLoop
 
 event HitMarkerShow
 {
+	Animate HudHitmarker HitMarkerColor "255 255 255 255" Linear 0.0 0.0
 	Animate HudHitmarker Alpha 255 Linear 0.0 0.1
-	
+	RunEvent HitMarkerHide 0.1
+}
+
+event HitMarkerShowHeadshot
+{
+	Animate HudHitmarker HitMarkerColor "0 255 0 255" Linear 0.0 0.0
+	Animate HudHitmarker Alpha 255 Linear 0.0 0.1
 	RunEvent HitMarkerHide 0.1
 }
 

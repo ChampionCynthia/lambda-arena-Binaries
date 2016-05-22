@@ -626,8 +626,10 @@ bool CHL2MP_Player::WantsLagCompensationOnEntity( const CBasePlayer *pPlayer, co
 	// No need to lag compensate at all if we're not attacking in this command and
 	// we haven't attacked recently.
 	// [Striker] Lag compensate for secondary attack too! What the fuck, how could you forget something like this Valve?
-	if ( !( pCmd->buttons & (IN_ATTACK | IN_ATTACK2) ) && (pCmd->command_number - m_iLastWeaponFireUsercmd > 5) )
-		return false;
+	// [Stirker] Second edit, commented this whole block out now, it was causing tons of issues with weapons that shoot
+	//           after letting go of the attack buttons. Same with weapons that don't change m_iLastWeaponFireUsercmd.
+	//if ( !( pCmd->buttons & (IN_ATTACK | IN_ATTACK2) ) && (pCmd->command_number - m_iLastWeaponFireUsercmd > 5) )
+	//	return false;
 
 	// If this entity hasn't been transmitted to us and acked, then don't bother lag compensating it.
 	if ( pEntityTransmitBits && !pEntityTransmitBits->Get( pPlayer->entindex() ) )

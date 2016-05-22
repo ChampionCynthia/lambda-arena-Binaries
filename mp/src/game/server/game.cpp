@@ -37,7 +37,7 @@ ConVar	forcerespawn( "mp_forcerespawn","1", FCVAR_NOTIFY );
 //ConVar	footsteps( "mp_footsteps","1", FCVAR_NOTIFY | FCVAR_HIDDEN); // [Striker] Hidden, since it's basically useless and superceded by sv_footsteps
 ConVar	flashlight( "mp_flashlight","1", FCVAR_NOTIFY );
 ConVar	aimcrosshair( "mp_autocrosshair","1", FCVAR_NOTIFY );
-ConVar	decalfrequency( "decalfrequency","10", FCVAR_NOTIFY );
+ConVar	decalfrequency( "decalfrequency","5", FCVAR_NOTIFY );
 ConVar	teamlist( "mp_teamlist","hgrunt;scientist", FCVAR_NOTIFY );
 ConVar	teamoverride( "mp_teamoverride","1" );
 ConVar	defaultteam( "mp_defaultteam","0" );

@@ -476,6 +476,66 @@ void DispatchParticleEffect( const char *pszParticleName, Vector vecOrigin, Vect
 	DispatchParticleEffect( iIndex, vecOrigin, vecStart, vecAngles, pEntity );
 }
 
+//------------------------------------------------------------------------------------------------------------
+// Purpose: [Striker] A new overload, allows specifying a vecStart and an attachment, useful for beam weapons.
+//------------------------------------------------------------------------------------------------------------
+void DispatchParticleEffect(const char *pszParticleName, Vector vecStart, ParticleAttachment_t iAttachType, CBaseEntity *pEntity, const char *pszAttachmentName, bool bResetAllParticlesOnEntity)
+{
+	CEffectData	data;
+	data.m_nHitBox = GetParticleSystemIndex(pszParticleName);
+
+	if (pEntity)
+	{
+#ifdef CLIENT_DLL
+		C_BaseCombatWeapon *pWpn = dynamic_cast<C_BaseCombatWeapon *>(pEntity);
+		if (pWpn && pWpn->ShouldDrawUsingViewModel())
+		{
+			C_BasePlayer *player = ToBasePlayer(pWpn->GetOwner());
+
+			// Use GetRenderedWeaponModel() instead?
+			C_BaseViewModel *pViewModel = player ? player->GetViewModel(0) : NULL;
+			if (pViewModel)
+			{
+				pEntity = pViewModel;
+			}
+		}
+
+		data.m_hEntity = pEntity;
+#else
+		data.m_nEntIndex = pEntity->entindex();
+#endif
+		data.m_fFlags |= PARTICLE_DISPATCH_FROM_ENTITY;
+		data.m_vOrigin = pEntity->GetAbsOrigin();
+		data.m_bControlPoint1 = true;
+		data.m_ControlPoint1.m_eParticleAttachment = PATTACH_WORLDORIGIN;
+		data.m_ControlPoint1.m_vecOffset = vecStart;
+		data.m_vAngles = pEntity->GetAbsAngles();
+	}
+
+	int iAttachmentPoint = pEntity->GetBaseAnimating()->LookupAttachment(pszAttachmentName);
+
+	data.m_nDamageType = iAttachType;
+	data.m_nAttachmentIndex = iAttachmentPoint;
+
+	if (bResetAllParticlesOnEntity)
+	{
+		data.m_fFlags |= PARTICLE_DISPATCH_RESET_PARTICLES;
+	}
+
+#ifdef GAME_DLL
+	if ((data.m_fFlags & PARTICLE_DISPATCH_FROM_ENTITY) != 0 &&
+		(iAttachType == PATTACH_ABSORIGIN_FOLLOW || iAttachType == PATTACH_POINT_FOLLOW || iAttachType == PATTACH_ROOTBONE_FOLLOW))
+	{
+		CBroadcastRecipientFilter filter;
+		DispatchEffect("ParticleEffect", data, filter);
+	}
+	else
+#endif
+	{
+		DispatchEffect("ParticleEffect", data);
+	}
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

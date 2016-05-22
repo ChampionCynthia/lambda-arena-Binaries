@@ -32,10 +32,7 @@
 	#include "voice_gamemgr.h"
 	#include "hl2mp_gameinterface.h"
 	#include "hl2mp_cvars.h"
-
-#ifdef DEBUG	
 	#include "hl2mp_bot_temp.h"
-#endif
 
 extern void respawn(CBaseEntity *pEdict, bool fCopyCorpse);
 
@@ -750,6 +747,12 @@ void CHL2MPRules::DeathNotice( CBasePlayer *pVictim, const CTakeDamageInfo &info
 		event->SetInt("attacker", killer_ID );
 		event->SetString("weapon", killer_weapon_name );
 		event->SetInt( "priority", 7 );
+
+		if (info.GetDamageType() & DMG_HEADSHOT)
+			event->SetBool("headshot", true);
+		else
+			event->SetBool("headshot", false);
+
 		gameeventmanager->FireEvent( event );
 	}
 #endif
@@ -951,8 +954,6 @@ CAmmoDef *GetAmmoDef()
 
 #else
 
-#ifdef DEBUG
-
 	// Handler for the "bot" command.
 	void Bot_f()
 	{		
@@ -972,10 +973,8 @@ CAmmoDef *GetAmmoDef()
 		}
 	}
 
+	ConCommand cc_Bot("bot", Bot_f, "Add a bot."); // [Striker] Don't consider bots a cheat.
 
-	ConCommand cc_Bot( "bot", Bot_f, "Add a bot.", FCVAR_CHEAT );
-
-#endif
 
 	bool CHL2MPRules::FShouldSwitchWeapon( CBasePlayer *pPlayer, CBaseCombatWeapon *pWeapon )
 	{		

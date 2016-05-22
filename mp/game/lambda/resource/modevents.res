@@ -35,12 +35,34 @@
 		"headshot"	"bool"		// Was it a headshot?
 	}
 	
+	"player_hurt"
+	{
+		"userid" "short"
+		"health" "short"
+		"attacker" "short"
+		"damageamount" "short"
+		"headshot" "bool"
+	}
+	
 	"teamplay_round_start"			// round restart
 	{
 		"full_reset"	"bool"		// is this a full reset of the map
 	}
 	
 	"spec_target_updated"
+	{
+	}
+	
+	"show_freezepanel"
+	{
+		"killer"	"short"		// entindex of the killer entity
+	}
+
+	"hide_freezepanel"
+	{
+	}
+
+	"freezecam_started"
 	{
 	}
 	

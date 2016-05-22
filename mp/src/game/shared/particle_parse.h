@@ -79,6 +79,8 @@ void DispatchParticleEffect( int iEffectIndex, Vector vecOrigin, Vector vecStart
 void DispatchParticleEffect( const char *pszParticleName, ParticleAttachment_t iAttachType, CBaseEntity *pEntity, const char *pszAttachmentName, Vector vecColor1, Vector vecColor2, bool bUseColors=true, bool bResetAllParticlesOnEntity = false );
 void DispatchParticleEffect( const char *pszParticleName, Vector vecOrigin, QAngle vecAngles, Vector vecColor1, Vector vecColor2, bool bUseColors=true, CBaseEntity *pEntity = NULL, int iAttachType = PATTACH_CUSTOMORIGIN );
 
+// [Striker] Another overload for beam weapons
+void DispatchParticleEffect(const char *pszParticleName, Vector vecStart, ParticleAttachment_t iAttachType, CBaseEntity *pEntity, const char *pszAttachmentName, bool bResetAllParticlesOnEntity = false);
 
 void StopParticleEffects( CBaseEntity *pEntity );
 

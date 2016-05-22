@@ -95,7 +95,7 @@ ConVar	spec_freeze_traveltime( "spec_freeze_traveltime", "0.4", FCVAR_CHEAT | FC
 
 ConVar sv_bonus_challenge( "sv_bonus_challenge", "0", FCVAR_REPLICATED, "Set to values other than 0 to select a bonus map challenge type." );
 
-ConVar la_disable_explosion_ring("la_disable_explosion_ring", "1", FCVAR_REPLICATED, "Disables the ear-ringing effect when being hit by explosions");
+ConVar la_sv_disable_explosion_ring("la_sv_disable_explosion_ring", "1", FCVAR_REPLICATED, "Disables the ear-ringing effect when being hit by explosions");
 
 static ConVar sv_maxusrcmdprocessticks( "sv_maxusrcmdprocessticks", "24", FCVAR_NOTIFY, "Maximum number of client-issued usrcmd ticks that can be replayed in packet loss conditions, 0 to allow no restrictions" );
 
@@ -928,7 +928,6 @@ void CBasePlayer::TraceAttack( const CTakeDamageInfo &inputInfo, const Vector &v
 		}
 
 		SetLastHitGroup( ptr->hitgroup );
-
 		
 		switch ( ptr->hitgroup )
 		{
@@ -936,6 +935,7 @@ void CBasePlayer::TraceAttack( const CTakeDamageInfo &inputInfo, const Vector &v
 			break;
 		case HITGROUP_HEAD:
 			info.ScaleDamage( sk_player_head.GetFloat() );
+			info.AddDamageType(DMG_HEADSHOT);
 			break;
 		case HITGROUP_CHEST:
 			info.ScaleDamage( sk_player_chest.GetFloat() );
@@ -1410,32 +1410,7 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		OnDamagedByExplosion( info );
 	}
 
-	// [Striker] Hit sounds
-	HitMarker(info.GetAttacker());
-
 	return fTookDamage;
-}
-
-// [Striker] Play hit sound and send marker.
-void CBasePlayer::HitMarker(CBaseEntity *pAttacker)
-{
-	if (pAttacker && pAttacker->IsPlayer())
-	{
-
-		if (pAttacker->entindex() - 1 != this->GetClientIndex())
-		{
-			CBasePlayer *atkPlayer = ToBasePlayer(pAttacker);
-
-			if (atkPlayer != NULL)
-			{
-				CSingleUserRecipientFilter filter(atkPlayer);
-
-				UserMessageBegin(filter, "ShowHitmarker");
-				WRITE_BYTE(1);
-				MessageEnd();
-			}
-		}
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1466,7 +1441,7 @@ void CBasePlayer::OnDamagedByExplosion( const CTakeDamageInfo &info )
 	bool ear_ringing = distanceFromPlayer < MIN_EAR_RINGING_DISTANCE ? true : false;
 	bool shock = lastDamage >= MIN_SHOCK_AND_CONFUSION_DAMAGE;
 
-	if ( (!shock && !ear_ringing) || la_disable_explosion_ring.GetBool() )
+	if ( (!shock && !ear_ringing) || la_sv_disable_explosion_ring.GetBool() )
 		return;
 
 	int effect = shock ? 
@@ -1668,6 +1643,13 @@ int CBasePlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		{
 			event->SetInt("attacker", 0 ); // hurt by "world"
 		}
+
+		event->SetInt("damageamount", info.GetDamage());
+		
+		if (m_bitsDamageType & DMG_HEADSHOT)
+			event->SetBool("headshot", true);
+		else
+			event->SetBool("headshot", false);
 
         gameeventmanager->FireEvent( event );
 	}
@@ -2165,7 +2147,7 @@ void CBasePlayer::PlayerDeathThink(void)
 	// wait for all buttons released
 	if (m_lifeState == LIFE_DEAD)
 	{
-		if (fAnyButtonDown)
+		if (fAnyButtonDown && !IsBot()) // [Striker] Make sure bots can respawn.
 			return;
 
 		if ( g_pGameRules->FPlayerCanRespawn( this ) )
@@ -2186,8 +2168,7 @@ void CBasePlayer::PlayerDeathThink(void)
 	}
 	
 // wait for any button down,  or mp_forcerespawn is set and the respawn time is up
-	if (!fAnyButtonDown 
-		&& !( g_pGameRules->IsMultiplayer() && forcerespawn.GetInt() > 0 && (gpGlobals->curtime > (m_flDeathTime + 5))) )
+	if (!fAnyButtonDown && !( g_pGameRules->IsMultiplayer() && forcerespawn.GetInt() > 0 && (gpGlobals->curtime > (m_flDeathTime + 5))) )
 		return;
 
 	m_nButtons = 0;

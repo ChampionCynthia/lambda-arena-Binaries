@@ -18,4 +18,8 @@ extern ConVar mp_allowspectators;
 extern ConVar friendlyfire;
 extern ConVar mp_fadetoblack;
 
+// [Striker] Lambda Arena Shared Vars
+extern ConVar la_sv_hitmarkers;
+extern ConVar la_sv_damagepopup;
+
 #endif // CS_GAMEVARS_SHARED_H

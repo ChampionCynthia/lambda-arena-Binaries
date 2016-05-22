@@ -17,8 +17,10 @@
 #include "ClientEffectPrecacheSystem.h"
 #else
 #include "hl2mp_player.h"
-
+#include "..\server\ilagcompensationmanager.h"
 #endif
+
+#include "particle_parse.h"
 
 #ifdef CLIENT_DLL
 #define CWeaponGauss C_WeaponGauss
@@ -29,7 +31,7 @@
 #define GAUSS_BEAM_SPRITE "sprites/laserbeam.vmt"
 #define	GAUSS_CHARGE_TIME			0.3f
 #define	MAX_GAUSS_CHARGE			16
-#define	MAX_GAUSS_CHARGE_TIME		3
+#define	MAX_GAUSS_CHARGE_TIME		3.0f
 #define	DANGER_GAUSS_CHARGE_TIME	10
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -72,7 +74,7 @@ protected:
 	void	ChargedFire(void);
 	void	ChargedFireFirstBeam(void);
 	void	StopChargeSound(void);
-	void	DrawBeam(const Vector &startPos, const Vector &endPos, float width, bool useMuzzle = false);
+	void	DrawBeam(const Vector &startPos, const Vector &endPos, bool charged, bool useMuzzle = false);
 	void	IncreaseCharge(void);
 private:
 	CSoundPatch *m_sndCharge;
@@ -85,9 +87,6 @@ private:
 	CNetworkVar(float, m_flCoilMaxVelocity);
 	CNetworkVar(float, m_flCoilVelocity);
 	CNetworkVar(float, m_flCoilAngle);
-
-	CNetworkHandle(CBeam, m_pBeam);
-
 };
 
 IMPLEMENT_NETWORKCLASS_ALIASED(WeaponGauss, DT_WeaponGauss)
@@ -101,7 +100,6 @@ RecvPropFloat(RECVINFO(m_flChargeStartTime)),
 RecvPropFloat(RECVINFO(m_flCoilMaxVelocity)),
 RecvPropFloat(RECVINFO(m_flCoilVelocity)),
 RecvPropFloat(RECVINFO(m_flCoilAngle)),
-RecvPropEHandle(RECVINFO(m_pBeam)),
 #else
 SendPropBool(SENDINFO(m_bCharging)),
 SendPropBool(SENDINFO(m_bChargeIndicated)),
@@ -110,13 +108,11 @@ SendPropFloat(SENDINFO(m_flChargeStartTime)),
 SendPropFloat(SENDINFO(m_flCoilMaxVelocity)),
 SendPropFloat(SENDINFO(m_flCoilVelocity)),
 SendPropFloat(SENDINFO(m_flCoilAngle)),
-SendPropEHandle(SENDINFO(m_pBeam)),
 #endif
 END_NETWORK_TABLE()
 
 #ifdef CLIENT_DLL
 BEGIN_PREDICTION_DATA(CWeaponGauss)
-DEFINE_PRED_FIELD(m_pBeam, FIELD_EHANDLE, FTYPEDESC_INSENDTABLE),
 END_PREDICTION_DATA()
 #endif
 
@@ -225,25 +221,29 @@ void CWeaponGauss::Fire(void)
 
 	Vector  endPos = startPos + (aimDir * MAX_TRACE_LENGTH);
 
+#ifndef CLIENT_DLL
+	lagcompensation->StartLagCompensation(pOwner, pOwner->GetCurrentCommand());
+#endif
+
 	//Shoot a shot straight out
 	trace_t tr;
 	UTIL_TraceLine(startPos, endPos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &tr);
+
 #ifndef CLIENT_DLL
 	ClearMultiDamage();
 #endif
 
+#ifndef CLIENT_DLL    
 	CBaseEntity *pHit = tr.m_pEnt;
-#ifndef CLIENT_DLL         
+
 	CTakeDamageInfo dmgInfo(this, pOwner, sk_dmg_gauss.GetFloat(), DMG_SHOCK | DMG_BULLET);
-#endif
 
 	if (pHit != NULL)
 	{
-#ifndef CLIENT_DLL
 		CalculateBulletDamageForce(&dmgInfo, m_iPrimaryAmmoType, aimDir, tr.endpos, 7.0f * 5.0f);
 		pHit->DispatchTraceAttack(dmgInfo, aimDir, &tr);
-#endif
 	}
+#endif
 
 	if (tr.DidHitWorld())
 	{
@@ -259,7 +259,7 @@ void CWeaponGauss::Fire(void)
 			endPos = startPos + (vReflection * MAX_TRACE_LENGTH);
 
 			//Draw beam to reflection point
-			DrawBeam(tr.startpos, tr.endpos, 1.6, true);
+			DrawBeam(tr.startpos, tr.endpos, false, true);
 
 			CPVSFilter filter(tr.endpos);
 			te->GaussExplosion(filter, 0.0f, tr.endpos, tr.plane.normal, 0);
@@ -279,19 +279,20 @@ void CWeaponGauss::Fire(void)
 			}
 
 			//Connect reflection point to end
-			DrawBeam(tr.startpos, tr.endpos, 0.4);
+			DrawBeam(tr.startpos, tr.endpos, false);
 		}
 		else
 		{
-			DrawBeam(tr.startpos, tr.endpos, 1.6, true);
+			DrawBeam(tr.startpos, tr.endpos, false, true);
 		}
 	}
 	else
 	{
-		DrawBeam(tr.startpos, tr.endpos, 1.6, true);
+		DrawBeam(tr.startpos, tr.endpos, false, true);
 	}
 #ifndef CLIENT_DLL         
 	ApplyMultiDamage();
+	lagcompensation->FinishLagCompensation(pOwner);
 #endif
 
 	UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
@@ -324,9 +325,8 @@ void CWeaponGauss::ChargedFireFirstBeam(void)
 	UTIL_TraceLine(startPos, endPos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &tr);
 	startPos = tr.endpos;
 
-
 	//Draw beam
-	DrawBeam(tr.startpos, tr.endpos, 9.6, true);
+	DrawBeam(tr.startpos, tr.endpos, true, true);
 
 	CPVSFilter filter(tr.endpos);
 	te->GaussExplosion(filter, 0.0f, tr.endpos, tr.plane.normal, 0);
@@ -363,7 +363,7 @@ void CWeaponGauss::SecondaryAttack(void)
 		if (m_sndCharge != NULL)
 		{
 			(CSoundEnvelopeController::GetController()).Play(m_sndCharge, 1.0f, 50);
-			(CSoundEnvelopeController::GetController()).SoundChangePitch(m_sndCharge, 250, 3.0f);
+			(CSoundEnvelopeController::GetController()).SoundChangePitch(m_sndCharge, 250, MAX_GAUSS_CHARGE_TIME);
 		}
 
 		m_flChargeStartTime = gpGlobals->curtime;
@@ -451,14 +451,16 @@ void CWeaponGauss::ChargedFire(void)
 	m_bCharging = false;
 	m_bChargeIndicated = false;
 
-
 	m_flNextSecondaryAttack = gpGlobals->curtime + 1.0f;
+
+#ifndef CLIENT_DLL
+	lagcompensation->StartLagCompensation(pOwner, pOwner->GetCurrentCommand());
+#endif
 
 	//Shoot a shot straight
 	Vector  startPos = pOwner->Weapon_ShootPosition();
 	Vector  aimDir = pOwner->GetAutoaimVector(AUTOAIM_5DEGREES);
 	Vector  endPos = startPos + (aimDir * MAX_TRACE_LENGTH);
-
 
 	//Find Damage
 	float flChargeAmount = (gpGlobals->curtime - m_flChargeStartTime) / MAX_GAUSS_CHARGE_TIME;
@@ -467,11 +469,7 @@ void CWeaponGauss::ChargedFire(void)
 	{
 		flChargeAmount = 1.0f;
 	}
-#ifndef CLIENT_DLL
-	// float flDamage = sk_plr_max_dmg_gauss.GetFloat() + ( ( sk_plr_max_dmg_gauss.GetFloat() - sk_plr_max_dmg_gauss.GetFloat() ) * flChargeAmount );
 
-	float flDamage = 25 * flChargeAmount;
-#endif
 	trace_t tr;
 	UTIL_TraceLine(startPos, endPos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &tr); //Trace from gun to wall
 
@@ -480,9 +478,9 @@ void CWeaponGauss::ChargedFire(void)
 
 
 #ifndef CLIENT_DLL
-	//RadiusDamage( CTakeDamageInfo( this, pOwner, sk_plr_max_dmg_gauss.GetFloat(), DMG_SHOCK ),tr.endpos, 90.0f, CLASS_PLAYER_ALLY, pOwner );
-	RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
+	float flDamage = 3 + (22 * flChargeAmount);
 
+	RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
 	ClearMultiDamage();
 #endif
 
@@ -490,10 +488,8 @@ void CWeaponGauss::ChargedFire(void)
 	UTIL_DecalTrace(&tr, "RedGlowFade");
 
 #ifndef CLIENT_DLL
-	// RadiusDamage( CTakeDamageInfo( this, pOwner, sk_plr_max_dmg_gauss.GetFloat(), DMG_SHOCK ),tr.endpos, 90.0f, CLASS_PLAYER_ALLY, pOwner );
 	RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
 #endif
-
 
 	CBaseEntity *pHit = tr.m_pEnt;
 
@@ -513,7 +509,6 @@ void CWeaponGauss::ChargedFire(void)
 		UTIL_DecalTrace(&tr, "RedGlowFade");
 
 #ifndef CLIENT_DLL
-		//RadiusDamage( CTakeDamageInfo( this, pOwner, sk_plr_max_dmg_gauss.GetFloat(), DMG_SHOCK ),tr.endpos, 90.0f, CLASS_PLAYER_ALLY, pOwner );
 		RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
 #endif
 
@@ -524,7 +519,6 @@ void CWeaponGauss::ChargedFire(void)
 			UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
 
 #ifndef CLIENT_DLL
-			//RadiusDamage( CTakeDamageInfo( this, pOwner, sk_plr_max_dmg_gauss.GetFloat(), DMG_SHOCK ),tr.endpos, 90.0f, CLASS_PLAYER_ALLY, pOwner );
 			RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
 #endif
 
@@ -533,14 +527,14 @@ void CWeaponGauss::ChargedFire(void)
 			UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
 			UTIL_DecalTrace(&tr, "RedGlowFade");
 #ifndef CLIENT_DLL
-			//RadiusDamage( CTakeDamageInfo( this, pOwner, sk_plr_max_dmg_gauss.GetFloat(), DMG_SHOCK ),tr.endpos, 90.0f, CLASS_PLAYER_ALLY, pOwner );
 			RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
 #endif
 
 		}
 
 	}
-	else if (pHit != NULL){
+	else if (pHit != NULL)
+	{
 #ifndef CLIENT_DLL
 		// CTakeDamageInfo dmgInfo( this, pOwner, sk_plr_max_dmg_gauss.GetFloat(), DMG_SHOCK );
 		//		  CalculateBulletDamageForce( &dmgInfo, m_iPrimaryAmmoType, aimDir, tr.endpos );
@@ -555,7 +549,6 @@ void CWeaponGauss::ChargedFire(void)
 #endif
 
 #ifndef CLIENT_DLL
-	//RadiusDamage( CTakeDamageInfo( this, pOwner, sk_plr_max_dmg_gauss.GetFloat(), DMG_SHOCK ),tr.endpos, 90.0f, CLASS_PLAYER_ALLY, pOwner );
 	RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
 #endif
 
@@ -566,7 +559,7 @@ void CWeaponGauss::ChargedFire(void)
 	viewPunch.z = 0;
 	pOwner->ViewPunch(viewPunch);
 
-	// DrawBeam( startPos, tr.endpos, 9.6, true ); //Draw beam from gun through first wall.
+	// DrawBeam( startPos, tr.endpos, true, true ); //Draw beam from gun through first wall.
 #ifndef CLIENT_DLL
 	Vector	recoilForce = pOwner->BodyDirection3D() * -(flDamage * 15.0f);
 	recoilForce[2] += 128.0f;
@@ -577,57 +570,43 @@ void CWeaponGauss::ChargedFire(void)
 	te->GaussExplosion(filter, 0.0f, tr.endpos, tr.plane.normal, 0);
 
 #ifndef CLIENT_DLL
-	//RadiusDamage( CTakeDamageInfo( this, pOwner, sk_plr_max_dmg_gauss.GetFloat(), DMG_SHOCK ),tr.endpos, 90.0f, CLASS_PLAYER_ALLY, pOwner );
 	RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
 #endif
 
-
-	if (penetrated == true){
-
+	if (penetrated == true)
+	{
 		trace_t beam_tr;
 		Vector vecDest = tr.endpos + aimDir * MAX_TRACE_LENGTH;
 		UTIL_TraceLine(tr.endpos, vecDest, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &beam_tr); //Traces from back of first wall to second wall
 
-
 #ifndef CLIENT_DLL
-		// float flDamage = sk_plr_max_dmg_gauss.GetFloat() + ( ( sk_plr_max_dmg_gauss.GetFloat() - sk_plr_max_dmg_gauss.GetFloat() ) * flChargeAmount );
-
-
-		float flDamage = 37 + ((115 - 15) * flChargeAmount);
+		float flDamage = 37 + (100 * flChargeAmount);
 #endif
 
-
-
-		for (int i = 0; i < 0; i++){
-
-			UTIL_TraceLine(beam_tr.endpos + aimDir * 128.0f, beam_tr.endpos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &beam_tr); //Traces To back of second wall
-
-
-			UTIL_ImpactTrace(&beam_tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
-			UTIL_DecalTrace(&beam_tr, "RedGlowFade");
+		UTIL_TraceLine(beam_tr.endpos + aimDir * 128.0f, beam_tr.endpos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &beam_tr); //Traces To back of second wall
+		UTIL_ImpactTrace(&beam_tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
+		UTIL_DecalTrace(&beam_tr, "RedGlowFade");
 
 #ifndef CLIENT_DLL
-			//RadiusDamage( CTakeDamageInfo( this, pOwner, sk_plr_max_dmg_gauss.GetFloat(), DMG_SHOCK ), beam_tr.endpos, 90.0f, CLASS_PLAYER_ALLY, pOwner );
-			RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
+		RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
 #endif
 
-
-
-		}
-		DrawBeam(tr.endpos, beam_tr.endpos, 9.6, false);
+		DrawBeam(tr.endpos, beam_tr.endpos, true, false);
 		DoWallBreak(tr.endpos, newPos, aimDir, &tr, pOwner, true);
 
 		UTIL_ImpactTrace(&beam_tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
 		UTIL_DecalTrace(&beam_tr, "RedGlowFade");
 
 #ifndef CLIENT_DLL
-		//RadiusDamage( CTakeDamageInfo( this, pOwner, sk_plr_max_dmg_gauss.GetFloat(), DMG_SHOCK ), beam_tr.endpos, 90.0f, CLASS_PLAYER_ALLY, pOwner );
 		RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
 #endif
-
-		return;
 	}
 
+#ifndef CLIENT_DLL
+	lagcompensation->FinishLagCompensation(pOwner);
+#endif
+
+	return;
 }
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -665,7 +644,6 @@ void CWeaponGauss::DoWallBreak(Vector startPos, Vector endPos, Vector aimDir, tr
 			tempPos = ptr->endpos + (aimDir * MAX_TRACE_LENGTH + aimDir * 128.0f);
 
 		}
-		//DrawBeam( beamStart, ptr->startpos, 4.0, false );
 	}
 	else{
 		UTIL_TraceLine(startPos, endPos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, ptr); //Trace from gun to wall
@@ -679,61 +657,31 @@ void CWeaponGauss::DoWallBreak(Vector startPos, Vector endPos, Vector aimDir, tr
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CWeaponGauss::DrawBeam(const Vector &startPos, const Vector &endPos, float width, bool useMuzzle)
+void CWeaponGauss::DrawBeam(const Vector &startPos, const Vector &endPos, bool charged, bool useMuzzle)
 {
-
-#ifndef CLIENT_DLL
-
-	//Draw the main beam shaft
-	CBeam *m_pBeam = CBeam::BeamCreate(GAUSS_BEAM_SPRITE, width);
-
-	if (useMuzzle)
+	if (charged)
 	{
-		m_pBeam->PointEntInit(endPos, this);
-		m_pBeam->SetEndAttachment(LookupAttachment("0"));
-		m_pBeam->SetWidth(width / 4.0f);
-		m_pBeam->SetEndWidth(width);
-		m_pBeam->RelinkBeam();
-	}
-
-	else
-	{
-		m_pBeam->SetStartPos(startPos);
-		m_pBeam->SetEndPos(endPos);
-		m_pBeam->SetWidth(width);
-		m_pBeam->SetEndWidth(width / 4.0f);
-		m_pBeam->RelinkBeam();
-	}
-	m_pBeam->SetBrightness(255);
-	m_pBeam->SetColor(255, 145 + random->RandomInt(-16, 16), 0);
-	m_pBeam->LiveForTime(0.1f);
-	m_pBeam->RelinkBeam();
-
-	//Draw electric bolts along shaft
-	for (int i = 0; i < 3; i++)
-	{
-		m_pBeam = CBeam::BeamCreate(GAUSS_BEAM_SPRITE, (width / 2.0f) + i);
-
 		if (useMuzzle)
 		{
-			m_pBeam->PointEntInit(endPos, this);
-			m_pBeam->SetEndAttachment(LookupAttachment("0"));
-			m_pBeam->RelinkBeam();
+			DispatchParticleEffect("gaussbeam_charged", endPos, PATTACH_POINT_FOLLOW, this, "0", false);
 		}
 		else
 		{
-			m_pBeam->SetStartPos(startPos);
-			m_pBeam->SetEndPos(endPos);
-			m_pBeam->RelinkBeam();
+			DispatchParticleEffect("gaussbeam_charged", startPos, endPos, GetAbsAngles(), this);
 		}
-		m_pBeam->SetBrightness(random->RandomInt(64, 255));
-		m_pBeam->SetColor(255, 255, 150 + random->RandomInt(0, 64));
-		m_pBeam->LiveForTime(0.1f);
-		m_pBeam->SetNoise(1.6f * i);
-		m_pBeam->SetEndWidth(0.1f);
-		m_pBeam->RelinkBeam();
 	}
-#endif
+	else
+	{
+		if (useMuzzle)
+		{
+			DispatchParticleEffect("gaussbeam", endPos, PATTACH_POINT_FOLLOW, this, "0", false);
+		}
+		else
+		{
+			DispatchParticleEffect("gaussbeam", startPos, endPos, GetAbsAngles(), this);
+		}
+	}
+
 	return;
 }
 

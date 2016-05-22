@@ -56,3 +56,7 @@ ConVar mp_fadetoblack(
 
 
 ConVar sv_hudhint_sound( "sv_hudhint_sound", "1", FCVAR_REPLICATED );
+
+// [Striker] Lambda Arena Shared Vars
+ConVar la_sv_hitmarkers("la_sv_hitmarkers", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Allow clients to use hit markers.");
+ConVar la_sv_damagepopup("la_sv_damagepopup", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Allow clients to use damage popups.");

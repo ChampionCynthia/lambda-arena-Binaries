@@ -87,7 +87,7 @@ DESCRIPTION SERVER_OPTIONS
 		{ "1" }
 	}
 	
-	"la_doublejump"
+	"la_sv_doublejump"
 	{
 		"#LAMBDA_Double_Jump_Style"
 		{ LIST
@@ -126,7 +126,7 @@ DESCRIPTION SERVER_OPTIONS
 		{ "0" }
 	}
 	
-	"la_autojump"
+	"la_sv_autojump"
 	{
 		"#LAMBDA_Auto_Jump"
 		{ BOOL }
@@ -140,9 +140,23 @@ DESCRIPTION SERVER_OPTIONS
 		{ "0" }
 	}
 
-	"la_disable_explosion_ring"
+	"la_sv_disable_explosion_ring"
 	{
 		"#LAMBDA_Disable_Explosion_Ring"
+		{ BOOL }
+		{ "1" }
+	}
+	
+	"la_sv_hitmarkers"
+	{
+		"#LAMBDA_Hitmarkers"
+		{ BOOL }
+		{ "1" }
+	}
+	
+	"la_sv_damagepopup"
+	{
+		"#LAMBDA_Damagepopups"
 		{ BOOL }
 		{ "1" }
 	}

@@ -3517,6 +3517,9 @@
     <ClCompile Include="hl2mp\hud_maptimer.cpp">
       <Filter>Source Files\HL2MP\UI</Filter>
     </ClCompile>
+    <ClCompile Include="hud_damageaccount_panel.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

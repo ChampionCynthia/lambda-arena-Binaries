@@ -32,7 +32,7 @@
 
 
 // Half-Life User Info Configuration Layout Script (stores last settings chosen, too)
-// File generated:  Sun May 08 00:35:41 AM
+// File generated:  Tue May 26 04:33:22 AM
 //
 //
 // Cvar	-	Setting
@@ -41,4 +41,38 @@ VERSION 1.0
 
 DESCRIPTION INFO_OPTIONS
 {
+	"la_cl_damagepopup"
+	{
+		"Show damage values"  //the description
+		{ BOOL }  //the type of convar
+		{ "1" }  //the boolean value
+	}
+	
+	"la_cl_damagepopup_batching"
+	{
+		"Batch successive damage values together"
+		{ BOOL }  //the type of convar
+		{ "1" }  //the boolean value
+	}
+	
+	"la_cl_hitmarkers"
+	{
+		"Show hitmarkers"
+		{ BOOL }
+		{ "1" }
+	}
+	
+	"r_drawviewmodel" //the convar
+	{
+		"Draw the viewmodel"  //the description
+		{ BOOL }  //the type of convar
+		{ "1" }  //the boolean value
+	}	
+	
+	"viewmodel_fov"  //the convar
+	{
+		"Viewmodel FOV"  //the description
+		{ SLIDER 54 70 }  //the type of convar
+		{ "1" }  //the boolean value
+	}	
 }

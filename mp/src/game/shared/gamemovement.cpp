@@ -55,9 +55,9 @@ ConVar xc_uncrouch_on_jump( "xc_uncrouch_on_jump", "1", FCVAR_ARCHIVE, "Uncrouch
 ConVar player_limit_jump_speed( "player_limit_jump_speed", "1", FCVAR_REPLICATED );
 #endif
 
-ConVar la_autojump("la_autojump", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Automatically pogo-jump when holding jump key");
-ConVar la_doublejump("la_doublejump", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable double-jumping. (1: TF2 Style | 2: UT2004 Style)");
-ConVar la_jumpheight("la_jumpheight", "160.0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Jumping height (160.0 is HL2DM default!)");
+ConVar la_sv_autojump("la_sv_autojump", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Automatically pogo-jump when holding jump key");
+ConVar la_sv_doublejump("la_sv_doublejump", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable double-jumping. (1: TF2 Style | 2: UT2004 Style)");
+ConVar la_sv_jumpheight("la_sv_jumpheight", "160.0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Jumping height (160.0 is HL2DM default!)");
 
 // option_duck_method is a carrier convar. Its sole purpose is to serve an easy-to-flip
 // convar which is ONLY set by the X360 controller menu to tell us which way to bind the
@@ -2408,7 +2408,7 @@ bool CGameMovement::CheckJumpButton( void )
 		return false;
 #endif
 
-	if ( (mv->m_nOldButtons & IN_JUMP) && !la_autojump.GetBool())
+	if ( (mv->m_nOldButtons & IN_JUMP) && !la_sv_autojump.GetBool())
 		return false;		// don't pogo stick
 
 	// Cannot jump will in the unduck transition.
@@ -2449,14 +2449,11 @@ bool CGameMovement::CheckJumpButton( void )
 	float flMul;
 	if ( g_bMovementOptimizations )
 	{
-#if defined(HL2_DLL) || defined(HL2_CLIENT_DLL)
-		Assert( GetCurrentGravity() == 600.0f );
-		flMul = la_jumpheight.GetFloat();	// approx. 21 units.
-#else
-		Assert( GetCurrentGravity() == 800.0f );
-		flMul = 268.3281572999747f;
-#endif
+		//Assert( GetCurrentGravity() == 600.0f );
+		flMul = la_sv_jumpheight.GetFloat();	// approx. 21 units.
 
+		//Assert( GetCurrentGravity() == 800.0f );
+		//flMul = 268.3281572999747f;
 	}
 	else
 	{
@@ -2548,7 +2545,7 @@ bool CGameMovement::CheckJumpButton( void )
 
 bool CGameMovement::AirDash(void)
 {
-	if (la_doublejump.GetInt() <= 0) // Is doublejumping enabled?
+	if (la_sv_doublejump.GetInt() <= 0) // Is doublejumping enabled?
 		return false;
 
 	if (player->m_bAirDash) // Do not jump if player already doublejumped.
@@ -2567,7 +2564,7 @@ bool CGameMovement::AirDash(void)
 
 	// Apply approx. the jump velocity added to an air dash.
 	//Assert(sv_gravity.GetFloat() == 800.0f);
-	float flDashZ = la_jumpheight.GetFloat();
+	float flDashZ = la_sv_jumpheight.GetFloat();
 
 	// Get the wish direction.
 	Vector vecForward, vecRight;
@@ -2587,7 +2584,7 @@ bool CGameMovement::AirDash(void)
 		0.0f);
 
 	// Update the velocity on the player.
-	if (la_doublejump.GetInt() == 1)
+	if (la_sv_doublejump.GetInt() == 1)
 	{
 		mv->m_vecVelocity.x = vecWishDirection.x;
 		mv->m_vecVelocity.y = vecWishDirection.y;

@@ -556,8 +556,36 @@ Scheme
 				"tall"		"17"
 				"weight"	"1000"
 				"additive"	"1"
-				"antialias" 	"1"
+				"antialias" "1"
 				"custom"	"1"
+			}
+		}
+		HudDamageNumbersSmall
+		{
+			"1"
+			{
+				"name"			"BN Elements" [!$OSX]
+				"name"			"BN Elements" [$OSX]
+				"tall"			"14"
+				"weight"		"0"
+				"antialias" 	"1"
+				"custom"		"1"
+				"outline"		"0"
+				"additive"		"0"
+			}
+		}
+		HudDamageNumbersLarge
+		{
+			"1"
+			{
+				"name"			"BN Elements" [!$OSX]
+				"name"			"BN Elements" [$OSX]
+				"tall"			"16"
+				"weight"		"0"
+				"antialias" 	"1"
+				"custom"		"1"
+				"outline"		"0"
+				"additive"		"0"
 			}
 		}
 		HudHistoryNumbers
@@ -954,7 +982,18 @@ Scheme
 				"antialias" "1"
 				"custom" "1" [$OSX]
 		   }
-		}	
+		}
+		"CSTypeDeath"
+		{
+		   "1"
+		   {
+				"name"  "csd" // csd.ttf
+				"tall"  "32"
+				"weight" "0"
+				"additive" "1"
+				"antialias" "1"
+		   }
+		}			
 		// Used by scoreboard and spectator UI for names which don't map in the normal fashion
 		"DefaultVerySmallFallBack"
 		{
@@ -1648,6 +1687,7 @@ Scheme
 		"1"		"resource/impact.ttf"
 		"1"		"resource/D7MONOI.ttf"
 		"2"		"resource/HL2crosshairs.ttf"
+		"3"		"resource/csd.ttf"
 	}
 
 }

@@ -19,14 +19,12 @@ public:
 	void Reset();
 	bool ShouldDraw();
 
-	void MsgFunc_ShowHitmarker( bf_read &msg );
+	void FireGameEvent(IGameEvent *event);
  
 protected:
 	virtual void ApplySchemeSettings(vgui::IScheme *scheme);
 	virtual void Paint( void );
  
 private:
-	bool m_bHitmarkerShow;
-
 	CPanelAnimationVar( Color, m_HitmarkerColor, "HitMarkerColor", "255 255 255 255" );
 };

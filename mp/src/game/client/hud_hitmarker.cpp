@@ -11,6 +11,7 @@
 #include "iclientmode.h"
 #include "c_baseplayer.h"
 #include "engine/ienginesound.h"
+#include "gamevars_shared.h"
 
 // VGUI panel includes
 #include <vgui_controls/AnimationController.h>
@@ -23,7 +24,8 @@ using namespace vgui;
 #include "tier0/memdbgon.h"
  
 DECLARE_HUDELEMENT( CHudHitmarker );
-DECLARE_HUD_MESSAGE( CHudHitmarker, ShowHitmarker );
+
+ConVar la_cl_hitmarkers("la_cl_hitmarkers", "1", FCVAR_ARCHIVE, "Enable hitmarkers (client option)");
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
@@ -47,13 +49,12 @@ CHudHitmarker::CHudHitmarker( const char *pElementName ) : CHudElement(pElementN
 //-----------------------------------------------------------------------------
 void CHudHitmarker::Init()
 {
-	HOOK_HUD_MESSAGE( CHudHitmarker, ShowHitmarker );
-
 	SetAlpha( 0 );
-	m_bHitmarkerShow = false;
 
 	enginesound->PrecacheSound("ui/hitsounds/ag2_hitbody.wav");
 	enginesound->PrecacheSound("ui/hitsounds/ag2_hithead.wav");
+
+	ListenForGameEvent("player_hurt");
 }
 
 //-----------------------------------------------------------------------------
@@ -62,7 +63,6 @@ void CHudHitmarker::Init()
 void CHudHitmarker::Reset()
 {
 	SetAlpha( 0 );
-	m_bHitmarkerShow = false;
 }
  
 //-----------------------------------------------------------------------------
@@ -81,7 +81,7 @@ void CHudHitmarker::ApplySchemeSettings( vgui::IScheme *scheme )
 //-----------------------------------------------------------------------------
 bool CHudHitmarker::ShouldDraw( void )
 {
-	return ( m_bHitmarkerShow && CHudElement::ShouldDraw() );
+	return ( CHudElement::ShouldDraw() );
 }
  
 //-----------------------------------------------------------------------------
@@ -95,31 +95,46 @@ void CHudHitmarker::Paint( void )
 		return;
 	}
  
-	if (m_bHitmarkerShow)
-	{
-		int		x,y;
+	int		x,y;
 
-		// Find our screen position to start from
-		x = XRES(320);
-		y = YRES(240);
+	// Find our screen position to start from
+	x = XRES(320);
+	y = YRES(240);
 
-		vgui::surface()->DrawSetColor( m_HitmarkerColor );
-		vgui::surface()->DrawLine( x - 6, y - 5, x - 11, y - 10 );
-		vgui::surface()->DrawLine( x + 5, y - 5, x + 10, y - 10 );
-		vgui::surface()->DrawLine( x - 6, y + 5, x - 11, y + 10 );
-		vgui::surface()->DrawLine( x + 5, y + 5, x + 10, y + 10 );
-	}
+	vgui::surface()->DrawSetColor( m_HitmarkerColor );
+	vgui::surface()->DrawLine( x - 6, y - 5, x - 11, y - 10 );
+	vgui::surface()->DrawLine( x + 5, y - 5, x + 10, y - 10 );
+	vgui::surface()->DrawLine( x - 6, y + 5, x - 11, y + 10 );
+	vgui::surface()->DrawLine( x + 5, y + 5, x + 10, y + 10 );
 }
- 
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CHudHitmarker::MsgFunc_ShowHitmarker(bf_read &msg)
+
+void CHudHitmarker::FireGameEvent(IGameEvent *event)
 {
-	m_bHitmarkerShow = msg.ReadByte();
+	if (!la_sv_hitmarkers.GetBool() || !la_cl_hitmarkers.GetBool())
+		return;
 
-	g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HitMarkerShow");
+	const char * type = event->GetName();
 
-	CLocalPlayerFilter filter;
-	enginesound->EmitSound(filter, -1, CHAN_AUTO, "ui/hitsounds/ag2_hitbody.wav", 1.0, SNDLVL_NORM, 0);
+	if (Q_strcmp(type, "player_hurt") == 0)
+	{
+		C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
+		int iAttacker = event->GetInt("attacker");
+		bool bHeadshot = event->GetBool("headshot");
+
+		if (iAttacker != pPlayer->GetUserID())
+			return;
+
+		CLocalPlayerFilter filter;
+
+		if (bHeadshot)
+		{
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HitMarkerShowHeadshot");
+			enginesound->EmitSound(filter, -1, CHAN_AUTO, "ui/hitsounds/ag2_hithead.wav", 1.0, SNDLVL_NORM, 0);
+		}
+		else
+		{
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HitMarkerShow");
+			enginesound->EmitSound(filter, -1, CHAN_AUTO, "ui/hitsounds/ag2_hitbody.wav", 1.0, SNDLVL_NORM, 0);
+		}
+	}
 }

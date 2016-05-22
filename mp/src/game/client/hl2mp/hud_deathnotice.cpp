@@ -120,6 +120,7 @@ void CHudDeathNotice::Init( void )
 void CHudDeathNotice::VidInit( void )
 {
 	m_iconD_skull = gHUD.GetIcon( "d_skull" );
+	m_iconD_headshot = gHUD.GetIcon( "d_headshot" );
 	m_DeathNotices.Purge();
 }
 
@@ -144,7 +145,7 @@ void CHudDeathNotice::SetColorForNoticePlayer( int iTeamNumber )
 //-----------------------------------------------------------------------------
 void CHudDeathNotice::Paint()
 {
-	if ( !m_iconD_skull )
+	if ( !m_iconD_skull || !m_iconD_headshot)
 		return;
 
 	int yStart = GetClientModeHL2MPNormal()->GetDeathMessageStartHeight();
@@ -152,6 +153,21 @@ void CHudDeathNotice::Paint()
 	surface()->DrawSetTextFont( m_hTextFont );
 	surface()->DrawSetTextColor( GameResources()->GetTeamColor( 0 ) );
 
+	// [Striker] Thanks LestaD for the headshot HUD code.
+	int iconHeadshotWide;
+	int iconHeadshotTall;
+
+	if (m_iconD_headshot->bRenderUsingFont)
+	{
+		iconHeadshotWide = surface()->GetCharacterWidth(m_iconD_headshot->hFont, m_iconD_headshot->cCharacterInFont);
+		iconHeadshotTall = surface()->GetFontTall(m_iconD_headshot->hFont);
+	}
+	else
+	{
+		float scale = ((float)ScreenHeight() / 480.0f);	//scale based on 640x480
+		iconHeadshotWide = (int)(scale * (float)m_iconD_headshot->Width());
+		iconHeadshotTall = (int)(scale * (float)m_iconD_headshot->Height());
+	}
 
 	int iCount = m_DeathNotices.Count();
 	for ( int i = 0; i < iCount; i++ )
@@ -199,6 +215,11 @@ void CHudDeathNotice::Paint()
 		if ( m_bRightJustify )
 		{
 			x =	GetWide() - len - iconWide;
+
+			if (m_DeathNotices[i].bHeadshot)
+			{
+				x -= iconHeadshotWide;
+			}
 		}
 		else
 		{
@@ -228,6 +249,12 @@ void CHudDeathNotice::Paint()
 		//If we're using a font char, this will ignore iconTall and iconWide
 		icon->DrawSelf( x, y, iconWide, iconTall, iconColor );
 		x += iconWide;		
+
+		if (m_DeathNotices[i].bHeadshot)
+		{
+			m_iconD_headshot->DrawSelf(x, y, iconHeadshotWide, iconHeadshotTall, iconColor);
+			x += iconHeadshotWide;
+		}
 
 		SetColorForNoticePlayer( iVictimTeam );
 
@@ -272,6 +299,7 @@ void CHudDeathNotice::FireGameEvent( IGameEvent * event )
 	int killer = engine->GetPlayerForUserID( event->GetInt("attacker") );
 	int victim = engine->GetPlayerForUserID( event->GetInt("userid") );
 	const char *killedwith = event->GetString( "weapon" );
+	bool headshot = event->GetInt("headshot") > 0;
 
 	char fullkilledwith[128];
 	if ( killedwith && *killedwith )
@@ -308,6 +336,7 @@ void CHudDeathNotice::FireGameEvent( IGameEvent * event )
 	Q_strncpy( deathMsg.Victim.szName, victim_name, MAX_PLAYER_NAME_LENGTH );
 	deathMsg.flDisplayTime = gpGlobals->curtime + hud_deathnotice_time.GetFloat();
 	deathMsg.iSuicide = ( !killer || killer == victim );
+	deathMsg.bHeadshot = headshot;
 
 	// Try and find the death identifier in the icon list
 	deathMsg.iconDeath = gHUD.GetIcon( fullkilledwith );
@@ -341,7 +370,14 @@ void CHudDeathNotice::FireGameEvent( IGameEvent * event )
 
 		if ( fullkilledwith && *fullkilledwith && (*fullkilledwith > 13 ) )
 		{
-			Q_strncat( sDeathMsg, VarArgs( " with %s.\n", fullkilledwith+6 ), sizeof( sDeathMsg ), COPY_ALL_CHARACTERS );
+			if (deathMsg.bHeadshot)
+			{
+				Q_strncat(sDeathMsg, VarArgs(" with %s. (Headshot)\n", fullkilledwith + 6), sizeof(sDeathMsg), COPY_ALL_CHARACTERS);
+			}
+			else
+			{
+				Q_strncat(sDeathMsg, VarArgs(" with %s.\n", fullkilledwith + 6), sizeof(sDeathMsg), COPY_ALL_CHARACTERS);
+			}
 		}
 	}
 
