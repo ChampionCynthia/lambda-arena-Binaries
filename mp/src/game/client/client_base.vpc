@@ -52,7 +52,7 @@ $Configuration
 	$Compiler
 	{
 		$AdditionalIncludeDirectories	".\;$BASE;$SRCDIR\vgui2\include;$SRCDIR\vgui2\controls;$SRCDIR\game\shared;.\game_controls;$SRCDIR\thirdparty\sixensesdk\include"
-		$PreprocessorDefinitions		"$BASE;NO_STRING_T;CLIENT_DLL;VECTOR;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE;strncpy=use_Q_strncpy_instead;_snprintf=use_Q_snprintf_instead" 
+		$PreprocessorDefinitions		"$BASE;NO_STRING_T;CLIENT_DLL;VECTOR;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE;strncpy=use_Q_strncpy_instead;_snprintf=use_Q_snprintf_instead;SOURCE_2013" 
 		$PreprocessorDefinitions		"$BASE;fopen=dont_use_fopen" [$WIN32]
 		$PreprocessorDefinitions		"$BASE;USE_WEBM_FOR_REPLAY;" [$LINUXALL]
 		$PreprocessorDefinitions		"$BASE;CURL_STATICLIB" [$WIN32 && $BUILD_REPLAY]
@@ -504,6 +504,9 @@ $Project
 		$File	"$SRCDIR\public\haptics\haptic_msgs.cpp"	[!$X360]
 		$File	"$SRCDIR\public\haptics\haptic_utils.cpp"	[$WIN32&&!$X360]
 
+		// Lambda Files
+		$File	"c_item.cpp"
+
 		$Folder	"Sixense"
 		{
 			$File	"sixense\in_sixense.cpp"
@@ -874,6 +877,9 @@ $Project
 		$File	"weapons_resource.h"
 		$File	"vgui_video.h"
 		$File   "vgui_video_player.h"
+		
+		// Lambda Headers
+		$File	"quake3bob.h"
 	}
 
 	$Folder	"Public Header Files"
@@ -1265,5 +1271,4 @@ $Project
 		$Libexternal "$LIBCOMMON/libcurlssl" [$LINUXALL]
 		$Libexternal "$SRCDIR\lib\common\$(CRYPTOPPDIR)\libssl" [$LINUXALL]
  	}
-
 }

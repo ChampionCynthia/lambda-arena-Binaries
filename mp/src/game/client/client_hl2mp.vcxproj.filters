@@ -980,6 +980,9 @@
     <ClInclude Include="proxyentity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="quake3bob.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="ragdoll.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1907,6 +1910,9 @@
     <ClInclude Include="hl2mp\ui\hl2mptextwindow.h">
       <Filter>Source Files\HL2MP\UI</Filter>
     </ClInclude>
+    <ClInclude Include="hl2mp\hud_hitmarker.h">
+      <Filter>Source Files\HL2MP\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\game\shared\hl2mp\weapon_ar2.h">
       <Filter>Source Files\HL2MP\Weapons</Filter>
     </ClInclude>
@@ -1942,9 +1948,6 @@
     </ClInclude>
     <ClInclude Include="toolframework_client.h">
       <Filter>Tool Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="hud_hitmarker.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2159,6 +2162,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="c_info_overlay_accessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="c_item.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="c_lightglow.cpp">
@@ -3247,7 +3253,16 @@
     <ClCompile Include="hl2mp\ui\hl2mptextwindow.cpp">
       <Filter>Source Files\HL2MP\UI</Filter>
     </ClCompile>
+    <ClCompile Include="hl2mp\hud_damageaccount_panel.cpp">
+      <Filter>Source Files\HL2MP\UI</Filter>
+    </ClCompile>
     <ClCompile Include="hl2mp\hud_deathnotice.cpp">
+      <Filter>Source Files\HL2MP\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="hl2mp\hud_hitmarker.cpp">
+      <Filter>Source Files\HL2MP\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="hl2mp\hud_maptimer.cpp">
       <Filter>Source Files\HL2MP\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\game\shared\hl2mp\weapon_357.cpp">
@@ -3262,7 +3277,13 @@
     <ClCompile Include="..\..\game\shared\hl2mp\weapon_crowbar.cpp">
       <Filter>Source Files\HL2MP\Weapons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\game\shared\hl2mp\weapon_egon.cpp">
+      <Filter>Source Files\HL2MP\Weapons</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\game\shared\hl2mp\weapon_frag.cpp">
+      <Filter>Source Files\HL2MP\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\shared\hl2mp\weapon_gauss.cpp">
       <Filter>Source Files\HL2MP\Weapons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\game\shared\hl2mp\weapon_hl2mpbase.cpp">
@@ -3507,18 +3528,6 @@
     </ClCompile>
     <ClCompile Include="toolframework_client.cpp">
       <Filter>Tool Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\shared\hl2mp\weapon_gauss.cpp">
-      <Filter>Source Files\HL2MP\Weapons</Filter>
-    </ClCompile>
-    <ClCompile Include="hud_hitmarker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp\hud_maptimer.cpp">
-      <Filter>Source Files\HL2MP\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="hud_damageaccount_panel.cpp">
-      <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

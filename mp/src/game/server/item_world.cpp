@@ -109,6 +109,12 @@ BEGIN_DATADESC( CItem )
 
 END_DATADESC()
 
+IMPLEMENT_SERVERCLASS_ST(CItem, DT_Item)
+SendPropBool(SENDINFO(m_bQuake3Bob)),
+SendPropVector(SENDINFO(m_vOriginalSpawnOrigin)),
+SendPropVector(SENDINFO(m_vOriginalSpawnAngles)),
+//SendPropExclude("DT_BaseEntity", "m_angRotation"),
+END_SEND_TABLE()
 
 //-----------------------------------------------------------------------------
 // Constructor 
@@ -116,10 +122,13 @@ END_DATADESC()
 CItem::CItem()
 {
 	m_bActivateWhenAtRest = false;
+	m_bQuake3Bob = false;
 }
 
 bool CItem::CreateItemVPhysicsObject( void )
 {
+	VPhysicsDestroyObject();
+
 	// Create the object in the physics system
 	int nSolidFlags = GetSolidFlags() | FSOLID_NOT_STANDABLE;
 	if ( !m_bActivateWhenAtRest )
@@ -171,12 +180,9 @@ void CItem::Spawn( void )
 	CollisionProp()->UseTriggerBounds( true, ITEM_PICKUP_BOX_BLOAT );
 	SetTouch(&CItem::ItemTouch);
 
-	if ( CreateItemVPhysicsObject() == false )
-		return;
-
 	m_takedamage = DAMAGE_EVENTS_ONLY;
 
-	SetConstraints();
+	SetupPhysics();
 
 #if defined( HL2MP ) || defined( TF_DLL )
 	SetThink( &CItem::FallThink );
@@ -248,15 +254,30 @@ void CItem::ComeToRest( void )
 	}
 }
 
-//-----------------------------------------------------------------------------
-// [Striker] Set physics restraints
-//-----------------------------------------------------------------------------
-bool CItem::SetConstraints()
+//-----------------------------------
+// [Striker] Sets up item physics.
+//-----------------------------------
+void CItem::SetupPhysics()
 {
+	if (HasSpawnFlags(SF_ITEM_QUAKE3_BOB))
+	{
+		m_bQuake3Bob = true;
+		VPhysicsDestroyObject();
+		SetMoveType(MOVETYPE_NONE);
+		SetSolid(SOLID_NONE);
+		AddSolidFlags(GetSolidFlags() | FSOLID_NOT_STANDABLE | FSOLID_TRIGGER);
+		return;
+	}
+
+	m_bQuake3Bob = false;
+
+	if (!CreateItemVPhysicsObject())
+		return;
+
 	// Constrained start?
 	if (HasSpawnFlags(SF_ITEM_START_CONSTRAINED))
 	{
-		//Constrain the weapon in place
+		//Constrain the item in place
 		IPhysicsObject *pReferenceObject, *pAttachedObject;
 
 		pReferenceObject = g_PhysWorldObject;
@@ -276,12 +297,8 @@ bool CItem::SetConstraints()
 			m_pConstraint->SetGameData((void *) this);
 
 			PhysSetGameFlags(pAttachedObject, FVPHYSICS_NO_PLAYER_PICKUP);
-
-			return true;
 		}
 	}
-
-	return false;
 }
 
 #if defined( HL2MP ) || defined( TF_DLL )
@@ -305,7 +322,7 @@ void CItem::FallThink ( void )
 	}
 	else
 	{
-		shouldMaterialize = (GetFlags() & FL_ONGROUND) ? true : false;
+		shouldMaterialize = true;
 	}
 
 	if ( shouldMaterialize )
@@ -484,7 +501,7 @@ CBaseEntity* CItem::Respawn( void )
 	UTIL_SetOrigin( this, g_pGameRules->VecItemRespawnSpot( this ) );// blip to whereever you should respawn.
 	SetAbsAngles( g_pGameRules->VecItemRespawnAngles( this ) );// set the angles.
 
-	if (!HasSpawnFlags(SF_ITEM_START_CONSTRAINED))
+	if (!HasSpawnFlags(SF_ITEM_START_CONSTRAINED) && !HasSpawnFlags(SF_ITEM_QUAKE3_BOB))
 	{
 		UTIL_DropToFloor(this, MASK_SOLID);
 	}
@@ -498,7 +515,7 @@ CBaseEntity* CItem::Respawn( void )
 
 void CItem::Materialize( void )
 {
-	CreateItemVPhysicsObject();
+	SetupPhysics();
 
 	if ( IsEffectActive( EF_NODRAW ) )
 	{
@@ -511,8 +528,6 @@ void CItem::Materialize( void )
 #endif
 		RemoveEffects( EF_NODRAW );
 		DoMuzzleFlash();
-
-		SetConstraints();
 	}
 
 	SetTouch( &CItem::ItemTouch );

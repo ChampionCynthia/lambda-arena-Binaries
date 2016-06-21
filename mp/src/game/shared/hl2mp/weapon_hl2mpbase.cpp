@@ -176,108 +176,12 @@ void CWeaponHL2MPBase::Spawn()
 	SetCollisionGroup( COLLISION_GROUP_WEAPON );
 }
 
-void CWeaponHL2MPBase::Materialize( void )
-{
-	if ( IsEffectActive( EF_NODRAW ) )
-	{
-		// changing from invisible state to visible.
-		EmitSound( "AlyxEmp.Charge" );
-		
-		RemoveEffects( EF_NODRAW );
-		DoMuzzleFlash();
-	}
-
-	if ( HasSpawnFlags( SF_NORESPAWN ) == false )
-	{
-		VPhysicsInitNormal( SOLID_BBOX, GetSolidFlags() | FSOLID_TRIGGER, false );
-		SetMoveType( MOVETYPE_VPHYSICS );
-
-		HL2MPRules()->AddLevelDesignerPlacedObject( this );
-	}
-
-	if ( HasSpawnFlags( SF_NORESPAWN ) == false )
-	{
-		if ( GetOriginalSpawnOrigin() == vec3_origin )
-		{
-			m_vOriginalSpawnOrigin = GetAbsOrigin();
-			m_vOriginalSpawnAngles = GetAbsAngles();
-		}
-	}
-
-	SetPickupTouch();
-
-	SetThink (NULL);
-}
-
 int CWeaponHL2MPBase::ObjectCaps()
 {
 	return BaseClass::ObjectCaps() & ~FCAP_IMPULSE_USE;
 }
 
 #endif
-
-void CWeaponHL2MPBase::FallInit( void )
-{
-#ifndef CLIENT_DLL
-	SetModel( GetWorldModel() );
-	VPhysicsDestroyObject();
-
-	if ( HasSpawnFlags( SF_NORESPAWN ) == false )
-	{
-		SetMoveType( MOVETYPE_NONE );
-		SetSolid( SOLID_BBOX );
-		AddSolidFlags( FSOLID_TRIGGER );
-
-		UTIL_DropToFloor( this, MASK_SOLID );
-	}
-	else
-	{
-		if ( !VPhysicsInitNormal( SOLID_BBOX, GetSolidFlags() | FSOLID_TRIGGER, false ) )
-		{
-			SetMoveType( MOVETYPE_NONE );
-			SetSolid( SOLID_BBOX );
-			AddSolidFlags( FSOLID_TRIGGER );
-		}
-		else
-		{
-	#if !defined( CLIENT_DLL )
-			// Constrained start?
-			if ( HasSpawnFlags( SF_WEAPON_START_CONSTRAINED ) )
-			{
-				//Constrain the weapon in place
-				IPhysicsObject *pReferenceObject, *pAttachedObject;
-				
-				pReferenceObject = g_PhysWorldObject;
-				pAttachedObject = VPhysicsGetObject();
-
-				if ( pReferenceObject && pAttachedObject )
-				{
-					constraint_fixedparams_t fixed;
-					fixed.Defaults();
-					fixed.InitWithCurrentObjectState( pReferenceObject, pAttachedObject );
-					
-					fixed.constraint.forceLimit	= lbs2kg( 10000 );
-					fixed.constraint.torqueLimit = lbs2kg( 10000 );
-
-					IPhysicsConstraint *pConstraint = GetConstraint();
-
-					pConstraint = physenv->CreateFixedConstraint( pReferenceObject, pAttachedObject, NULL, fixed );
-
-					pConstraint->SetGameData( (void *) this );
-				}
-			}
-	#endif //CLIENT_DLL
-		}
-	}
-
-	SetPickupTouch();
-	
-	SetThink( &CBaseCombatWeapon::FallThink );
-
-	SetNextThink( gpGlobals->curtime + 0.1f );
-
-#endif
-}
 
 const CHL2MPSWeaponInfo &CWeaponHL2MPBase::GetHL2MPWpnData() const
 {

@@ -494,6 +494,32 @@ Scheme
 				"custom"	"1"
 			}
 		}
+		LA_WeaponIcons
+		{
+			"1"
+			{
+				"name"		"HL2MP"
+				"tall"		"64"
+				"weight"	"0"
+				"antialias" "1"
+				"additive"	"1"
+				"custom"	"1"
+			}
+		}
+		LA_WeaponIconsSelected
+		{
+			"1"
+			{
+				"name"		"HL2MP"
+				"tall"		"64"
+				"weight"	"0"
+				"antialias" "1"
+				"blur"		"5"
+				"scanlines"	"2"
+				"additive"	"1"
+				"custom"	"1"
+			}
+		}
 		Crosshairs
 		{
 			"1"

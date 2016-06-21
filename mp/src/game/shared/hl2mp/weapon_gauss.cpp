@@ -1,123 +1,123 @@
-//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=Copyright 2015 SIOSPHERE/Sub-Zero-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
-//	PURPOSE: GAUSS GUN
+// Purpose:		Gauss
 //
-//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
+// $NoKeywords: $
+//=============================================================================//
 
 #include "cbase.h"
-#include "beam_shared.h"
-#include "AmmoDef.h"
-#include "in_buttons.h"
+#include "NPCEvent.h"
 #include "weapon_hl2mpbasehlmpcombatweapon.h"
+#include "takedamageinfo.h"
+#include "gamerules.h"
+#include "in_buttons.h"
+
+#ifndef CLIENT_DLL
+#include "soundent.h"
+#include "game.h"
+#endif
+
+#include "vstdlib/random.h"
+#include "engine/IEngineSound.h"
 #include "soundenvelope.h"
+#include "shake.h"
+#include "effect_dispatch_data.h"
+#include "AmmoDef.h"
 
 #ifdef CLIENT_DLL
 #include "c_hl2mp_player.h"
-#include "ClientEffectPrecacheSystem.h"
+#include "c_te_effect_dispatch.h"
 #else
 #include "hl2mp_player.h"
+#include "te_effect_dispatch.h"
 #include "..\server\ilagcompensationmanager.h"
 #endif
-
-#include "particle_parse.h"
+#include "soundemittersystem/isoundemittersystembase.h"
 
 #ifdef CLIENT_DLL
 #define CWeaponGauss C_WeaponGauss
 #endif
 
-//Gauss Definitions
+//-----------------------------------------------------------------------------
+// CWeaponGauss
+//-----------------------------------------------------------------------------
 
-#define GAUSS_BEAM_SPRITE "sprites/laserbeam.vmt"
-#define	GAUSS_CHARGE_TIME			0.3f
-#define	MAX_GAUSS_CHARGE			16
-#define	MAX_GAUSS_CHARGE_TIME		3.0f
-#define	DANGER_GAUSS_CHARGE_TIME	10
-
-// memdbgon must be the last include file in a .cpp file!!!
-#include "tier0/memdbgon.h"
-
-#ifdef CLIENT_DLL
-CLIENTEFFECT_REGISTER_BEGIN(PrecacheEffectGauss)
-CLIENTEFFECT_MATERIAL("sprites/laserbeam")
-CLIENTEFFECT_REGISTER_END()
-#endif
 
 class CWeaponGauss : public CBaseHL2MPCombatWeapon
 {
-public:
-
 	DECLARE_CLASS(CWeaponGauss, CBaseHL2MPCombatWeapon);
-	CWeaponGauss(void);
+public:
 
 	DECLARE_NETWORKCLASS();
 	DECLARE_PREDICTABLE();
 
-	void	Spawn(void);
+	CWeaponGauss(void);
+
 	void	Precache(void);
 	void	PrimaryAttack(void);
 	void	SecondaryAttack(void);
+	void	WeaponIdle(void);
 	void	AddViewKick(void);
-
+	bool	Deploy(void);
 	bool	Holster(CBaseCombatWeapon *pSwitchingTo = NULL);
 
-	void	ItemPostFrame(void);
-
-	float	GetFireRate(void) { return 0.2f; }
-
-	void	DoWallBreak(Vector startPos, Vector endPos, Vector aimDir, trace_t *ptr, CBasePlayer *pOwner, bool m_bBreakAll);
-	bool	DidPunchThrough(trace_t	*tr);
-
+	DECLARE_DATADESC();
 	DECLARE_ACTTABLE();
-protected:
-	void	Fire(void);
-	void	ChargedFire(void);
-	void	ChargedFireFirstBeam(void);
-	void	StopChargeSound(void);
-	void	DrawBeam(const Vector &startPos, const Vector &endPos, bool charged, bool useMuzzle = false);
-	void	IncreaseCharge(void);
+
 private:
-	CSoundPatch *m_sndCharge;
+	void	StopSpinSound(void);
+	float	GetFullChargeTime(void);
+	void	CalculateChargePercent(void);
+	void	StartFire(void);
+	void	Fire(Vector vecOrigSrc, Vector vecDir, float flDamage);
 
-	CNetworkVar(bool, m_bCharging);
-	CNetworkVar(bool, m_bChargeIndicated);
+private:
+	//	int			m_nAttackState;
+	//	bool		m_bPrimaryFire;
+	CNetworkVar(int, m_nAttackState);
+	CNetworkVar(bool, m_bPrimaryFire);
 
-	CNetworkVar(float, m_flNextChargeTime);
-	CNetworkVar(float, m_flChargeStartTime);
-	CNetworkVar(float, m_flCoilMaxVelocity);
-	CNetworkVar(float, m_flCoilVelocity);
-	CNetworkVar(float, m_flCoilAngle);
+	CNetworkVar(float, m_flNextAmmoBurn);
+
+	float m_flStartCharge;
+
+	int m_nAmmoDrained;
+	float m_flChargePercent;
+
+	CSoundPatch	*m_sndCharge;
 };
 
-IMPLEMENT_NETWORKCLASS_ALIASED(WeaponGauss, DT_WeaponGauss)
+IMPLEMENT_NETWORKCLASS_ALIASED(WeaponGauss, DT_WeaponGauss);
 
 BEGIN_NETWORK_TABLE(CWeaponGauss, DT_WeaponGauss)
 #ifdef CLIENT_DLL
-RecvPropBool(RECVINFO(m_bCharging)),
-RecvPropBool(RECVINFO(m_bChargeIndicated)),
-RecvPropFloat(RECVINFO(m_flNextChargeTime)),
-RecvPropFloat(RECVINFO(m_flChargeStartTime)),
-RecvPropFloat(RECVINFO(m_flCoilMaxVelocity)),
-RecvPropFloat(RECVINFO(m_flCoilVelocity)),
-RecvPropFloat(RECVINFO(m_flCoilAngle)),
+RecvPropInt(RECVINFO(m_nAttackState)),
+RecvPropBool(RECVINFO(m_bPrimaryFire)),
+RecvPropFloat(RECVINFO(m_flNextAmmoBurn)),
 #else
-SendPropBool(SENDINFO(m_bCharging)),
-SendPropBool(SENDINFO(m_bChargeIndicated)),
-SendPropFloat(SENDINFO(m_flNextChargeTime)),
-SendPropFloat(SENDINFO(m_flChargeStartTime)),
-SendPropFloat(SENDINFO(m_flCoilMaxVelocity)),
-SendPropFloat(SENDINFO(m_flCoilVelocity)),
-SendPropFloat(SENDINFO(m_flCoilAngle)),
+SendPropInt(SENDINFO(m_nAttackState)),
+SendPropBool(SENDINFO(m_bPrimaryFire)),
+SendPropFloat(SENDINFO(m_flNextAmmoBurn)),
 #endif
 END_NETWORK_TABLE()
 
-#ifdef CLIENT_DLL
 BEGIN_PREDICTION_DATA(CWeaponGauss)
-END_PREDICTION_DATA()
+#ifdef CLIENT_DLL
+DEFINE_PRED_FIELD(m_nAttackState, FIELD_INTEGER, FTYPEDESC_INSENDTABLE),
+DEFINE_PRED_FIELD(m_bPrimaryFire, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
+DEFINE_PRED_FIELD(m_flNextAmmoBurn, FIELD_FLOAT, FTYPEDESC_INSENDTABLE),
 #endif
+END_PREDICTION_DATA()
 
 LINK_ENTITY_TO_CLASS(weapon_gauss, CWeaponGauss);
+
 PRECACHE_WEAPON_REGISTER(weapon_gauss);
+
+BEGIN_DATADESC(CWeaponGauss)
+DEFINE_FIELD(m_nAttackState, FIELD_INTEGER),
+DEFINE_FIELD(m_bPrimaryFire, FIELD_BOOLEAN),
+DEFINE_SOUNDPATCH(m_sndCharge),
+END_DATADESC()
 
 acttable_t	CWeaponGauss::m_acttable[] =
 {
@@ -133,17 +133,24 @@ acttable_t	CWeaponGauss::m_acttable[] =
 
 IMPLEMENT_ACTTABLE(CWeaponGauss);
 
-ConVar sk_dmg_gauss("sk_dmg_gauss", "10");
+ConVar la_weapon_gauss_dmg("la_weapon_gauss_dmg", "20", FCVAR_REPLICATED | FCVAR_NOTIFY, "Tau Cannon primary fire damage. Default: 20");
+ConVar la_weapon_gauss_recoil_min("la_weapon_gauss_recoil_min", "125", FCVAR_REPLICATED | FCVAR_NOTIFY, "Tau Cannon recoil minimum speed in HU/s. Default: 125");
+ConVar la_weapon_gauss_recoil_max("la_weapon_gauss_recoil_max", "1000", FCVAR_REPLICATED | FCVAR_NOTIFY, "Tau Cannon recoil maximum speed in HU/s. Default: 1000");
+ConVar la_weapon_gauss_chargedmg_min("la_weapon_gauss_chargedmg_min", "25", FCVAR_REPLICATED | FCVAR_NOTIFY, "Tau Cannon charge minimum damage. Default: 25");
+ConVar la_weapon_gauss_chargedmg_max("la_weapon_gauss_chargedmg_max", "200", FCVAR_REPLICATED | FCVAR_NOTIFY, "Tau Cannon charge maximum damage. Default: 200");
+ConVar la_weapon_gauss_chargetime("la_weapon_gauss_chargetime", "1.5", FCVAR_REPLICATED | FCVAR_NOTIFY, "Tau Cannon charge time in seconds. Default: 1.5");
+
 //-----------------------------------------------------------------------------
-// Purpose: 
+// Purpose: Constructor
 //-----------------------------------------------------------------------------
 CWeaponGauss::CWeaponGauss(void)
 {
-	m_flNextChargeTime = 0;
-	m_flChargeStartTime = 0;
+	m_bReloadsSingly = false;
+	m_bFiresUnderwater = false;
+
+	m_bPrimaryFire = false;
+	m_nAttackState = 0;
 	m_sndCharge = NULL;
-	m_bCharging = false;
-	m_bChargeIndicated = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -151,620 +158,530 @@ CWeaponGauss::CWeaponGauss(void)
 //-----------------------------------------------------------------------------
 void CWeaponGauss::Precache(void)
 {
-	PrecacheModel(GAUSS_BEAM_SPRITE);
+	PrecacheScriptSound("Weapon_Gauss.Zap1");
+	PrecacheScriptSound("Weapon_Gauss.Zap2");
+	PrecacheScriptSound("Weapon_Gauss.ChargeLoop");
 
-#ifndef CLIENT_DLL
-	enginesound->PrecacheSound("weapons/gauss/chargeloop.wav");
-#endif
 	BaseClass::Precache();
 }
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CWeaponGauss::Spawn(void)
+
+float CWeaponGauss::GetFullChargeTime(void)
 {
-	BaseClass::Spawn();
-	SetActivity(ACT_HL2MP_IDLE);
+	return la_weapon_gauss_chargetime.GetFloat();
 }
+
 //-----------------------------------------------------------------------------
-// Purpose: 
+// Purpose:
 //-----------------------------------------------------------------------------
 void CWeaponGauss::PrimaryAttack(void)
 {
-	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
-	if (pOwner == NULL)
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+	if (!pPlayer)
+	{
 		return;
+	}
 
-	WeaponSound(SINGLE);
-	//WeaponSound(SPECIAL2);
+	if (pPlayer->GetAmmoCount(m_iPrimaryAmmoType) < 2)
+	{
+		WeaponSound(EMPTY);
+		pPlayer->SetNextAttack(gpGlobals->curtime + 0.5);
+		return;
+	}
 
-	SendWeaponAnim(ACT_VM_PRIMARYATTACK);
+	//FIXME	pPlayer->m_iWeaponVolume = GAUSS_PRIMARY_FIRE_VOLUME;
+	m_bPrimaryFire = true;
 
-	m_flNextPrimaryAttack = gpGlobals->curtime + GetFireRate();
-	pOwner->RemoveAmmo(1, m_iPrimaryAmmoType);
+	pPlayer->RemoveAmmo(2, m_iPrimaryAmmoType);
 
-	Fire();
-
-	m_flCoilMaxVelocity = 0.0f;
-	m_flCoilVelocity = 1000.0f;
-	return;
-
+	StartFire();
+	m_nAttackState = 0;
+	SetWeaponIdleTime(gpGlobals->curtime + 1.0);
+	pPlayer->SetNextAttack(gpGlobals->curtime + 0.2);
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CWeaponGauss::Fire(void)
+// I know, code duplication... but I had to make this function because
+// FLerp was overloaded and shit wasn't compiling properly for some reason.
+inline float GaussLerp(float minVal, float maxVal, float t)
 {
-	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
-
-	if (pOwner == NULL)
-		return;
-
-	m_bCharging = false;
-
-	Vector  startPos = pOwner->Weapon_ShootPosition();
-	Vector  aimDir = pOwner->GetAutoaimVector(AUTOAIM_5DEGREES);
-
-	Vector vecUp, vecRight;
-	VectorVectors(aimDir, vecRight, vecUp);
-
-	float x, y, z;
-
-	//Gassian spread
-	do {
-		x = random->RandomFloat(-0.5, 0.5) + random->RandomFloat(-0.5, 0.5);
-		y = random->RandomFloat(-0.5, 0.5) + random->RandomFloat(-0.5, 0.5);
-		z = x*x + y*y;
-	} while (z > 1);
-
-
-	Vector  endPos = startPos + (aimDir * MAX_TRACE_LENGTH);
-
-#ifndef CLIENT_DLL
-	lagcompensation->StartLagCompensation(pOwner, pOwner->GetCurrentCommand());
-#endif
-
-	//Shoot a shot straight out
-	trace_t tr;
-	UTIL_TraceLine(startPos, endPos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &tr);
-
-#ifndef CLIENT_DLL
-	ClearMultiDamage();
-#endif
-
-#ifndef CLIENT_DLL    
-	CBaseEntity *pHit = tr.m_pEnt;
-
-	CTakeDamageInfo dmgInfo(this, pOwner, sk_dmg_gauss.GetFloat(), DMG_SHOCK | DMG_BULLET);
-
-	if (pHit != NULL)
-	{
-		CalculateBulletDamageForce(&dmgInfo, m_iPrimaryAmmoType, aimDir, tr.endpos, 7.0f * 5.0f);
-		pHit->DispatchTraceAttack(dmgInfo, aimDir, &tr);
-	}
-#endif
-
-	if (tr.DidHitWorld())
-	{
-		float hitAngle = -DotProduct(tr.plane.normal, aimDir);
-
-		if (hitAngle < 0.5f)
-		{
-			Vector vReflection;
-
-			vReflection = 2.0 * tr.plane.normal * hitAngle + aimDir;
-
-			startPos = tr.endpos;
-			endPos = startPos + (vReflection * MAX_TRACE_LENGTH);
-
-			//Draw beam to reflection point
-			DrawBeam(tr.startpos, tr.endpos, false, true);
-
-			CPVSFilter filter(tr.endpos);
-			te->GaussExplosion(filter, 0.0f, tr.endpos, tr.plane.normal, 0);
-
-			UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
-
-			//Find new reflection end position
-			UTIL_TraceLine(startPos, endPos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &tr);
-
-			if (tr.m_pEnt != NULL)
-			{
-#ifndef CLIENT_DLL
-				dmgInfo.SetDamageForce(GetAmmoDef()->DamageForce(m_iPrimaryAmmoType) * vReflection);
-				dmgInfo.SetDamagePosition(tr.endpos);
-				tr.m_pEnt->DispatchTraceAttack(dmgInfo, vReflection, &tr);
-#endif
-			}
-
-			//Connect reflection point to end
-			DrawBeam(tr.startpos, tr.endpos, false);
-		}
-		else
-		{
-			DrawBeam(tr.startpos, tr.endpos, false, true);
-		}
-	}
-	else
-	{
-		DrawBeam(tr.startpos, tr.endpos, false, true);
-	}
-#ifndef CLIENT_DLL         
-	ApplyMultiDamage();
-	lagcompensation->FinishLagCompensation(pOwner);
-#endif
-
-	UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
-
-	CPVSFilter filter(tr.endpos);
-	te->GaussExplosion(filter, 0.0f, tr.endpos, tr.plane.normal, 0);
-
-	m_flNextSecondaryAttack = gpGlobals->curtime + 1.0f;
-
-	AddViewKick();
-
-	return;
+	return minVal + (maxVal - minVal) * t;
 }
-//-----------------------------------------------------------------------------
-// Purpose: Draw the first Carged Beam
-//-----------------------------------------------------------------------------
-void CWeaponGauss::ChargedFireFirstBeam(void)
+
+void CWeaponGauss::CalculateChargePercent(void)
 {
-	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
-
-	if (pOwner == NULL)
-		return;
-
-	Vector  startPos = pOwner->Weapon_ShootPosition();
-	Vector  aimDir = pOwner->GetAutoaimVector(AUTOAIM_5DEGREES);
-	Vector  endPos = startPos + (aimDir * MAX_TRACE_LENGTH);
-
-	//Shoot a shot straight out
-	trace_t tr;
-	UTIL_TraceLine(startPos, endPos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &tr);
-	startPos = tr.endpos;
-
-	//Draw beam
-	DrawBeam(tr.startpos, tr.endpos, true, true);
-
-	CPVSFilter filter(tr.endpos);
-	te->GaussExplosion(filter, 0.0f, tr.endpos, tr.plane.normal, 0);
-
-	UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
-	return;
+	m_flChargePercent = (gpGlobals->curtime - m_flStartCharge) / GetFullChargeTime();
+	if (m_flChargePercent > 1.0)
+	{
+		m_flChargePercent = 1.0;
+	}
 }
+
 //-----------------------------------------------------------------------------
-// Purpose: 
+// Purpose:
 //-----------------------------------------------------------------------------
 void CWeaponGauss::SecondaryAttack(void)
 {
-	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
-
-	if (pOwner == NULL)
-		return;
-
-	if (pOwner->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
-		return;
-
-	if (m_bCharging == false)
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+	if (!pPlayer)
 	{
-		//Start looping animation
-		SendWeaponAnim(ACT_VM_PULLBACK);
+		return;
+	}
 
-		//Start looping sound
-		if (m_sndCharge == NULL)
+	// don't fire underwater
+	if (pPlayer->GetWaterLevel() == 3)
+	{
+		if (m_nAttackState != 0)
 		{
-			CPASAttenuationFilter filter(this);
-			m_sndCharge = (CSoundEnvelopeController::GetController()).SoundCreate(filter, entindex(), CHAN_STATIC, "weapons/gauss/chargeloop.wav", ATTN_NORM);
-		}
-
-		assert(m_sndCharge != NULL);
-		if (m_sndCharge != NULL)
-		{
-			(CSoundEnvelopeController::GetController()).Play(m_sndCharge, 1.0f, 50);
-			(CSoundEnvelopeController::GetController()).SoundChangePitch(m_sndCharge, 250, MAX_GAUSS_CHARGE_TIME);
-		}
-
-		m_flChargeStartTime = gpGlobals->curtime;
-		m_bCharging = true;
-		m_bChargeIndicated = false;
-
-		//Decrement power
-		pOwner->RemoveAmmo(1, m_iPrimaryAmmoType);
-	}
-
-	IncreaseCharge();
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CWeaponGauss::IncreaseCharge(void)
-{
-	if (m_flNextChargeTime > gpGlobals->curtime)
-		return;
-	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
-
-	if (pOwner == NULL)
-		return;
-
-	//Check our charge time
-	if ((gpGlobals->curtime - m_flChargeStartTime) > MAX_GAUSS_CHARGE_TIME)
-	{
-		//Notify the player they're at maximum charge
-		if (m_bChargeIndicated == false)
-		{
-			//WeaponSound(SPECIAL2);
-			m_bChargeIndicated = true;
-		}
-		if ((gpGlobals->curtime - m_flChargeStartTime) > DANGER_GAUSS_CHARGE_TIME)
-		{
-			//Damage the player
-			WeaponSound(SPECIAL1);
-			// Add DMG_CRUSH because we don't want any physics force
-#ifndef CLIENT_DLL
-			pOwner->TakeDamage(CTakeDamageInfo(this, this, 5, DMG_SHOCK | DMG_BULLET));
-			color32 gaussDamage = { 255, 128, 0, 128 };
-			UTIL_ScreenFade(pOwner, gaussDamage, 0.2f, 0.2f, FFADE_IN);
-#endif
-			m_flNextChargeTime = gpGlobals->curtime + random->RandomFloat(0.5f, 2.5f);
-
-		}
-		return;
-	}
-	//Decrement power
-	pOwner->RemoveAmmo(1, m_iPrimaryAmmoType);
-
-	//Make sure we can draw power
-	if (pOwner->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
-	{
-		ChargedFire();
-		ChargedFireFirstBeam();
-		return;
-	}
-
-	m_flNextChargeTime = gpGlobals->curtime + GAUSS_CHARGE_TIME;
-	return;
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CWeaponGauss::ChargedFire(void)
-{
-	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
-
-	if (pOwner == NULL)
-		return;
-
-	bool penetrated = false;
-
-	//Play shock sounds
-	WeaponSound(WPN_DOUBLE);
-	//WeaponSound(SPECIAL2);
-
-	SendWeaponAnim(ACT_VM_SECONDARYATTACK);
-
-	StopChargeSound();
-
-	m_bCharging = false;
-	m_bChargeIndicated = false;
-
-	m_flNextSecondaryAttack = gpGlobals->curtime + 1.0f;
-
-#ifndef CLIENT_DLL
-	lagcompensation->StartLagCompensation(pOwner, pOwner->GetCurrentCommand());
-#endif
-
-	//Shoot a shot straight
-	Vector  startPos = pOwner->Weapon_ShootPosition();
-	Vector  aimDir = pOwner->GetAutoaimVector(AUTOAIM_5DEGREES);
-	Vector  endPos = startPos + (aimDir * MAX_TRACE_LENGTH);
-
-	//Find Damage
-	float flChargeAmount = (gpGlobals->curtime - m_flChargeStartTime) / MAX_GAUSS_CHARGE_TIME;
-	//Clamp This
-	if (flChargeAmount > 1.0f)
-	{
-		flChargeAmount = 1.0f;
-	}
-
-	trace_t tr;
-	UTIL_TraceLine(startPos, endPos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &tr); //Trace from gun to wall
-
-	UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
-	UTIL_DecalTrace(&tr, "RedGlowFade");
-
-
-#ifndef CLIENT_DLL
-	float flDamage = 3 + (22 * flChargeAmount);
-
-	RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
-	ClearMultiDamage();
-#endif
-
-	UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
-	UTIL_DecalTrace(&tr, "RedGlowFade");
-
-#ifndef CLIENT_DLL
-	RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
-#endif
-
-	CBaseEntity *pHit = tr.m_pEnt;
-
-	if (tr.DidHitWorld())
-	{
-		UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
-		UTIL_DecalTrace(&tr, "RedGlowFade");
-
-		CPVSFilter filter(tr.endpos);
-		te->GaussExplosion(filter, 0.0f, tr.endpos, tr.plane.normal, 0);
-
-		Vector  testPos = tr.endpos + (aimDir * 128.0f);
-
-		UTIL_TraceLine(testPos, tr.endpos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &tr); //Trace to backside of first wall
-
-		UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
-		UTIL_DecalTrace(&tr, "RedGlowFade");
-
-#ifndef CLIENT_DLL
-		RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
-#endif
-
-
-		if (tr.allsolid == false)
-		{
-			UTIL_DecalTrace(&tr, "RedGlowFade");
-			UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
-
-#ifndef CLIENT_DLL
-			RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
-#endif
-
-			penetrated = true;
-
-			UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
-			UTIL_DecalTrace(&tr, "RedGlowFade");
-#ifndef CLIENT_DLL
-			RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
-#endif
-
-		}
-
-	}
-	else if (pHit != NULL)
-	{
-#ifndef CLIENT_DLL
-		// CTakeDamageInfo dmgInfo( this, pOwner, sk_plr_max_dmg_gauss.GetFloat(), DMG_SHOCK );
-		//		  CalculateBulletDamageForce( &dmgInfo, m_iPrimaryAmmoType, aimDir, tr.endpos );
-		UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
-		UTIL_DecalTrace(&tr, "RedGlowFade");
-		//Do Direct damage to anything in our path
-		//		  pHit->DispatchTraceAttack( dmgInfo, aimDir, &tr );
-#endif
-	}
-#ifndef CLIENT_DLL
-	ApplyMultiDamage();
-#endif
-
-#ifndef CLIENT_DLL
-	RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
-#endif
-
-	Vector  newPos = tr.endpos + (aimDir * MAX_TRACE_LENGTH);
-	QAngle  viewPunch;
-	viewPunch.x = random->RandomFloat(-4.0f, -8.0f);
-	viewPunch.y = random->RandomFloat(-0.25f, 0.25f);
-	viewPunch.z = 0;
-	pOwner->ViewPunch(viewPunch);
-
-	// DrawBeam( startPos, tr.endpos, true, true ); //Draw beam from gun through first wall.
-#ifndef CLIENT_DLL
-	Vector	recoilForce = pOwner->BodyDirection3D() * -(flDamage * 15.0f);
-	recoilForce[2] += 128.0f;
-
-	pOwner->ApplyAbsVelocityImpulse(recoilForce);
-#endif
-	CPVSFilter filter(tr.endpos);
-	te->GaussExplosion(filter, 0.0f, tr.endpos, tr.plane.normal, 0);
-
-#ifndef CLIENT_DLL
-	RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
-#endif
-
-	if (penetrated == true)
-	{
-		trace_t beam_tr;
-		Vector vecDest = tr.endpos + aimDir * MAX_TRACE_LENGTH;
-		UTIL_TraceLine(tr.endpos, vecDest, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &beam_tr); //Traces from back of first wall to second wall
-
-#ifndef CLIENT_DLL
-		float flDamage = 37 + (100 * flChargeAmount);
-#endif
-
-		UTIL_TraceLine(beam_tr.endpos + aimDir * 128.0f, beam_tr.endpos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &beam_tr); //Traces To back of second wall
-		UTIL_ImpactTrace(&beam_tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
-		UTIL_DecalTrace(&beam_tr, "RedGlowFade");
-
-#ifndef CLIENT_DLL
-		RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
-#endif
-
-		DrawBeam(tr.endpos, beam_tr.endpos, true, false);
-		DoWallBreak(tr.endpos, newPos, aimDir, &tr, pOwner, true);
-
-		UTIL_ImpactTrace(&beam_tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
-		UTIL_DecalTrace(&beam_tr, "RedGlowFade");
-
-#ifndef CLIENT_DLL
-		RadiusDamage(CTakeDamageInfo(this, pOwner, flDamage, DMG_SHOCK), tr.endpos, 10.0f, CLASS_PLAYER_ALLY, pOwner);
-#endif
-	}
-
-#ifndef CLIENT_DLL
-	lagcompensation->FinishLagCompensation(pOwner);
-#endif
-
-	return;
-}
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-bool CWeaponGauss::DidPunchThrough(trace_t *tr)
-{
-	if (tr->DidHitWorld() && tr->surface.flags != SURF_SKY && ((tr->startsolid == false) || (tr->startsolid == true && tr->allsolid == false)))
-		return true;
-	return false;
-}
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CWeaponGauss::DoWallBreak(Vector startPos, Vector endPos, Vector aimDir, trace_t *ptr, CBasePlayer *pOwner, bool m_bBreakAll){
-	trace_t *temp = ptr;
-	if (m_bBreakAll){
-		Vector tempPos = endPos;
-		Vector beamStart = startPos;
-		int x = 0;
-		while (DidPunchThrough(ptr)){
-			temp = ptr;
-			if (x == 0){
-				UTIL_TraceLine(startPos, tempPos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, ptr);
-				x = 1;
-			}
-			else{
-				UTIL_TraceLine(endPos, startPos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, ptr);
-				x = 0;
-			}
-			if (ptr->DidHitWorld() && ptr->surface.flags != SURF_SKY){
-				UTIL_ImpactTrace(ptr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
-				UTIL_DecalTrace(ptr, "RedGlowFade");
-			}
-			startPos = ptr->endpos;
-			tempPos = ptr->endpos + (aimDir * MAX_TRACE_LENGTH + aimDir * 128.0f);
-
-		}
-	}
-	else{
-		UTIL_TraceLine(startPos, endPos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, ptr); //Trace from gun to wall
-	}
-
-	if (!DidPunchThrough(ptr)){
-		ptr = temp;
-		return;
-	}
-}
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CWeaponGauss::DrawBeam(const Vector &startPos, const Vector &endPos, bool charged, bool useMuzzle)
-{
-	if (charged)
-	{
-		if (useMuzzle)
-		{
-			DispatchParticleEffect("gaussbeam_charged", endPos, PATTACH_POINT_FOLLOW, this, "0", false);
+			EmitSound("Weapon_Gauss.Zap1");
+			SendWeaponAnim(ACT_VM_IDLE);
+			m_nAttackState = 0;
 		}
 		else
 		{
-			DispatchParticleEffect("gaussbeam_charged", startPos, endPos, GetAbsAngles(), this);
+			WeaponSound(EMPTY);
+		}
+
+		m_flNextSecondaryAttack = m_flNextPrimaryAttack = gpGlobals->curtime + 0.5;
+		return;
+	}
+
+	if (m_nAttackState == 0)
+	{
+		if (pPlayer->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
+		{
+			WeaponSound(EMPTY);
+			pPlayer->SetNextAttack(gpGlobals->curtime + 0.5);
+			return;
+		}
+
+		m_bPrimaryFire = false;
+
+		pPlayer->RemoveAmmo(1, m_iPrimaryAmmoType);	// take one ammo just to start the spin
+		m_flNextAmmoBurn = gpGlobals->curtime;
+
+		// spin up
+		//FIXME		pPlayer->m_iWeaponVolume = GAUSS_PRIMARY_CHARGE_VOLUME;
+
+		SendWeaponAnim(ACT_VM_PULLBACK_LOW);
+		m_nAttackState = 1;
+		SetWeaponIdleTime(gpGlobals->curtime + 0.5);
+
+		m_flStartCharge = gpGlobals->curtime;
+		CalculateChargePercent();
+		m_nAmmoDrained = 0;
+		
+		//Start looping sound
+		if (m_sndCharge == NULL)
+		{
+			CBroadcastRecipientFilter filter;
+			m_sndCharge = (CSoundEnvelopeController::GetController()).SoundCreate(filter, entindex(), CHAN_WEAPON, "Weapon_Gauss.ChargeLoop", ATTN_NORM);
+		}
+
+		if (m_sndCharge != NULL)
+		{
+			(CSoundEnvelopeController::GetController()).Play(m_sndCharge, 1.0f, 110);
+		}
+	}
+	else if (m_nAttackState == 1)
+	{
+		if (HasWeaponIdleTimeElapsed())
+		{
+			SendWeaponAnim(ACT_VM_PULLBACK);
+			m_flStartCharge = gpGlobals->curtime;
+			m_nAttackState = 2;
 		}
 	}
 	else
 	{
-		if (useMuzzle)
+		// during the charging process, eat one bit of ammo every once in a while
+		if (gpGlobals->curtime >= m_flNextAmmoBurn && m_nAmmoDrained < 10)
 		{
-			DispatchParticleEffect("gaussbeam", endPos, PATTACH_POINT_FOLLOW, this, "0", false);
+			m_nAmmoDrained++;
+			pPlayer->RemoveAmmo(1, m_iPrimaryAmmoType);
+
+			m_flNextAmmoBurn = gpGlobals->curtime + (GetFullChargeTime() * 0.1);
+		}
+
+		if (pPlayer->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
+		{
+			// out of ammo! force the gun to fire
+			StartFire();
+			m_nAttackState = 0;
+			SetWeaponIdleTime(gpGlobals->curtime + 1.0);
+			pPlayer->SetNextAttack(gpGlobals->curtime + 1);
+			return;
+		}
+		
+		CalculateChargePercent();
+		int pitch = (int)GaussLerp(150.0f, 250.0f, m_flChargePercent);
+
+		// ALERT( at_console, "%d %d %d\n", m_nAttackState, m_iSoundState, pitch );
+
+		//		if ( m_iSoundState == 0 )
+		//			ALERT( at_console, "sound state %d\n", m_iSoundState );
+
+		if (m_sndCharge != NULL)
+		{
+			(CSoundEnvelopeController::GetController()).SoundChangePitch(m_sndCharge, pitch, 0);
+		}
+
+		//FIXME		m_pPlayer->m_iWeaponVolume = GAUSS_PRIMARY_CHARGE_VOLUME;
+
+		// m_flTimeWeaponIdle = gpGlobals->curtime + 0.1;
+		if (m_flStartCharge < gpGlobals->curtime - 10)
+		{
+			// Player charged up too long. Zap him.
+			EmitSound("Weapon_Gauss.Zap1");
+			EmitSound("Weapon_Gauss.Zap2");
+
+			m_nAttackState = 0;
+			SetWeaponIdleTime(gpGlobals->curtime + 1.0);
+			pPlayer->SetNextAttack(gpGlobals->curtime + 1.0);
+
+#if !defined(CLIENT_DLL )
+			// Add DMG_CRUSH because we don't want any physics force
+			pPlayer->TakeDamage(CTakeDamageInfo(this, this, 50, DMG_SHOCK | DMG_CRUSH));
+
+			color32 gaussDamage = { 255, 128, 0, 128 };
+			UTIL_ScreenFade(pPlayer, gaussDamage, 2, 0.5, FFADE_IN);
+#endif
+
+			SendWeaponAnim(ACT_VM_IDLE);
+
+			StopSpinSound();
+			// Player may have been killed and this weapon dropped, don't execute any more code after this!
+			return;
+		}
+	}
+}
+
+//=========================================================
+// StartFire- since all of this code has to run and then 
+// call Fire(), it was easier at this point to rip it out 
+// of weaponidle() and make its own function then to try to
+// merge this into Fire(), which has some identical variable names 
+//=========================================================
+void CWeaponGauss::StartFire(void)
+{
+	float flDamage;
+
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+	if (!pPlayer)
+	{
+		return;
+	}
+
+	Vector vecAiming = pPlayer->GetAutoaimVector(AUTOAIM_5DEGREES);
+	Vector vecSrc = pPlayer->Weapon_ShootPosition();
+
+	if (m_bPrimaryFire)
+	{
+		flDamage = la_weapon_gauss_dmg.GetFloat() * g_pGameRules->GetDamageMultiplier();
+	}
+	else
+	{
+		flDamage = GaussLerp(la_weapon_gauss_chargedmg_min.GetFloat(), la_weapon_gauss_chargedmg_max.GetFloat(), m_flChargePercent);
+	}
+
+	if (!m_bPrimaryFire)
+	{
+		Vector vecRecoil = vecAiming * -GaussLerp(la_weapon_gauss_recoil_min.GetFloat(), la_weapon_gauss_recoil_max.GetFloat(), m_flChargePercent);
+		pPlayer->ApplyAbsVelocityImpulse(vecRecoil);
+	}
+
+	Fire(vecSrc, vecAiming, flDamage);
+}
+
+void CWeaponGauss::Fire(Vector vecOrigSrc, Vector vecDir, float flDamage)
+{
+	CBaseEntity *pIgnore;
+	Vector		vecSrc = vecOrigSrc;
+	Vector		vecDest = vecSrc + vecDir * MAX_TRACE_LENGTH;
+	bool		fFirstBeam = true;
+	bool		fHasPunched = false;
+	float		flMaxFrac = 1.0;
+	int			nMaxHits = 10;
+
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+	if (!pPlayer)
+	{
+		return;
+	}
+
+	//FIXME	pPlayer->m_iWeaponVolume = GAUSS_PRIMARY_FIRE_VOLUME;
+
+	StopSpinSound();
+
+	pIgnore = pPlayer;
+
+	//	ALERT( at_console, "%f %f\n", tr.flFraction, flMaxFrac );
+#ifndef CLIENT_DLL
+	lagcompensation->StartLagCompensation(pPlayer, pPlayer->GetCurrentCommand());
+#endif
+	while (flDamage > 10 && nMaxHits > 0)
+	{
+		trace_t	tr;
+
+		nMaxHits--;
+
+		// ALERT( at_console, "." );
+		UTIL_TraceLine(vecSrc, vecDest, MASK_SHOT, pIgnore, COLLISION_GROUP_NONE, &tr);
+
+		if (tr.allsolid)
+			break;
+
+		CBaseEntity *pEntity = tr.m_pEnt;
+		if (pEntity == NULL)
+			break;
+
+		CBroadcastRecipientFilter filter;
+		CEffectData	data6;
+		if (fFirstBeam)
+		{
+			fFirstBeam = false;
+			if (m_bPrimaryFire)
+			{
+				DispatchParticleEffect("gaussbeam", tr.endpos, PATTACH_POINT_FOLLOW, this, "muzzle", false);
+			}
+			else
+			{
+				DispatchParticleEffect("gaussbeam_charged", tr.endpos, PATTACH_POINT_FOLLOW, this, "muzzle", false);
+			}
 		}
 		else
 		{
-			DispatchParticleEffect("gaussbeam", startPos, endPos, GetAbsAngles(), this);
+			if (m_bPrimaryFire)
+			{
+				DispatchParticleEffect("gaussbeam", vecSrc, tr.endpos, GetAbsAngles(), this);
+			}
+			else
+			{
+				DispatchParticleEffect("gaussbeam_charged", vecSrc, tr.endpos, GetAbsAngles(), this);
+			}
+		}
+
+		bool fShouldDamageEntity = (pEntity->m_takedamage != DAMAGE_NO);
+
+		if (fShouldDamageEntity)
+		{
+			ClearMultiDamage();
+			CTakeDamageInfo info(this, pPlayer, flDamage, DMG_ENERGYBEAM);
+			CalculateMeleeDamageForce(&info, vecDir, tr.endpos);
+			pEntity->DispatchTraceAttack(info, vecDir, &tr);
+			ApplyMultiDamage();
+		}
+
+		if (pEntity->IsBSPModel() && !fShouldDamageEntity)
+		{
+			float n;
+
+			pIgnore = NULL;
+
+			n = -DotProduct(tr.plane.normal, vecDir);
+
+			if (tr.surface.flags & SURF_SKY)
+			{
+				break;
+			}
+
+			if (n < 0.5) // 60 degrees
+			{
+				// ALERT( at_console, "reflect %f\n", n );
+				// reflect
+				Vector vecReflect;
+
+				vecReflect = 2.0 * tr.plane.normal * n + vecDir;
+				flMaxFrac = flMaxFrac - tr.fraction;
+				vecDir = vecReflect;
+				vecSrc = tr.endpos;// + vecDir * 8;
+				vecDest = vecSrc + vecDir * MAX_TRACE_LENGTH;
+
+#if !defined(CLIENT_DLL)
+				// explode a bit
+				RadiusDamage(CTakeDamageInfo(this, pPlayer, flDamage * n, DMG_BLAST), tr.endpos, flDamage * n * 2.5, CLASS_NONE, NULL);
+#endif
+
+				te->GaussExplosion(filter, 0.0f, tr.endpos, tr.plane.normal, 0);
+
+				// lose energy
+				if (n == 0)
+					n = 0.1;
+
+				flDamage = flDamage * (1 - n);
+			}
+			else
+			{
+				// tunnel
+				UTIL_ImpactTrace(&tr, DMG_ENERGYBEAM);
+				te->GaussExplosion(filter, 0.0f, tr.endpos, tr.plane.normal, 0);
+
+				// limit it to one hole punch
+				if (fHasPunched)
+					break;
+
+				fHasPunched = true;
+
+				// try punching through wall if secondary attack (primary is incapable of breaking through)
+				if (!m_bPrimaryFire)
+				{
+					trace_t punch_tr;
+
+					UTIL_TraceLine(tr.endpos + vecDir * 8, vecDest, MASK_SHOT, pIgnore, COLLISION_GROUP_NONE, &punch_tr);
+
+					if (!punch_tr.allsolid)
+					{
+						trace_t exit_tr;
+						// trace backwards to find exit point
+						UTIL_TraceLine(punch_tr.endpos, tr.endpos, MASK_SHOT, pIgnore, COLLISION_GROUP_NONE, &exit_tr);
+
+						float n = (exit_tr.endpos - tr.endpos).Length();
+
+						if (n < flDamage)
+						{
+							if (n == 0)
+								n = 1;
+
+							flDamage -= n;
+
+							te->GaussExplosion(filter, 0.0f, tr.endpos, tr.plane.normal, 0);
+
+							UTIL_ImpactTrace(&exit_tr, DMG_ENERGYBEAM);
+
+							te->GaussExplosion(filter, 0.0f, exit_tr.endpos, tr.plane.normal, 0);
+
+#if !defined( CLIENT_DLL)
+							// exit blast damage
+							float flDamageRadius = flDamage * 1.75;  // Old code == 2.5
+							RadiusDamage(CTakeDamageInfo(this, pPlayer, flDamage, DMG_BLAST), exit_tr.endpos + vecDir * 8, flDamageRadius, CLASS_NONE, NULL);
+
+							CSoundEnt::InsertSound(SOUND_COMBAT, GetAbsOrigin(), 1024, 3.0);
+#endif
+
+							vecSrc = exit_tr.endpos + vecDir;
+						}
+						else
+						{
+							break;	// [Striker] Prevent the shot from coming right back for you.
+									// Might have been intentional, but it's a crappy mechanic.
+						}
+					}
+					else
+					{
+						//ALERT( at_console, "blocked %f\n", n );
+						flDamage = 0;
+					}
+				}
+				else
+				{
+					//ALERT( at_console, "blocked solid\n" );
+					if (m_bPrimaryFire)
+					{
+						// slug doesn't punch through ever with primary 
+						// fire, so leave a little glowy bit and make some balls
+						//te->GaussExplosion(filter, 0.0f, tr.endpos, tr.plane.normal, 0);
+#if !defined( CLIENT_DLL)
+						CSoundEnt::InsertSound(SOUND_COMBAT, GetAbsOrigin(), 600, 0.5);
+#endif
+					}
+
+					flDamage = 0;
+				}
+
+			}
+		}
+		else
+		{
+			vecSrc = tr.endpos + vecDir;
+			pIgnore = pEntity;
 		}
 	}
 
-	return;
+#ifndef CLIENT_DLL
+	lagcompensation->FinishLagCompensation(pPlayer);
+#endif
+
+	pPlayer->ViewPunch(QAngle(-2, 0, 0));
+
+	if (m_bPrimaryFire)
+	{
+		SendWeaponAnim(ACT_VM_PRIMARYATTACK);
+		WeaponSound(SINGLE);
+	}
+	else
+	{
+		SendWeaponAnim(ACT_VM_SECONDARYATTACK);
+		WeaponSound(WPN_DOUBLE);
+	}
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
+void CWeaponGauss::WeaponIdle(void)
+{
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+	if (!pPlayer)
+	{
+		return;
+	}
+
+	if (!HasWeaponIdleTimeElapsed())
+		return;
+
+	if (m_nAttackState != 0)
+	{
+		StartFire();
+		m_nAttackState = 0;
+		SetWeaponIdleTime(gpGlobals->curtime + 2.0);
+	}
+	else
+	{
+		float flRand = random->RandomFloat(0, 1);
+		if (flRand <= 0.75)
+		{
+			SendWeaponAnim(ACT_VM_IDLE);
+			SetWeaponIdleTime(gpGlobals->curtime + random->RandomFloat(10, 15));
+		}
+		else
+		{
+			SendWeaponAnim(ACT_VM_FIDGET);
+			SetWeaponIdleTime(gpGlobals->curtime + 3);
+		}
+	}
+}
+
+/*
+==================================================
+AddViewKick
+==================================================
+*/
 
 void CWeaponGauss::AddViewKick(void)
 {
-	//Get the view kick
-	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
-
-	if (pPlayer == NULL)
-		return;
-
-	QAngle	viewPunch;
-
-	viewPunch.x = random->RandomFloat(-0.5f, -0.2f);
-	viewPunch.y = random->RandomFloat(-0.5f, 0.5f);
-	viewPunch.z = 0;
-
-	pPlayer->ViewPunch(viewPunch);
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CWeaponGauss::ItemPostFrame(void)
+bool CWeaponGauss::Deploy(void)
 {
-	//Get the view kick
-	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
-	if (pPlayer == NULL)
-		return;
-
-	if (pPlayer->m_afButtonReleased & IN_ATTACK2)
+	if (DefaultDeploy((char*)GetViewModel(), (char*)GetWorldModel(), ACT_VM_DRAW, (char*)GetAnimPrefix()))
 	{
-		if (m_bCharging){
-			ChargedFire();
-			ChargedFireFirstBeam();
-		}
+		return true;
 	}
-
-	BaseClass::ItemPostFrame();
+	else
+	{
+		return false;
+	}
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CWeaponGauss::StopChargeSound(void)
-{
-	if (m_sndCharge != NULL)
-	{
-		(CSoundEnvelopeController::GetController()).SoundFadeOut(m_sndCharge, 0.1f);
-	}
-	m_sndCharge = NULL;
-
-}
-
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-// Input  : *pSwitchingTo - 
-// Output : Returns true on success, false on failure.
-//-----------------------------------------------------------------------------
 bool CWeaponGauss::Holster(CBaseCombatWeapon *pSwitchingTo)
 {
-	StopChargeSound();
-	if (m_bCharging == true){
-		ChargedFire();
-		ChargedFireFirstBeam();
-	}
-	m_bCharging = false;
-	m_bChargeIndicated = false;
 
-
-
-	if (m_sndCharge != NULL)
-	{
-		(CSoundEnvelopeController::GetController()).SoundFadeOut(m_sndCharge, 0.1f);
-	}
-	m_sndCharge = NULL;
-
-	StopChargeSound();
+	StopSpinSound();
+	m_nAttackState = 0;
 
 	return BaseClass::Holster(pSwitchingTo);
+}
+
+void CWeaponGauss::StopSpinSound(void)
+{
+	if (m_sndCharge != NULL)
+	{
+		(CSoundEnvelopeController::GetController()).SoundDestroy(m_sndCharge);
+		m_sndCharge = NULL;
+	}
 }

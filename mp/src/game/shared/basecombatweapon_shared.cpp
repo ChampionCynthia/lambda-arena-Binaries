@@ -80,6 +80,8 @@ CBaseCombatWeapon::CBaseCombatWeapon()
 
 	m_bFlipViewModel	= false;
 
+	m_bQuake3Bob = false;
+
 #if defined( CLIENT_DLL )
 	m_iState = m_iOldState = WEAPON_NOT_CARRIED;
 	m_iClip1 = -1;
@@ -179,7 +181,6 @@ void CBaseCombatWeapon::Spawn( void )
 		tmLeave( TELEMETRY_LEVEL1 );
 	}
 
-
 	BaseClass::Spawn();
 
 	SetSolid( SOLID_BBOX );
@@ -228,6 +229,15 @@ void CBaseCombatWeapon::Spawn( void )
 	m_iReloadHudHintCount = 0;
 	m_iAltFireHudHintCount = 0;
 	m_flHudHintMinDisplayTime = 0;
+
+	m_vOriginalSpawnOrigin = GetAbsOrigin();
+	m_vOriginalSpawnAngles = GetAbsAngles();
+
+#ifdef CLIENT_DLL
+	// [Striker] For Q3A Item bobbing, make starting angle random.
+	ClientRotAng = { 0.0, FRand(0.0, 359.0), 0.0 };
+	ClientThink();
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -995,6 +1005,9 @@ void CBaseCombatWeapon::Equip( CBaseCombatCharacter *pOwner )
 		physenv->DestroyConstraint( m_pConstraint );
 		m_pConstraint = NULL;
 	}
+
+	RemoveSpawnFlags(SF_WEAPON_QUAKE3_BOB);
+	m_bQuake3Bob = false;
 #endif
 
 
@@ -2864,6 +2877,9 @@ BEGIN_NETWORK_TABLE(CBaseCombatWeapon, DT_BaseCombatWeapon)
 	SendPropModelIndex( SENDINFO(m_iWorldModelIndex) ),
 	SendPropInt( SENDINFO(m_iState ), 8, SPROP_UNSIGNED ),
 	SendPropEHandle( SENDINFO(m_hOwner) ),
+	SendPropBool(SENDINFO(m_bQuake3Bob)),
+	SendPropVector(SENDINFO(m_vOriginalSpawnOrigin)),
+	SendPropVector(SENDINFO(m_vOriginalSpawnAngles)),
 #else
 	RecvPropDataTable("LocalWeaponData", 0, 0, &REFERENCE_RECV_TABLE(DT_LocalWeaponData)),
 	RecvPropDataTable("LocalActiveWeaponData", 0, 0, &REFERENCE_RECV_TABLE(DT_LocalActiveWeaponData)),
@@ -2871,5 +2887,8 @@ BEGIN_NETWORK_TABLE(CBaseCombatWeapon, DT_BaseCombatWeapon)
 	RecvPropInt( RECVINFO(m_iWorldModelIndex)),
 	RecvPropInt( RECVINFO(m_iState), 0, &CBaseCombatWeapon::RecvProxy_WeaponState ),
 	RecvPropEHandle( RECVINFO(m_hOwner ) ),
+	RecvPropBool(RECVINFO(m_bQuake3Bob)),
+	RecvPropVector(RECVINFO(m_vOriginalSpawnOrigin)),
+	RecvPropVector(RECVINFO(m_vOriginalSpawnAngles)),
 #endif
 END_NETWORK_TABLE()

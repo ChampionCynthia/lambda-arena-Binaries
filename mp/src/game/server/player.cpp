@@ -95,7 +95,7 @@ ConVar	spec_freeze_traveltime( "spec_freeze_traveltime", "0.4", FCVAR_CHEAT | FC
 
 ConVar sv_bonus_challenge( "sv_bonus_challenge", "0", FCVAR_REPLICATED, "Set to values other than 0 to select a bonus map challenge type." );
 
-ConVar la_sv_disable_explosion_ring("la_sv_disable_explosion_ring", "1", FCVAR_REPLICATED, "Disables the ear-ringing effect when being hit by explosions");
+ConVar la_sv_disable_explosion_ring("la_sv_disable_explosion_ring", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Disables the ear-ringing effect when being hit by explosions.");
 
 static ConVar sv_maxusrcmdprocessticks( "sv_maxusrcmdprocessticks", "24", FCVAR_NOTIFY, "Maximum number of client-issued usrcmd ticks that can be replayed in packet loss conditions, 0 to allow no restrictions" );
 

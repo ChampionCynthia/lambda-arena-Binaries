@@ -116,7 +116,9 @@ void CWeapon_SLAM::Spawn( )
 
 	Precache( );
 
+#ifndef CLIENT_DLL
 	FallInit();// get ready to fall down
+#endif
 
 	m_tSlamState		= (int)SLAM_SATCHEL_THROW;
 	m_flWallSwitchTime	= 0;

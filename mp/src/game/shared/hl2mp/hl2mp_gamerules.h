@@ -102,7 +102,6 @@ public:
 
 	virtual float FlWeaponRespawnTime( CBaseCombatWeapon *pWeapon );
 	virtual float FlWeaponTryRespawn( CBaseCombatWeapon *pWeapon );
-	virtual Vector VecWeaponRespawnSpot( CBaseCombatWeapon *pWeapon );
 	virtual int WeaponShouldRespawn( CBaseCombatWeapon *pWeapon );
 	virtual void Think( void );
 	virtual void CreateStandardEntities( void );
@@ -122,8 +121,6 @@ public:
 	void RestartGame();
 	
 #ifndef CLIENT_DLL
-	virtual Vector VecItemRespawnSpot( CItem *pItem );
-	virtual QAngle VecItemRespawnAngles( CItem *pItem );
 	virtual float	FlItemRespawnTime( CItem *pItem );
 	virtual bool	CanHavePlayerItem( CBasePlayer *pPlayer, CBaseCombatWeapon *pItem );
 	virtual bool FShouldSwitchWeapon( CBasePlayer *pPlayer, CBaseCombatWeapon *pWeapon );

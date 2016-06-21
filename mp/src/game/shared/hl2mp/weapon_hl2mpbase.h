@@ -43,7 +43,6 @@ public:
 	
 		void SendReloadSoundEvent( void );
 
-		void Materialize( void );
 		virtual	int	ObjectCaps( void );
 	#endif
 
@@ -60,7 +59,6 @@ public:
 
 
 	virtual void FireBullets( const FireBulletsInfo_t &info );
-	virtual void FallInit( void );
 	
 public:
 	#if defined( CLIENT_DLL )
@@ -82,15 +80,9 @@ public:
 	float		m_flPrevAnimTime;
 	float  m_flNextResetCheckTime;
 
-	Vector	GetOriginalSpawnOrigin( void ) { return m_vOriginalSpawnOrigin;	}
-	QAngle	GetOriginalSpawnAngles( void ) { return m_vOriginalSpawnAngles;	}
-
 private:
 
 	CWeaponHL2MPBase( const CWeaponHL2MPBase & );
-
-	Vector m_vOriginalSpawnOrigin;
-	QAngle m_vOriginalSpawnAngles;
 };
 
 

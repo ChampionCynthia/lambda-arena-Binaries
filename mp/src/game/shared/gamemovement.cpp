@@ -55,9 +55,9 @@ ConVar xc_uncrouch_on_jump( "xc_uncrouch_on_jump", "1", FCVAR_ARCHIVE, "Uncrouch
 ConVar player_limit_jump_speed( "player_limit_jump_speed", "1", FCVAR_REPLICATED );
 #endif
 
-ConVar la_sv_autojump("la_sv_autojump", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Automatically pogo-jump when holding jump key");
+ConVar la_sv_autojump("la_sv_autojump", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Automatically pogo-jump when holding jump key.");
 ConVar la_sv_doublejump("la_sv_doublejump", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable double-jumping. (1: TF2 Style | 2: UT2004 Style)");
-ConVar la_sv_jumpheight("la_sv_jumpheight", "160.0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Jumping height (160.0 is HL2DM default!)");
+ConVar la_sv_jumpheight("la_sv_jumpheight", "160.0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Jumping height. Default: 160.0");
 
 // option_duck_method is a carrier convar. Its sole purpose is to serve an easy-to-flip
 // convar which is ONLY set by the X360 controller menu to tell us which way to bind the

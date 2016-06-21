@@ -5,8 +5,8 @@
 //-----------------------------------------------------------------------------
 
 $Macro SRCDIR		"..\.."
-$Macro GAMENAME 	"hl2mp" [!$SOURCESDK]
-$Macro GAMENAME 	"mod_hl2mp" [$SOURCESDK]
+$Macro GAMENAME 	"lambda" [!$SOURCESDK]
+$Macro GAMENAME 	"lambda" [$SOURCESDK]
 
 $Include "$SRCDIR\game\server\server_base.vpc"
 $Include "$SRCDIR\game\server\nav_mesh.vpc" [$SOURCESDK]
@@ -20,7 +20,7 @@ $Configuration
 	}
 }
 
-$Project "Server (HL2MP)"
+$Project "Server (LAMBDA)"
 {
 	$Folder	"Source Files"
 	{
@@ -290,6 +290,10 @@ $Project "Server (HL2MP)"
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_slam.h"
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_smg1.cpp"
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_stunstick.cpp"
+
+				// Lambda files
+				$File	"$SRCDIR\game\shared\hl2mp\weapon_gauss.cpp"
+				$File	"$SRCDIR\game\shared\hl2mp\weapon_egon.cpp"
 			}
 		}
 	}

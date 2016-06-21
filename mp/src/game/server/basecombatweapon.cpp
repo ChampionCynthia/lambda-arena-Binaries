@@ -199,15 +199,20 @@ CBaseEntity* CBaseCombatWeapon::Respawn( void )
 {
 	// make a copy of this weapon that is invisible and inaccessible to players (no touch function). The weapon spawn/respawn code
 	// will decide when to make the weapon visible and touchable.
-	CBaseEntity *pNewWeapon = CBaseEntity::Create( GetClassname(), g_pGameRules->VecWeaponRespawnSpot( this ), GetLocalAngles(), GetOwnerEntity() );
+	CBaseCombatWeapon *pNewWeapon = (CBaseCombatWeapon *)CBaseEntity::Create( GetClassname(), g_pGameRules->VecWeaponRespawnSpot( this ), GetLocalAngles(), GetOwnerEntity() );
 
 	if ( pNewWeapon )
 	{
 		pNewWeapon->AddEffects( EF_NODRAW );// invisible for now
 		pNewWeapon->SetTouch( NULL );// no touch
 		pNewWeapon->SetThink( &CBaseCombatWeapon::AttemptToMaterialize );
+		pNewWeapon->AddSpawnFlags(GetSpawnFlags());
+		pNewWeapon->SetupPhysics();
 
-		UTIL_DropToFloor( this, MASK_SOLID );
+		if (!HasSpawnFlags(SF_WEAPON_START_CONSTRAINED) && !HasSpawnFlags(SF_WEAPON_QUAKE3_BOB))
+		{
+			UTIL_DropToFloor(this, MASK_SOLID);
+		}
 
 		// not a typo! We want to know when the weapon the player just picked up should respawn! This new entity we created is the replacement,
 		// but when it should respawn is based on conditions belonging to the weapon that was taken.
@@ -218,7 +223,7 @@ CBaseEntity* CBaseCombatWeapon::Respawn( void )
 		Warning("Respawn failed to create %s!\n", GetClassname() );
 	}
 
-	return pNewWeapon;
+	return (CBaseEntity *)pNewWeapon;
 }
 
 //-----------------------------------------------------------------------------
@@ -479,48 +484,65 @@ void CBaseCombatWeapon::Kill( void )
 void CBaseCombatWeapon::FallInit( void )
 {
 	SetModel( GetWorldModel() );
-	VPhysicsDestroyObject();
-
-	if ( !VPhysicsInitNormal( SOLID_BBOX, GetSolidFlags() | FSOLID_TRIGGER, false ) )
-	{
-		SetMoveType( MOVETYPE_FLYGRAVITY );
-		SetSolid( SOLID_BBOX );
-		AddSolidFlags( FSOLID_TRIGGER );
-	}
-	else
-	{
-#if !defined( CLIENT_DLL )
-		// Constrained start?
-		if ( HasSpawnFlags( SF_WEAPON_START_CONSTRAINED ) )
-		{
-			//Constrain the weapon in place
-			IPhysicsObject *pReferenceObject, *pAttachedObject;
-			
-			pReferenceObject = g_PhysWorldObject;
-			pAttachedObject = VPhysicsGetObject();
-
-			if ( pReferenceObject && pAttachedObject )
-			{
-				constraint_fixedparams_t fixed;
-				fixed.Defaults();
-				fixed.InitWithCurrentObjectState( pReferenceObject, pAttachedObject );
-				
-				fixed.constraint.forceLimit	= lbs2kg( 10000 );
-				fixed.constraint.torqueLimit = lbs2kg( 10000 );
-
-				m_pConstraint = physenv->CreateFixedConstraint( pReferenceObject, pAttachedObject, NULL, fixed );
-
-				m_pConstraint->SetGameData( (void *) this );
-			}
-		}
-#endif //CLIENT_DLL
-	}	
+	
+	SetupPhysics();
 
 	SetPickupTouch();
 	
 	SetThink( &CBaseCombatWeapon::FallThink );
 
 	SetNextThink( gpGlobals->curtime + 0.1f );
+}
+
+// [Striker] Set up physics for weapon
+void CBaseCombatWeapon::SetupPhysics( void )
+{
+	VPhysicsDestroyObject();
+
+	if (HasSpawnFlags(SF_WEAPON_QUAKE3_BOB))
+	{
+		m_bQuake3Bob = true;
+		VPhysicsDestroyObject();
+		SetMoveType(MOVETYPE_NONE);
+		SetSolid(SOLID_NONE);
+		return;
+	}
+
+	m_bQuake3Bob = false;
+
+	if (!VPhysicsInitNormal(SOLID_BBOX, GetSolidFlags() | FSOLID_TRIGGER, false))
+	{
+		SetMoveType(MOVETYPE_FLYGRAVITY);
+		SetSolid(SOLID_BBOX);
+		AddSolidFlags(FSOLID_TRIGGER);
+	}
+	else
+	{
+		SetMoveType(MOVETYPE_VPHYSICS);
+		// Constrained start?
+		if (HasSpawnFlags(SF_WEAPON_START_CONSTRAINED))
+		{
+			//Constrain the weapon in place
+			IPhysicsObject *pReferenceObject, *pAttachedObject;
+
+			pReferenceObject = g_PhysWorldObject;
+			pAttachedObject = VPhysicsGetObject();
+
+			if (pReferenceObject && pAttachedObject)
+			{
+				constraint_fixedparams_t fixed;
+				fixed.Defaults();
+				fixed.InitWithCurrentObjectState(pReferenceObject, pAttachedObject);
+
+				fixed.constraint.forceLimit = lbs2kg(10000);
+				fixed.constraint.torqueLimit = lbs2kg(10000);
+
+				m_pConstraint = physenv->CreateFixedConstraint(pReferenceObject, pAttachedObject, NULL, fixed);
+
+				m_pConstraint->SetGameData((void *) this);
+			}
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -579,9 +601,7 @@ void CBaseCombatWeapon::Materialize( void )
 #ifdef HL2MP
 	if ( HasSpawnFlags( SF_NORESPAWN ) == false )
 	{
-		VPhysicsInitNormal( SOLID_BBOX, GetSolidFlags() | FSOLID_TRIGGER, false );
-		SetMoveType( MOVETYPE_VPHYSICS );
-
+		SetupPhysics();
 		HL2MPRules()->AddLevelDesignerPlacedObject( this );
 	}
 #else

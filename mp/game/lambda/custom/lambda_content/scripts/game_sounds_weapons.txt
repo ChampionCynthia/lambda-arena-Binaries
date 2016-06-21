@@ -1620,3 +1620,28 @@
 
 	"wave"			")weapons/physcannon/energy_sing_explosion2.wav"
 }
+
+// weapon_egon.txt
+"Weapon_Gluon.Run"
+{
+	"channel"		"CHAN_WEAPON"
+	"volume"		"0.7"
+	"soundlevel"		"SNDLVL_95dB"
+	"wave"			"weapons/egon/egon_ru3.wav"
+}
+
+"Weapon_Gluon.Start"
+{
+	"channel"		"CHAN_WEAPON"
+	"volume"		"0.7"
+	"soundlevel"		"SNDLVL_95dB"
+	"wave"			"weapons/egon/egon_windup2.wav"
+}
+
+"Weapon_Gluon.Off"
+{
+	"channel"		"CHAN_WEAPON"
+	"volume"		"0.7"
+	"soundlevel"		"SNDLVL_95dB"
+	"wave"			"weapons/egon/egon_off1.wav"
+}

@@ -492,11 +492,14 @@ void DispatchParticleEffect(const char *pszParticleName, Vector vecStart, Partic
 		{
 			C_BasePlayer *player = ToBasePlayer(pWpn->GetOwner());
 
-			// Use GetRenderedWeaponModel() instead?
-			C_BaseViewModel *pViewModel = player ? player->GetViewModel(0) : NULL;
-			if (pViewModel)
+			if (player == C_BasePlayer::GetLocalPlayer())
 			{
-				pEntity = pViewModel;
+				// Use GetRenderedWeaponModel() instead?
+				C_BaseViewModel *pViewModel = player ? player->GetViewModel(0) : NULL;
+				if (pViewModel)
+				{
+					pEntity = pViewModel;
+				}
 			}
 		}
 
@@ -546,6 +549,22 @@ void StopParticleEffects( CBaseEntity *pEntity )
 	if ( pEntity )
 	{
 #ifdef CLIENT_DLL
+		C_BaseCombatWeapon *pWpn = dynamic_cast<C_BaseCombatWeapon *>(pEntity);
+		if (pWpn && pWpn->ShouldDrawUsingViewModel())
+		{
+			C_BasePlayer *player = ToBasePlayer(pWpn->GetOwner());
+
+			if (player == C_BasePlayer::GetLocalPlayer())
+			{
+				// Use GetRenderedWeaponModel() instead?
+				C_BaseViewModel *pViewModel = player ? player->GetViewModel(0) : NULL;
+				if (pViewModel)
+				{
+					pEntity = pViewModel;
+				}
+			}
+		}
+
 		data.m_hEntity = pEntity;
 #else
 		data.m_nEntIndex = pEntity->entindex();

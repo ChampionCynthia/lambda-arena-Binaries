@@ -48,6 +48,7 @@ class CUserCmd;
 #define	SF_WEAPON_START_CONSTRAINED	(1<<0)	
 #define SF_WEAPON_NO_PLAYER_PICKUP	(1<<1)
 #define SF_WEAPON_NO_PHYSCANNON_PUNT (1<<2)
+#define SF_WEAPON_QUAKE3_BOB		(1<<3)
 
 //Percent
 #define	CLIP_PERC_THRESHOLD		0.75f	
@@ -423,6 +424,7 @@ public:
 	DECLARE_DATADESC();
 	virtual void			FallInit( void );						// prepare to fall to the ground
 	virtual void			FallThink( void );						// make the weapon fall to the ground after spawning
+	virtual void			SetupPhysics( void );
 
 	// Weapon spawning
 	bool					IsConstrained() { return m_pConstraint != NULL; }
@@ -480,6 +482,8 @@ public:
 		return false; 
 #endif
 	}
+
+	void					ClientThink(void);
 
 	// Should this object cast shadows?
 	virtual ShadowType_t	ShadowCastType();
@@ -586,6 +590,12 @@ public:
 	bool					SetIdealActivity( Activity ideal );
 	void					MaintainIdealActivity( void );
 
+	CNetworkVar(bool, m_bQuake3Bob);
+	CNetworkVar(Vector, m_vOriginalSpawnOrigin);
+	CNetworkVar(QAngle, m_vOriginalSpawnAngles);
+	Vector	GetOriginalSpawnOrigin(void) { return m_vOriginalSpawnOrigin; }
+	QAngle	GetOriginalSpawnAngles(void) { return m_vOriginalSpawnAngles; }
+
 private:
 	Activity				m_Activity;
 	int						m_nIdealSequence;
@@ -655,6 +665,9 @@ protected:
 
 	// Allow weapons resource to access m_hWeaponFileInfo directly
 	friend class			WeaponsResource;
+
+private:
+	QAngle					ClientRotAng; // m_angRotation is stomped sometimes (CItem returning the ent to spawn position?)
 
 protected:	
 	int						m_iOldState;

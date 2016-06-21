@@ -930,7 +930,7 @@ ConVarRef suitcharger( "sk_suitcharger" );
 	//=========================================================
 	Vector CMultiplayRules::VecWeaponRespawnSpot( CBaseCombatWeapon *pWeapon )
 	{
-		return pWeapon->GetAbsOrigin();
+		return pWeapon->GetOriginalSpawnOrigin();
 	}
 
 	//=========================================================
@@ -1011,7 +1011,7 @@ ConVarRef suitcharger( "sk_suitcharger" );
 	//=========================================================
 	Vector CMultiplayRules::VecItemRespawnSpot( CItem *pItem )
 	{
-		return pItem->GetAbsOrigin();
+		return pItem->GetOriginalSpawnOrigin();
 	}
 
 	//=========================================================
@@ -1019,7 +1019,7 @@ ConVarRef suitcharger( "sk_suitcharger" );
 	//=========================================================
 	QAngle CMultiplayRules::VecItemRespawnAngles( CItem *pItem )
 	{
-		return pItem->GetAbsAngles();
+		return pItem->GetOriginalSpawnAngles();
 	}
 
 	//=========================================================

@@ -439,24 +439,6 @@ float CHL2MPRules::FlWeaponTryRespawn( CBaseCombatWeapon *pWeapon )
 	return 0;
 }
 
-//=========================================================
-// VecWeaponRespawnSpot - where should this weapon spawn?
-// Some game variations may choose to randomize spawn locations
-//=========================================================
-Vector CHL2MPRules::VecWeaponRespawnSpot( CBaseCombatWeapon *pWeapon )
-{
-#ifndef CLIENT_DLL
-	CWeaponHL2MPBase *pHL2Weapon = dynamic_cast< CWeaponHL2MPBase*>( pWeapon );
-
-	if ( pHL2Weapon )
-	{
-		return pHL2Weapon->GetOriginalSpawnOrigin();
-	}
-#endif
-	
-	return pWeapon->GetAbsOrigin();
-}
-
 #ifndef CLIENT_DLL
 
 CItem* IsManagedObjectAnItem( CBaseEntity *pObject )
@@ -569,23 +551,6 @@ void CHL2MPRules::RemoveLevelDesignerPlacedObject( CBaseEntity *pEntity )
 	{
 		m_hRespawnableItemsAndWeapons.FindAndRemove( pEntity );
 	}
-}
-
-//=========================================================
-// Where should this item respawn?
-// Some game variations may choose to randomize spawn locations
-//=========================================================
-Vector CHL2MPRules::VecItemRespawnSpot( CItem *pItem )
-{
-	return pItem->GetOriginalSpawnOrigin();
-}
-
-//=========================================================
-// What angles should this item use to respawn?
-//=========================================================
-QAngle CHL2MPRules::VecItemRespawnAngles( CItem *pItem )
-{
-	return pItem->GetOriginalSpawnAngles();
 }
 
 //=========================================================
@@ -973,8 +938,7 @@ CAmmoDef *GetAmmoDef()
 		}
 	}
 
-	ConCommand cc_Bot("bot", Bot_f, "Add a bot."); // [Striker] Don't consider bots a cheat.
-
+	ConCommand cc_Bot("bot", Bot_f, "Add a bot.", FCVAR_CHEAT);
 
 	bool CHL2MPRules::FShouldSwitchWeapon( CBasePlayer *pPlayer, CBaseCombatWeapon *pWeapon )
 	{		

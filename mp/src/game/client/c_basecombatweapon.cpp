@@ -16,6 +16,7 @@
 #include "tier1/KeyValues.h"
 #include "toolframework/itoolframework.h"
 #include "toolframework_client.h"
+#include "quake3bob.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -554,4 +555,17 @@ void C_BaseCombatWeapon::GetToolRecordingState( KeyValues *msg )
 	{
 		SetModelIndex( nModelIndex );
 	}
+}
+
+// [Striker] Quake 3 bobbing for weapons
+void C_BaseCombatWeapon::ClientThink()
+{
+	if (IsAbsQueriesValid() && m_bQuake3Bob)
+	{
+		// Rotate
+		Quake3Rotate(this, ClientRotAng);
+		Quake3Bob(this, m_vOriginalSpawnOrigin);
+	}
+
+	SetNextClientThink(CLIENT_THINK_ALWAYS);
 }

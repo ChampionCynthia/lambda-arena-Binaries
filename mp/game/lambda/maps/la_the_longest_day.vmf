@@ -2,7 +2,7 @@ versioninfo
 {
 	"editorversion" "400"
 	"editorbuild" "6920"
-	"mapversion" "10"
+	"mapversion" "12"
 	"formatversion" "100"
 	"prefab" "0"
 }
@@ -20,7 +20,7 @@ viewsettings
 world
 {
 	"id" "0"
-	"mapversion" "10"
+	"mapversion" "12"
 	"classname" "worldspawn"
 	"comment" "Decompiled by BSPSource v1.3.21 from pg_the_longest_day"
 	"detailmaterial" "detail/detailsprites"
@@ -57001,7 +57001,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "64 2120 376"
 	editor
 	{
@@ -57907,7 +57907,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "-672 116 376"
 	editor
 	{
@@ -57964,7 +57964,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "800 116 376"
 	editor
 	{
@@ -58021,7 +58021,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "1216 -928 664"
 	editor
 	{
@@ -58078,7 +58078,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "-1088 -928 664"
 	editor
 	{
@@ -58255,7 +58255,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "-16 -719.493 832.276"
 	editor
 	{
@@ -58272,7 +58272,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "32 -719.493 856.276"
 	editor
 	{
@@ -58289,7 +58289,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "96 -719.493 856.276"
 	editor
 	{
@@ -58306,7 +58306,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "144 -719.493 832.276"
 	editor
 	{
@@ -58323,7 +58323,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "56 -719.493 864.276"
 	editor
 	{
@@ -58340,7 +58340,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "72 -719.493 864.276"
 	editor
 	{
@@ -58357,7 +58357,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "43 616 344"
 	editor
 	{
@@ -58374,7 +58374,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "74 616 344"
 	editor
 	{
@@ -58391,7 +58391,7 @@ entity
 	"angles" "0 90 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "448 -512 16"
 	editor
 	{
@@ -58408,7 +58408,7 @@ entity
 	"angles" "0 90 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "-320 -512 16"
 	editor
 	{
@@ -58465,7 +58465,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "64 -24 1328"
 	editor
 	{
@@ -58482,7 +58482,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "152 -64 1304"
 	editor
 	{
@@ -58499,7 +58499,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "-24 -64 1304"
 	editor
 	{
@@ -58516,7 +58516,7 @@ entity
 	"angles" "0 90 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "64 568 8"
 	editor
 	{
@@ -59826,7 +59826,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "224 -224 40"
 	editor
 	{
@@ -59843,7 +59843,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "-96 96 40"
 	editor
 	{
@@ -59860,7 +59860,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "224 96 40"
 	editor
 	{
@@ -59877,7 +59877,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "-96 -224 40"
 	editor
 	{
@@ -59894,7 +59894,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "-608 -448 352"
 	editor
 	{
@@ -59911,7 +59911,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "736 -448 352"
 	editor
 	{
@@ -59928,7 +59928,7 @@ entity
 	"angles" "0 270 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "392 568 336"
 	editor
 	{
@@ -59945,7 +59945,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "-264 568 340"
 	editor
 	{
@@ -59962,7 +59962,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "58 -63 480"
 	editor
 	{
@@ -59979,7 +59979,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "58 -64 448"
 	editor
 	{
@@ -59996,7 +59996,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "-432 40 8"
 	editor
 	{
@@ -60013,7 +60013,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "-432 -64 8"
 	editor
 	{
@@ -60030,6 +60030,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "0"
 	"origin" "-16.3153 -143.959 1.30241"
 	editor
 	{
@@ -60046,6 +60047,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "0"
 	"origin" "1329.11 -1045.02 625.302"
 	editor
 	{
@@ -60062,7 +60064,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "63.8302 496 344"
 	editor
 	{
@@ -60079,7 +60081,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "-1168 -1032 632"
 	editor
 	{
@@ -60096,7 +60098,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "-1192 -1008 632"
 	editor
 	{
@@ -60113,7 +60115,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "568 -176 8"
 	editor
 	{
@@ -60130,7 +60132,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "568 160 8"
 	editor
 	{
@@ -60147,7 +60149,7 @@ entity
 	"angles" "0 270 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "64 2344 344"
 	editor
 	{
@@ -61557,7 +61559,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "428 1518 680"
 	editor
 	{
@@ -61574,7 +61576,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "-280 1560 640"
 	editor
 	{
@@ -61591,7 +61593,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "-300 1520 660"
 	editor
 	{
@@ -61608,7 +61610,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "3"
 	"origin" "-320 1480 680"
 	editor
 	{
@@ -61616,50 +61618,6 @@ entity
 		"visgroupshown" "1"
 		"visgroupautoshown" "1"
 		"logicalpos" "[1000 -12768]"
-	}
-}
-entity
-{
-	"id" "5632"
-	"classname" "ctf_combine_base"
-	"angles" "0 0 0"
-	"fademindist" "-1"
-	"fadescale" "1"
-	"inertiaScale" "1.0"
-	"modelscale" "1.0"
-	"physdamagescale" "0.1"
-	"renderamt" "255"
-	"rendercolor" "255 255 255"
-	"spawnflags" "256"
-	"origin" "775 -475 339"
-	editor
-	{
-		"color" "220 30 220"
-		"visgroupshown" "1"
-		"visgroupautoshown" "1"
-		"logicalpos" "[1000 -12268]"
-	}
-}
-entity
-{
-	"id" "5633"
-	"classname" "ctf_combine_flag"
-	"angles" "0 180 0"
-	"fademindist" "-1"
-	"fadescale" "1"
-	"inertiaScale" "1.0"
-	"modelscale" "1.0"
-	"physdamagescale" "0.1"
-	"renderamt" "255"
-	"rendercolor" "255 255 255"
-	"spawnflags" "256"
-	"origin" "775 -475 345"
-	editor
-	{
-		"color" "220 30 220"
-		"visgroupshown" "1"
-		"visgroupautoshown" "1"
-		"logicalpos" "[1000 -11768]"
 	}
 }
 entity
@@ -74010,13 +73968,35 @@ entity
 		"logicalpos" "[0 0]"
 	}
 }
+entity
+{
+	"id" "5632"
+	"classname" "ctf_combine_base"
+	"angles" "0 0 0"
+	"fademindist" "-1"
+	"fadescale" "1"
+	"inertiaScale" "1.0"
+	"modelscale" "1.0"
+	"physdamagescale" "0.1"
+	"renderamt" "255"
+	"rendercolor" "255 255 255"
+	"spawnflags" "256"
+	"origin" "775 -475 339"
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[1000 -12268]"
+	}
+}
 cameras
 {
 	"activecamera" "0"
 	camera
 	{
-		"position" "[-622.935 -621.219 888.544]"
-		"look" "[-591.399 -357.808 864.403]"
+		"position" "[-488.424 624.62 695.876]"
+		"look" "[-388.928 378.357 675.438]"
 	}
 	camera
 	{
