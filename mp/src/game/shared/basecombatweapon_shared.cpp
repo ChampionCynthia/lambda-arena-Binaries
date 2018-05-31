@@ -1494,8 +1494,7 @@ bool CBaseCombatWeapon::Holster( CBaseCombatWeapon *pSwitchingTo )
 
 #ifdef CLIENT_DLL
 	// kill particles
-	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
-	StopParticleEffects(pPlayer->GetViewModel());
+	StopParticleEffects(this);
 #endif
 
 	// Send holster animation

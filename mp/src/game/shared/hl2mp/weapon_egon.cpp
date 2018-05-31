@@ -402,7 +402,7 @@ void CWeaponEgon::UpdateEffect( const Vector &startPoint, const Vector &endPoint
 	*/
 
 	// [Striker] Need to rewrite this... Not sure how. This eats up too much bandwidth.
-	//DispatchParticleEffect("egon_beam", endPoint, PATTACH_POINT_FOLLOW, this, "muzzle", false);
+	DispatchParticleEffect("egon_beam", endPoint, PATTACH_POINT_FOLLOW, this, "muzzle", false);
 
 	/*
 	if ( m_hNoise )
