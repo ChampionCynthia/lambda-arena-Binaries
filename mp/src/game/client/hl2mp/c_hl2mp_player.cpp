@@ -761,10 +761,23 @@ IMPLEMENT_CLIENTCLASS_DT_NOBASE( C_HL2MPRagdoll, DT_HL2MPRagdoll, CHL2MPRagdoll 
 	RecvPropInt( RECVINFO( m_nModelIndex ) ),
 	RecvPropInt( RECVINFO(m_nForceBone) ),
 	RecvPropVector( RECVINFO(m_vecForce) ),
-	RecvPropVector( RECVINFO( m_vecRagdollVelocity ) )
+	RecvPropVector( RECVINFO( m_vecRagdollVelocity ) ),
+	RecvPropBool(RECVINFO(m_bDecapitated))
 END_RECV_TABLE()
 
+void BuildDecapitatedTransformations(CBaseAnimating* pObject, CStudioHdr* hdr, Vector* pos, Quaternion q[], const matrix3x4_t& cameraTransform, int boneMask, CBoneBitList& boneComputed)
+{
+	if (!pObject)
+		return;
 
+	// Scale the head to nothing.
+	int iHeadBone = pObject->LookupBone("ValveBiped.Bip01_Head1");
+	if (iHeadBone != -1)
+	{
+		matrix3x4_t& transform = pObject->GetBoneForWrite(iHeadBone);
+		MatrixScaleByZero(transform);
+	}
+}
 
 C_HL2MPRagdoll::C_HL2MPRagdoll()
 {
@@ -935,6 +948,11 @@ void C_HL2MPRagdoll::OnDataChanged( DataUpdateType_t type )
 	if ( type == DATA_UPDATE_CREATED )
 	{
 		CreateHL2MPRagdoll();
+
+		if (m_bDecapitated)
+		{
+			ParticleProp()->Create("blood_headshot_spurt", PATTACH_POINT_FOLLOW, "anim_attachment_head");
+		}
 	}
 }
 
@@ -948,6 +966,17 @@ void C_HL2MPRagdoll::UpdateOnRemove( void )
 	VPhysicsSetObject( NULL );
 
 	BaseClass::UpdateOnRemove();
+}
+
+void C_HL2MPRagdoll::BuildTransformations(CStudioHdr* hdr, Vector* pos, Quaternion q[], const matrix3x4_t& cameraTransform, int boneMask, CBoneBitList& boneComputed)
+{
+	BaseClass::BuildTransformations(hdr, pos, q, cameraTransform, boneMask, boneComputed);
+
+	if (m_bDecapitated)
+	{
+		m_BoneAccessor.SetWritableBones(BONE_USED_BY_ANYTHING);
+		BuildDecapitatedTransformations(this, hdr, pos, q, cameraTransform, boneMask, boneComputed);
+	}
 }
 
 //-----------------------------------------------------------------------------

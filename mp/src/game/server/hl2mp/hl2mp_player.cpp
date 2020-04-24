@@ -157,6 +157,9 @@ void CHL2MP_Player::Precache( void )
 	PrecacheScriptSound( "NPC_MetroPolice.Die" );
 	PrecacheScriptSound( "NPC_CombineS.Die" );
 	PrecacheScriptSound( "NPC_Citizen.die" );
+
+	// Gore Sounds
+	PrecacheScriptSound("Player.HeadExplode");
 }
 
 void CHL2MP_Player::GiveAllItems( void )
@@ -1111,6 +1114,7 @@ public:
 	CNetworkHandle( CBaseEntity, m_hPlayer );	// networked entity handle 
 	CNetworkVector( m_vecRagdollVelocity );
 	CNetworkVector( m_vecRagdollOrigin );
+	CNetworkVar( bool, m_bDecapitated );
 };
 
 LINK_ENTITY_TO_CLASS( hl2mp_ragdoll, CHL2MPRagdoll );
@@ -1121,7 +1125,8 @@ IMPLEMENT_SERVERCLASS_ST_NOBASE( CHL2MPRagdoll, DT_HL2MPRagdoll )
 	SendPropModelIndex( SENDINFO( m_nModelIndex ) ),
 	SendPropInt		( SENDINFO(m_nForceBone), 8, 0 ),
 	SendPropVector	( SENDINFO(m_vecForce), -1, SPROP_NOSCALE ),
-	SendPropVector( SENDINFO( m_vecRagdollVelocity ) )
+	SendPropVector( SENDINFO( m_vecRagdollVelocity ) ),
+	SendPropBool( SENDINFO(m_bDecapitated) )
 END_SEND_TABLE()
 
 
@@ -1249,6 +1254,38 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 		if ( m_hRagdoll )
 		{
 			m_hRagdoll->GetBaseAnimating()->Dissolve( NULL, gpGlobals->curtime, false, ENTITY_DISSOLVE_NORMAL );
+		}
+	}
+
+	if (info.GetDamageType() & DMG_HEADSHOT)
+	{
+		if (m_hRagdoll)
+		{
+			CHL2MPRagdoll* pRagdoll = dynamic_cast<CHL2MPRagdoll*>(m_hRagdoll.Get());
+			if (pRagdoll != NULL)
+			{
+				pRagdoll->m_bDecapitated = true;
+
+				CSoundParameters params;
+				if (GetParametersForSound("Player.HeadExplode", params, NULL) != false)
+				{
+					Vector vecOrigin = GetAbsOrigin();
+
+					CRecipientFilter filter;
+					filter.AddRecipientsByPAS(vecOrigin);
+
+					EmitSound_t ep;
+					ep.m_nChannel = params.channel;
+					ep.m_pSoundName = params.soundname;
+					ep.m_flVolume = params.volume;
+					ep.m_SoundLevel = params.soundlevel;
+					ep.m_nFlags = 0;
+					ep.m_nPitch = params.pitch;
+					ep.m_pOrigin = &vecOrigin;
+
+					EmitSound(filter, entindex(), ep);
+				}
+			}
 		}
 	}
 
