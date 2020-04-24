@@ -1,8 +1,8 @@
 versioninfo
 {
 	"editorversion" "400"
-	"editorbuild" "6920"
-	"mapversion" "1"
+	"editorbuild" "8357"
+	"mapversion" "4"
 	"formatversion" "100"
 	"prefab" "0"
 }
@@ -20,7 +20,7 @@ viewsettings
 world
 {
 	"id" "0"
-	"mapversion" "1"
+	"mapversion" "4"
 	"classname" "worldspawn"
 	"comment" "Decompiled by BSPSource v1.3.21 from pg_fragging_yard"
 	"detailmaterial" "detail/detailsprites"
@@ -166,7 +166,7 @@ world
 			"id" "14"
 			"plane" "(512 -384 8.001) (512 -368 8.001) (640 -368 64.001)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 1 0 -0] 0.25"
+			"uaxis" "[0 1 0 0] 0.25"
 			"vaxis" "[1 0 0 0] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -3662,7 +3662,7 @@ world
 			"id" "336"
 			"plane" "(816 -384 64) (640 -384 64) (640 -368 64)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 1 0 -0] 0.25"
+			"uaxis" "[0 1 0 0] 0.25"
 			"vaxis" "[1 0 0 0] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -4129,7 +4129,7 @@ world
 			"id" "379"
 			"plane" "(368 256 8.001) (368 272 8.001) (496 272 64.001)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 1 0 -0] 0.25"
+			"uaxis" "[0 1 0 0] 0.25"
 			"vaxis" "[1 0 0 64] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -5595,7 +5595,7 @@ world
 			"id" "514"
 			"plane" "(-16 -432 64) (-16 -416 64) (112 -416 8)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 -1 0 -0] 0.25"
+			"uaxis" "[0 -1 0 0] 0.25"
 			"vaxis" "[-1 0 0 448] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -10524,7 +10524,7 @@ world
 			"id" "968"
 			"plane" "(415.996 -112 512) (560 -112 528) (400 -112 528)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 0 1 -0] 0.25"
+			"uaxis" "[0 0 1 0] 0.25"
 			"vaxis" "[1 0 0 -128] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -10589,7 +10589,7 @@ world
 			"id" "974"
 			"plane" "(416 -128 512) (400 -128 320) (400 -128 528)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[1 0 0 -0] 0.25"
+			"uaxis" "[1 0 0 0] 0.25"
 			"vaxis" "[0 0 -1 320] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -10676,7 +10676,7 @@ world
 			"id" "982"
 			"plane" "(544 -112 512) (560 -112 320) (560 -112 528)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[1 0 0 -0] 0.25"
+			"uaxis" "[1 0 0 0] 0.25"
 			"vaxis" "[0 0 1 192] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -11903,7 +11903,7 @@ world
 			"id" "1095"
 			"plane" "(816 -256 416) (816 -256 288) (816 -128 288)"
 			"material" "OUTCRY/WALL_U207"
-			"uaxis" "[0 -1 0 -0] 0.25"
+			"uaxis" "[0 -1 0 0] 0.25"
 			"vaxis" "[0 0 -1 128] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -23403,7 +23403,7 @@ world
 			"id" "2154"
 			"plane" "(704 256 64) (496 256 64) (496 272 64)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 1 0 -0] 0.25"
+			"uaxis" "[0 1 0 0] 0.25"
 			"vaxis" "[1 0 0 64] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -29362,7 +29362,7 @@ world
 			"id" "2703"
 			"plane" "(560.004 112 320) (400 112 320) (416.004 112 336)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 0 1 -0] 0.25"
+			"uaxis" "[0 0 1 0] 0.25"
 			"vaxis" "[1 0 0 -128] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -29395,7 +29395,7 @@ world
 			"id" "2706"
 			"plane" "(544.004 112 336) (416 112 336) (416.004 128 336)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 1 0 -0] 0.25"
+			"uaxis" "[0 1 0 0] 0.25"
 			"vaxis" "[1 0 0 -128] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -29482,7 +29482,7 @@ world
 			"id" "2714"
 			"plane" "(416 128 512) (416 128 336) (416 112 336.004)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 1 0 -0] 0.25"
+			"uaxis" "[0 1 0 0] 0.25"
 			"vaxis" "[0 0 -1 320] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -29514,7 +29514,7 @@ world
 			"id" "2717"
 			"plane" "(544 112 512) (544 112 336) (544 128 336.004)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 1 0 -0] 0.25"
+			"uaxis" "[0 1 0 0] 0.25"
 			"vaxis" "[0 0 1 192] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -29590,7 +29590,7 @@ world
 			"id" "2724"
 			"plane" "(415.996 128 512) (560 128 528) (400 128 528)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 0 1 -0] 0.25"
+			"uaxis" "[0 0 1 0] 0.25"
 			"vaxis" "[1 0 0 -128] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -29601,7 +29601,7 @@ world
 			"id" "2725"
 			"plane" "(544 128 512) (415.996 112 512) (544 112 512)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 1 0 -0] 0.25"
+			"uaxis" "[0 1 0 0] 0.25"
 			"vaxis" "[1 0 0 -128] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -30980,7 +30980,7 @@ world
 			"id" "2852"
 			"plane" "(576 128 512) (576 112 320) (576 112 512)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 1 0 -0] 0.25"
+			"uaxis" "[0 1 0 0] 0.25"
 			"vaxis" "[0 0 -1 320] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -30991,7 +30991,7 @@ world
 			"id" "2853"
 			"plane" "(576 112 512) (560 112 320) (560 112 528)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[1 0 0 -0] 0.25"
+			"uaxis" "[1 0 0 0] 0.25"
 			"vaxis" "[0 0 -1 320] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -31034,7 +31034,7 @@ world
 			"id" "2857"
 			"plane" "(688 112 512) (688 112 320) (688 128 320)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 1 0 -0] 0.25"
+			"uaxis" "[0 1 0 0] 0.25"
 			"vaxis" "[0 0 1 192] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -31132,7 +31132,7 @@ world
 			"id" "2866"
 			"plane" "(575.996 128 512) (704 128 528) (560.004 128 528)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 0 1 -0] 0.25"
+			"uaxis" "[0 0 1 0] 0.25"
 			"vaxis" "[1 0 0 -224] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -31143,7 +31143,7 @@ world
 			"id" "2867"
 			"plane" "(688 128 512) (575.996 112 512) (688 112 512)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 1 0 -0] 0.25"
+			"uaxis" "[0 1 0 0] 0.25"
 			"vaxis" "[1 0 0 -224] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -33347,7 +33347,7 @@ world
 			"id" "3070"
 			"plane" "(-304 -736 512) (-304 -744 512) (-240 -744 512)"
 			"material" "OUTCRY/TRIM_VERT_01"
-			"uaxis" "[0 -1 0 -0] 0.25"
+			"uaxis" "[0 -1 0 0] 0.25"
 			"vaxis" "[-1 0 0 -320] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -33379,7 +33379,7 @@ world
 			"id" "3073"
 			"plane" "(-240 -736 512) (-240 -744 512) (-176 -744 480)"
 			"material" "OUTCRY/TRIM_VERT_01"
-			"uaxis" "[0 -1 0 -0] 0.25"
+			"uaxis" "[0 -1 0 0] 0.25"
 			"vaxis" "[-0.8944 0 0.4472 -111] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -34118,7 +34118,7 @@ world
 			"id" "3141"
 			"plane" "(-368 -736 480) (-368 -744 480) (-304 -744 512)"
 			"material" "OUTCRY/TRIM_VERT_01"
-			"uaxis" "[0 -1 0 -0] 0.25"
+			"uaxis" "[0 -1 0 0] 0.25"
 			"vaxis" "[-0.8944 0 -0.4472 212] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -36821,7 +36821,7 @@ world
 			"id" "3390"
 			"plane" "(-288 -416 64) (-16 -432 64) (-304 -432 64)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 -1 0 -0] 0.25"
+			"uaxis" "[0 -1 0 0] 0.25"
 			"vaxis" "[-1 0 0 448] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -43041,7 +43041,7 @@ world
 			"id" "3963"
 			"plane" "(704 256 368) (704 256 288) (704 512 288)"
 			"material" "OUTCRY/MTL_PANEL_02"
-			"uaxis" "[0 1 0 -0] 0.25"
+			"uaxis" "[0 1 0 0] 0.25"
 			"vaxis" "[0 0 1 -32] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -86147,7 +86147,7 @@ world
 			"id" "7933"
 			"plane" "(384 112 320) (384 116 320) (816 116 320)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 1 0 -0] 0.25"
+			"uaxis" "[0 1 0 0] 0.25"
 			"vaxis" "[1 0 0 -224] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -86343,7 +86343,7 @@ world
 			"id" "7951"
 			"plane" "(384 124 320) (384 128 320) (816 128 320)"
 			"material" "OUTCRY/TRIM_01"
-			"uaxis" "[0 1 0 -0] 0.25"
+			"uaxis" "[0 1 0 0] 0.25"
 			"vaxis" "[1 0 0 -224] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
@@ -93945,7 +93945,7 @@ world
 			"plane" "(483 -685 361.564) (483 -691 361.564) (528 -691 339.999)"
 			"material" "OUTCRY/WHITE_TRIMLIGHT"
 			"uaxis" "[0 -1 0 8] 0.25"
-			"vaxis" "[0.9018 0 -0.4321 -0] 0.25"
+			"vaxis" "[0.9018 0 -0.4321 0] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
 			"smoothing_groups" "0"
@@ -94901,7 +94901,7 @@ world
 			"plane" "(483 -909 361.564) (483 -915 361.564) (528 -915 339.999)"
 			"material" "OUTCRY/WHITE_TRIMLIGHT"
 			"uaxis" "[0 -1 0 -8] 0.25"
-			"vaxis" "[0.9018 0 -0.4321 -0] 0.25"
+			"vaxis" "[0.9018 0 -0.4321 0] 0.25"
 			"rotation" "0"
 			"lightmapscale" "16"
 			"smoothing_groups" "0"
@@ -104334,7 +104334,7 @@ entity
 	"angles" "0 270 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "337 752 272"
 	editor
 	{
@@ -104351,6 +104351,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "8"
 	"origin" "408 1000 249"
 	editor
 	{
@@ -104367,6 +104368,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "8"
 	"origin" "440 1000 249"
 	editor
 	{
@@ -104383,7 +104385,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "-272 160 272"
 	editor
 	{
@@ -104400,7 +104402,7 @@ entity
 	"angles" "0 270 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "332 -768 208"
 	editor
 	{
@@ -104417,7 +104419,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "-624 -288 96"
 	editor
 	{
@@ -104434,7 +104436,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "512 0 96"
 	editor
 	{
@@ -104451,7 +104453,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "880 -336 104"
 	editor
 	{
@@ -104580,6 +104582,7 @@ entity
 	"angles" "0 180 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "8"
 	"origin" "532 -166 143"
 	editor
 	{
@@ -104596,6 +104599,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "8"
 	"origin" "456 -984 185"
 	editor
 	{
@@ -104612,6 +104616,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "8"
 	"origin" "224 -992 185"
 	editor
 	{
@@ -104676,7 +104681,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "-256 816 336"
 	editor
 	{
@@ -104709,6 +104714,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "0"
 	"origin" "900.811 -861.779 113.281"
 	editor
 	{
@@ -104725,6 +104731,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "0"
 	"origin" "35.9924 182.249 65.2807"
 	editor
 	{
@@ -104741,6 +104748,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "0"
 	"origin" "660.032 434.526 65.2807"
 	editor
 	{
@@ -104757,6 +104765,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "0"
 	"origin" "240.672 1172.69 241.281"
 	editor
 	{
@@ -104773,6 +104782,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "0"
 	"origin" "-312 1176 311"
 	editor
 	{
@@ -104789,6 +104799,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "0"
 	"origin" "-279 1176 311"
 	editor
 	{
@@ -104805,6 +104816,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "0"
 	"origin" "-311 1144 311"
 	editor
 	{
@@ -104821,6 +104833,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "0"
 	"origin" "-231 -1000 241.276"
 	editor
 	{
@@ -104837,6 +104850,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
+	"spawnflags" "0"
 	"origin" "-312 -1000 241.276"
 	editor
 	{
@@ -107636,7 +107650,7 @@ entity
 	"angles" "0 0 0"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"spawnflags" "1"
+	"spawnflags" "9"
 	"origin" "160 264 96"
 	editor
 	{
@@ -113983,8 +113997,8 @@ cameras
 	"activecamera" "0"
 	camera
 	{
-		"position" "[289.719 -623.072 292.521]"
-		"look" "[192.263 -381.843 235.319]"
+		"position" "[226.165 -57.8475 263.046]"
+		"look" "[194.67 206.349 250.033]"
 	}
 	camera
 	{
