@@ -342,3 +342,20 @@
 
 	"wave"	")player/doublejump.wav"
 }
+
+"Player.HeadExplode"
+{
+	"channel"	"CHAN_AUTO"
+	"volume"	"1.0"
+	"soundlevel"  "SNDLVL_75dB"
+
+	"rndwave"
+	{
+		"wave"	")impact/head_explode01.wav"
+		"wave"	")impact/head_explode02.wav"
+		"wave"	")impact/head_explode03.wav"
+		"wave"	")impact/head_explode04.wav"
+		"wave"	")impact/head_explode05.wav"
+		"wave"	")impact/head_explode06.wav"
+	}
+}

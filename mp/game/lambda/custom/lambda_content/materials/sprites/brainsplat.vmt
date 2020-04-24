@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+	$basetexture "sprites/brainsplat"
+	$vertexalpha		1
+	$vertexcolor		1
+	$nocull				1
+	$translucent 		1
+}
