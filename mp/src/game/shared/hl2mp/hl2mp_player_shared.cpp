@@ -123,7 +123,7 @@ void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, f
 	}
 
 	CRecipientFilter filter;
-	filter.AddAllPlayers();
+	filter.AddRecipientsByPAS(vecOrigin);
 
 #ifndef CLIENT_DLL
 	// Remove the origin player from the list.
