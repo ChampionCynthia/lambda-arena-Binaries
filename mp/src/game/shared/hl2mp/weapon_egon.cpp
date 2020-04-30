@@ -325,6 +325,9 @@ void CWeaponEgon::Fire( const Vector &vecOrigSrc, const Vector &vecDir )
 
 		if ((m_flDmgTime < gpGlobals->curtime) && (pEntity != NULL))
 		{
+#ifndef CLIENT_DLL
+			lagcompensation->StartLagCompensation(pPlayer, pPlayer->GetCurrentCommand());
+#endif
 			// wide mode does damage to the ent, and radius damage
 			if (pEntity->m_takedamage != DAMAGE_NO)
 			{
@@ -370,6 +373,10 @@ void CWeaponEgon::Fire( const Vector &vecOrigSrc, const Vector &vecDir )
 #endif
 				m_flShakeTime = gpGlobals->curtime + 1.5;
 			}
+
+#ifndef CLIENT_DLL
+			lagcompensation->FinishLagCompensation(pPlayer);
+#endif
 		}
 
 		Vector vecUp, vecRight;
