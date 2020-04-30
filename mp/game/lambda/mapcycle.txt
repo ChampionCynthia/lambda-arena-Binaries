@@ -2,7 +2,7 @@ la_fragging_yard
 la_resistance
 la_the_longest_day
 la_agora
-la_ccelerator
+la_campgrounds
 dm_overwatch
 dm_steamlab
 dm_runoff
